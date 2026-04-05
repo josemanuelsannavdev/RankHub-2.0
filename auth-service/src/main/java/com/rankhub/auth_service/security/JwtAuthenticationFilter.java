@@ -1,11 +1,17 @@
 package com.rankhub.auth_service.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rankhub.auth_service.dto.ApiError;
 import com.rankhub.auth_service.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,9 +26,11 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Override
@@ -58,8 +66,49 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {
+            log.warn("Expired JWT token: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            ApiError error = ApiError.builder()
+                    .message("Token expirado")
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .build();
+            response.getWriter().write(objectMapper.writeValueAsString(error));
+            return;
+        } catch (MalformedJwtException e) {
+            log.warn("Malformed JWT token: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            ApiError error = ApiError.builder()
+                    .message("Token malformado")
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .build();
+            response.getWriter().write(objectMapper.writeValueAsString(error));
+            return;
+        } catch (SignatureException e) {
+            log.warn("Invalid JWT signature: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            ApiError error = ApiError.builder()
+                    .message("Firma del token inválida")
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .build();
+            response.getWriter().write(objectMapper.writeValueAsString(error));
+            return;
+        } catch (Exception e) {
+            log.error("Unexpected JWT processing error", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            ApiError error = ApiError.builder()
+                    .message("Token inválido")
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .build();
+            response.getWriter().write(objectMapper.writeValueAsString(error));
             return;
         }
 

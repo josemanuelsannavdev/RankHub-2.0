@@ -1,6 +1,9 @@
 package com.rankhub.auth_service.exception;
 
 import com.rankhub.auth_service.dto.ApiError;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,33 @@ public class GlobalExceptionHandler {
     public ApiError handleInvalidCredentials(InvalidCredentialsException ex) {
         return ApiError.builder()
                 .message(ex.getMessage())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .build();
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleExpiredJwt(ExpiredJwtException ex) {
+        return ApiError.builder()
+                .message("Token expirado")
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .build();
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleMalformedJwt(MalformedJwtException ex) {
+        return ApiError.builder()
+                .message("Token malformado")
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .build();
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleSignatureException(SignatureException ex) {
+        return ApiError.builder()
+                .message("Firma del token inválida")
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .build();
     }

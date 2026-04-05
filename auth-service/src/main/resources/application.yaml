@@ -7,8 +7,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/usersdb
-    username: postgres
-    password: tfm1234
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -23,8 +23,11 @@ spring:
       client:
         registration:
           google:
-            client-id: 782230603325-g0ioa1b6le6npo1htkj6anrpl9rhqu66.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
               - profile
+
+jwt:
+  secret: ${JWT_SECRET}

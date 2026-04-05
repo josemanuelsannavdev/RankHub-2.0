@@ -26,6 +26,7 @@ public class OAuthService {
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setRole(Role.USER);
+        newUser.setProvider("GOOGLE");
 
         return userRepository.save(newUser);
     }

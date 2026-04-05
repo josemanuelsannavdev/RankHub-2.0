@@ -19,10 +19,12 @@ import org.springframework.stereotype.Service;
 
 import com.rankhub.auth_service.entity.Role;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -56,12 +58,18 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
+        if (!"LOCAL".equals(user.getProvider())) {
+            throw new InvalidCredentialsException("Esta cuenta fue registrada con Google. Use inicio de sesión con Google.");
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Credenciales incorrectas");
         }
 
         String accessToken = jwtService.generateToken(user.getEmail(), user.getRole().name());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+        log.info("Invalidating refresh tokens for {} before issuing a new one", user.getEmail());
+        refreshTokenService.invalidateUserTokens(user.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
         return new AuthResponse(accessToken, refreshToken.getToken());
     }
