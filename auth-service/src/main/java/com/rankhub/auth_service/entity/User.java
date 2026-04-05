@@ -1,6 +1,5 @@
 package com.rankhub.auth_service.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +25,10 @@ public class User {
     private String name;
 
     private String provider; // LOCAL o GOOGLE
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    private String providerId; // id de Google (sub)
+
 }

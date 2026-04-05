@@ -1,16 +1,25 @@
 package com.rankhub.auth_service.service;
 
+import com.rankhub.auth_service.dto.AuthResponse;
 import com.rankhub.auth_service.dto.LoginRequest;
+import com.rankhub.auth_service.dto.MeResponse;
 import com.rankhub.auth_service.dto.RegisterRequest;
 import com.rankhub.auth_service.dto.UserResponse;
+import com.rankhub.auth_service.entity.RefreshToken;
 import com.rankhub.auth_service.entity.User;
 import com.rankhub.auth_service.exception.InvalidCredentialsException;
 import com.rankhub.auth_service.exception.UserAlreadyExistsException;
 import com.rankhub.auth_service.exception.UserNotFoundException;
 import com.rankhub.auth_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.rankhub.auth_service.entity.Role;
+
+import org.springframework.security.core.Authentication;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +27,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
+    
     public UserResponse register(RegisterRequest request) {
 
         // comprobar si ya existe el usuario con ese email
@@ -31,6 +43,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
+                .role(Role.USER)
                 .provider("LOCAL")
                 .build();
 
@@ -38,22 +51,19 @@ public class UserService {
         return mapToResponse(savedUser);
     }
 
-    public UserResponse login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
-        // comprobar que sea usuario LOCAL
-        if (!"LOCAL".equals(user.getProvider())) {
-            throw new InvalidCredentialsException("Este usuario usa login con Google");
-        }
-
-        // validar contraseña
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialsException("Contraseña incorrecta");
+            throw new InvalidCredentialsException("Credenciales incorrectas");
         }
 
-        return mapToResponse(user);
+        String accessToken = jwtService.generateToken(user.getEmail(), user.getRole().name());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+
+        return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
     private UserResponse mapToResponse(User user) {
@@ -61,6 +71,15 @@ public class UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .build();
+    }
+
+    public MeResponse getCurrentUser() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return MeResponse.builder()
+                .email(auth.getName())
+                .authenticated(true)
                 .build();
     }
 }
