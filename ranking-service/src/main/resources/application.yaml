@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+spring:
+  config:
+    import : optional:file:.env
+  application:
+    name: ranking-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rankingsdb
+    username: postgres
+    password: tfm1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update #lo suyo es cambiarlo por "validate" una vez sepamos la forma de la base de datos
+    show-sql: true 
+    properties: 
+      hibernate:
+        '[format_sql]': true
+
+
+eureka:
+    client:
+        enabled: true
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+    instance:
+        preferIpAddress: true
+        hostname: ms-rankings
