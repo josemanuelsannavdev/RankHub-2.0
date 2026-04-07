@@ -1,4 +1,4 @@
-import '../styles/podium.css'
+import '../../styles/rankingMain/podium.css'
 
 function Podium() {
   return (
