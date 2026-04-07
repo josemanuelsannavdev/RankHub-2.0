@@ -1,50 +1,64 @@
 package com.rankhub.auth_service.service;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
+/**
+ * Service responsible for generating and validating JWT tokens.
+ */
 @Service
 public class JwtService {
 
+    // ⚠️ In production, store this in environment variables
     @Value("${jwt.secret}")
-    private String secret;
+    private  String secretKey ;
 
-    private static final long EXPIRATION = 1000 * 60 * 60; // 1 hora
+    // Token validity (e.g., 1 hour)
+    private final long EXPIRATION_TIME = 1000 * 60 * 60;
 
-    private Key getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
+    /**
+     * Generates a JWT token for a user.
+     */
+    public String generateToken(UUID userId, String email) {
 
-    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role)
+                .setSubject(userId.toString()) // user ID
+                .claim("email", email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    /**
+     * Extracts user ID from token.
+     */
+    public String extractUserId(String token) {
+        return extractClaims(token).getSubject();
     }
 
-    public String extractRole(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey())
-                .build()
+    /**
+     * Validates token (basic).
+     */
+    public boolean isValid(String token) {
+        try {
+            extractClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private Claims extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
-                .getBody()
-                .get("role", String.class);
+                .getBody();
     }
 }

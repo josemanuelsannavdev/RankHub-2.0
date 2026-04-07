@@ -1,34 +1,43 @@
 package com.rankhub.auth_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * Represents a user in the system.
+ * 
+ * NOTE:
+ * - Password is stored hashed (never plain text)
+ * - This entity is designed to be extended later (Google login, etc.)
+ */
 @Entity
-@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String password;
 
-    private String name;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
-    private String provider; // LOCAL o GOOGLE
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    private String providerId; // id de Google (sub)
 
 }
