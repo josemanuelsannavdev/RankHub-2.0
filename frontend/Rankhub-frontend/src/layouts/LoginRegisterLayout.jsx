@@ -1,4 +1,6 @@
-const RegisterLayout = ({ children }) => {
+import PropTypes from "prop-types";
+
+const LoginRegisterLayout = ({ children }) => {
   return (
     <main className="flex-grow flex items-center justify-center px-6 py-12 relative overflow-hidden dark:bg-background-dark">
       
@@ -15,4 +17,7 @@ const RegisterLayout = ({ children }) => {
   );
 };
 
-export default RegisterLayout;
+LoginRegisterLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+export default LoginRegisterLayout;

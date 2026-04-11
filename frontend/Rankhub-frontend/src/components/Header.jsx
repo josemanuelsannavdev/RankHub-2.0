@@ -1,4 +1,8 @@
-function Header() {
+
+
+import PropTypes from 'prop-types';
+
+function Header({title}) {
   return (
     <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-slate-200 dark:border-white/5">
       
@@ -8,7 +12,7 @@ function Header() {
         </button>
 
         <h1 className="text-xl font-bold tracking-tight">
-          Ranking del Torneo
+          {title}
         </h1>
       </div>
 
@@ -21,5 +25,9 @@ function Header() {
     </header>
   );
 }
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
+};
 
 export default Header;

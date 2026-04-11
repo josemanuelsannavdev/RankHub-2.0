@@ -5,13 +5,13 @@ import com.rankhub.auth_service.dto.LoginRequest;
 import com.rankhub.auth_service.dto.RegisterRequest;
 import com.rankhub.auth_service.service.AuthService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.rankhub.auth_service.dto.AuthResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
 
         authService.register(request);
 
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
 
         String token = authService.login(request);
 

@@ -56,7 +56,8 @@ export default {
         "outline": "#494832",
         "surface-container-high": "#2b2b1d",
         "surface-container-lowest": "#0f0f04",
-        "on-surface-variant": "#cbc8ab"
+        "on-surface-variant": "#cbc8ab",
+        
       },
       fontFamily: {
         display: ["Lexend", "sans-serif"],

@@ -1,4 +1,6 @@
-const LoginHeader = () => {
+import PropTypes from 'prop-types';
+
+const FormHeader = ({titleFirstWord, titleSecondWord,subTitle}) => {
   return (
     <div className="text-center mb-10">
       
@@ -14,16 +16,22 @@ const LoginHeader = () => {
 
       {/* Título */}
       <h1 className="text-4xl font-black tracking-tighter text-on-surface uppercase mb-2">
-        Iniciar <span className="text-primary neon-glow">Sesion</span>
+        {titleFirstWord} <span className="text-primary neon-glow">{titleSecondWord}</span>
       </h1>
 
       {/* Subtítulo */}
       <p className="text-on-surface-variant text-sm font-light tracking-wide uppercase">
-        Únete a la élite de los torneos neon
+        {subTitle}
       </p>
 
     </div>
   );
 };
 
-export default LoginHeader;
+FormHeader.propTypes = {
+  titleFirstWord: PropTypes.string.isRequired,
+  titleSecondWord: PropTypes.string.isRequired,
+  subTitle: PropTypes.string.isRequired,
+};
+
+export default FormHeader;

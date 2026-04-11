@@ -1,4 +1,6 @@
-const SubmitButton = () => {
+import PropTypes from 'prop-types';
+
+const SubmitButton = ({text}) => {
   return (
     <button
       type="submit"
@@ -20,9 +22,13 @@ const SubmitButton = () => {
         mt-4
       "
     >
-      REGISTRARSE
+      {text}
     </button>
   );
+};
+
+SubmitButton.propTypes = {
+  text: PropTypes.string.isRequired,
 };
 
 export default SubmitButton;

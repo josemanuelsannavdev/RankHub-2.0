@@ -1,12 +1,15 @@
-const FormInput = ({
+import PropTypes from "prop-types";
+
+const FormInputIcon = ({
   label,
   type = "text",
   placeholder,
   icon,
+  value,
+  onChange,
 }) => {
   return (
     <div className="space-y-2">
-      
       {/* Label */}
       <label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
         {label}
@@ -14,7 +17,6 @@ const FormInput = ({
 
       {/* Input wrapper */}
       <div className="relative group">
-        
         {/* Icono */}
         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary transition-colors">
           {icon}
@@ -24,6 +26,8 @@ const FormInput = ({
         <input
           type={type}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           className="
             w-full
             bg-surface-container-low
@@ -41,9 +45,17 @@ const FormInput = ({
           "
         />
       </div>
-
     </div>
   );
 };
 
-export default FormInput;
+FormInputIcon.propTypes = {
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
+  icon: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+export default FormInputIcon;

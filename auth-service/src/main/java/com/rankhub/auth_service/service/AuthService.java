@@ -8,7 +8,6 @@ import com.rankhub.auth_service.entity.User;
 import com.rankhub.auth_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.type.descriptor.jdbc.LocalDateJdbcType;
-import org.springframework.security.core.Authentication;
+
 
 @Service
 @RequiredArgsConstructor

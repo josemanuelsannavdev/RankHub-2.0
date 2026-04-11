@@ -14,5 +14,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class RankingDto {
-    private String nombre;
+    private String name;
+    private String icon;
 }

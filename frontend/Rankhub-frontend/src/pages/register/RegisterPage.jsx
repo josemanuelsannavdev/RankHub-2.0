@@ -1,15 +1,15 @@
-import RegisterLayout from "./RegisterLayout";
-import RegisterHeader from "./RegisterHeader";
-import RegisterCard from "./RegisterCard";
+import LoginRegisterLayout from "../../layouts/LoginRegisterLayout";
+import FormHeader from "../../components/FormHeader";
+import LoginRegisterCard from "../../components/LoginRegisterCard";
 import RegisterForm from "./RegisterForm";
 const RegisterPage = () => {
   return (
-    <RegisterLayout>
-      <RegisterHeader/>
-      <RegisterCard>
-          <RegisterForm/>
-      </RegisterCard>
-    </RegisterLayout>
+    <LoginRegisterLayout>
+      <FormHeader title="Crear Cuenta" />
+      <LoginRegisterCard>
+        <RegisterForm />
+      </LoginRegisterCard>
+    </LoginRegisterLayout>
   );
 };
 

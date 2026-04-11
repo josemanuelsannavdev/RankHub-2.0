@@ -1,12 +1,17 @@
 import RankingItem from "./RankingItem";
 
+import { useRanking } from "../../context/RankingContext";
+
 function RankingList() {
+
+  const { rankingData } = useRanking();
+
   return (
     <section className="px-4">
       
       {/* header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold">Tabla de Posiciones</h2>
+        <h2 className="text-lg font-bold">Tabla de Posiciones {rankingData?.name || "Torneo"}</h2>
         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
           Total: 42 Participantes
         </span>

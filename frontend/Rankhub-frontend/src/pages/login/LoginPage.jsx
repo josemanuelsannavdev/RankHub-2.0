@@ -1,15 +1,15 @@
-import LoginLayout from "./LoginLayout";
-import LoginHeader from "./LoginHeader";
-import LoginCard from "./LoginCard";
+import LoginRegisterLayout from "../../layouts/LoginRegisterLayout";
+import FormHeader from "../../components/FormHeader";
+import LoginRegisterCard from "../../components/LoginRegisterCard";
 import LoginForm from "./LoginForm";
 const LoginPage = () => {
   return (
-    <LoginLayout>
-      <LoginHeader/>
-      <LoginCard>
+    <LoginRegisterLayout>
+      <FormHeader title="Inicia sesión en tu cuenta" />
+      <LoginRegisterCard optionalTitle="Inicia sesión en tu cuenta">
           <LoginForm/>
-      </LoginCard>
-    </LoginLayout>
+      </LoginRegisterCard>
+    </LoginRegisterLayout>
   );
 };
 

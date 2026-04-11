@@ -1,16 +1,17 @@
-const LoginCard = ({ children }) => {
+import PropTypes from 'prop-types';
+
+const LoginRegisterCard = ({ children,optionalTitle }) => {
   return (
     <div className="bg-slate-950/60 backdrop-blur-xl border border-white/5 p-8 rounded-3xl shadow-2xl neon-border">
       
       {/* Formulario */}
-      <form className="space-y-5">
-        {children}
-      </form>
+      {children}
+      
 
       {/* Social Login */}
       <div className="mt-8 pt-8 border-t border-white/5">
         <p className="text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">
-          O regístrate con
+          {optionalTitle}
         </p>
 
         <div className="grid grid-cols-2 gap-4">
@@ -45,4 +46,9 @@ const LoginCard = ({ children }) => {
   );
 };
 
-export default LoginCard;
+LoginRegisterCard.propTypes = {
+  children: PropTypes.node.isRequired,
+  optionalTitle: PropTypes.string,
+};
+
+export default LoginRegisterCard;
