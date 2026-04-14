@@ -28,8 +28,12 @@ public class PlayerMapper {
         }
         PlayerDto playerDto = new PlayerDto();
         playerDto.setName(entity.getName());
+        playerDto.setPoints(entity.getPoints());
+        playerDto.setGamesPlayed(entity.getGamesPlayed());
+        playerDto.setGamesLost(entity.getGamesLost());
+        playerDto.setGamesWon(entity.getGamesWon());
+        playerDto.setImage(entity.getImage());
         return playerDto;
     }
 
-   
 }

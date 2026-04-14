@@ -28,6 +28,9 @@ public class RankingRepository {
         return rankingJpaRepository.save(ranking);
     }
 
+    public void delete(UUID rankingId){
+        rankingJpaRepository.deleteById(rankingId);
+    }
     public List<RankingWithRoleDto> getRankingsByUserId(UUID userId) {
         return rankingJpaRepository.getRankingsByUserId(userId);
     }

@@ -18,6 +18,8 @@ public interface RankingService {
 
     Ranking patchRanking(UUID rankingId, RankingRequest request);
 
+    void  deleteRanking(UUID rankingId);
+
     List<RankingWithRoleDto> getRankingsByUserId(UUID userId);
 
 }

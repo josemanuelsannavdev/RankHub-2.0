@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.entity.Role;
 
 import jakarta.transaction.Transactional;
@@ -25,4 +26,10 @@ public interface RoleJpaRepository extends JpaRepository<Role, UUID>, JpaSpecifi
             @Param("rankingId") UUID rankingId,
             @Param("userId") UUID userId,
             @Param("role") String role);
+
+    @Query("DELETE FROM Role r WHERE r.userId = :userId AND r.rankingId = :rankingId" )
+    void delteByRankingIdUserId(@Param("rankingId")UUID rankingId,@Param("userId")UUID userId);
+
+    @Query("Select r FROM Role r WHERE r.userId = :userId AND r.rankingId = :rankingId" )
+    Role getByRankingIdUserId(@Param("rankingId")UUID rankingId,@Param("userId")UUID userId);
 }

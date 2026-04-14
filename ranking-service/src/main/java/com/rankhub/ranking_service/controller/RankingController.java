@@ -1,6 +1,9 @@
 package com.rankhub.ranking_service.controller;
 
 import com.rankhub.ranking_service.service.RoleServiceImpl;
+
+import jakarta.ws.rs.DELETE;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
@@ -8,6 +11,8 @@ import com.rankhub.ranking_service.dto.RankingDto;
 import com.rankhub.ranking_service.dto.RoleDto;
 
 import com.rankhub.ranking_service.entity.Ranking;
+import com.rankhub.ranking_service.entity.Role;
+
 import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.service.RankingServiceImpl;
 import com.rankhub.ranking_service.mapper.RankingMapper;
@@ -21,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +34,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
- 
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +44,6 @@ public class RankingController {
     private final RoleServiceImpl roleServiceImpl;
     private final RankingServiceImpl rankingService;
     private final RankingMapper mapper;
-
 
     /* Get all rankings */
     @GetMapping("/ranking")
@@ -71,7 +77,7 @@ public class RankingController {
             @RequestHeader("X-User-Id") String userIdHeader) {
 
         UUID userId = UUID.fromString(userIdHeader);
-        
+
         Ranking createdRanking = rankingService.createRanking(rankingRequest);
         if (createdRanking != null) {
             RoleDto role = new RoleDto();
@@ -83,8 +89,7 @@ public class RankingController {
                     createdRanking.getName(),
                     createdRanking.getId(),
                     role.getRole(),
-                    createdRanking.getIcon()
-            );
+                    createdRanking.getIcon());
             return ResponseEntity.ok(rankingWithRoleDto);
         } else {
             return ResponseEntity.badRequest().build();
@@ -122,6 +127,25 @@ public class RankingController {
         }
     }
 
+    /*Delete a ranking for everyone  */
+    @DeleteMapping("/ranking/{rankingId}")
+    public ResponseEntity<String> deleteRanking(
+            @PathVariable UUID rankingId,
+            @RequestHeader("X-User-Id") String userIdHeader) {
+
+        UUID userId = UUID.fromString(userIdHeader);
+        Role role = roleServiceImpl.getByRankingIdUserId(rankingId, userId);
+        if (role.getRole() == RoleType.ADMIN || role.getRole() == RoleType.SUB_ADMIN ) {
+            rankingService.deleteRanking(rankingId);
+            return ResponseEntity.ok("ranking eliminado");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+
+        /*nO HE COMPROBADO SI HACE FALTA IMPLEMENTAR LA LOGICA EN LA QUE SE BORRAN TODOS LOS ROLES QUE TENGAN ESE RANKING_id */
+    }
+
     @GetMapping("/me/ranking")
     public ResponseEntity<List<RankingWithRoleDto>> getMyRankings(
             @RequestHeader("X-User-Id") String userIdHeader) {
@@ -132,6 +156,22 @@ public class RankingController {
 
         return ResponseEntity.ok(
                 rankingsWithRole != null ? rankingsWithRole : Collections.emptyList());
+    }
+
+    /*Delete a ranking only for "Me" = Exit from the ranking */
+    @DeleteMapping("/me/ranking/{rankingId}")
+    public ResponseEntity<String> deleteMyRanking(
+            @RequestHeader("X-User-Id") String userIdHeader,
+            @PathVariable UUID rankingId) {
+
+        UUID userId = UUID.fromString(userIdHeader);
+        
+        
+
+        roleServiceImpl.delteByRankingIdUserId(rankingId, userId);
+
+        return ResponseEntity.ok(
+                "Se ha boorado el ranking");
     }
 
 }

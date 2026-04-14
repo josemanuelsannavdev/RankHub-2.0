@@ -1,5 +1,7 @@
 package com.rankhub.ranking_service.repository;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
 import com.rankhub.ranking_service.entity.Role;
@@ -15,4 +17,13 @@ public class RoleRepository {
         roleJpaRepository.insertRole(role.getId(), role.getRankingId(), role.getUserId(), role.getRole().toString());
         return role;
     }
+
+    public void delteByRankingIdUserId(UUID rankingId,UUID userId){
+        roleJpaRepository.delteByRankingIdUserId(rankingId,userId);
+    }
+
+    public Role getByRankingIdUserId(UUID rankingId,UUID userId){
+        return roleJpaRepository.getByRankingIdUserId(rankingId,userId);
+    }
+
 }

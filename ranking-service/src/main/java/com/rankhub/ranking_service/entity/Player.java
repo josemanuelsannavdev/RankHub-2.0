@@ -36,13 +36,13 @@ public class Player {
     @Column(name = "points")
     private Double points;
 
-    @Column(name = "games_Played")
+    @Column(name = "games_played")
     private int gamesPlayed;
 
-    @Column(name = "games_Lost")
+    @Column(name = "games_lost")
     private int gamesLost;
 
-    @Column(name = "games_Won")
+    @Column(name = "games_won")
     private int gamesWon;
 
     @Column(name = "ranking_id")

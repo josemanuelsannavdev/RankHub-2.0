@@ -1,11 +1,10 @@
-import React from "react";
 import PropTypes from "prop-types";
 
 const RankingCard = ({
   ranking,
   variant = "owner",
   onClickEntry,
-  onClickEdit,
+  onClickOption,
 }) => {
   const isOwner = variant === "owner";
 
@@ -63,17 +62,21 @@ const RankingCard = ({
         >
           <span className="material-symbols-outlined">play_circle</span>
         </button>
-        {/* BOTÓN DERECHA */}
+        
+
+        {/* BOTÓN opciones */}
         <button
           className={`transition-colors p-2 rounded-lg ${
             isOwner
               ? "text-zinc-500 hover:text-primary active:bg-primary/10"
               : "text-zinc-500 hover:text-on-surface active:bg-white/5"
           }`}
-          onClick={() =>onClickEdit(ranking)}
+          onClick={() => onClickOption(ranking)}
         >
           <span className="material-symbols-outlined">more_vert</span>
         </button>
+
+      
       </div>
     </div>
   );
@@ -87,7 +90,7 @@ RankingCard.propTypes = {
   }).isRequired,
   variant: PropTypes.oneOf(["owner", "subadmin", "guest"]),
   onClickEntry: PropTypes.func.isRequired,
-  onClickEdit: PropTypes.func.isRequired,
+  onClickOption: PropTypes.func.isRequired
 };
 
 export default RankingCard;

@@ -27,7 +27,7 @@ public class PlayerController {
 
     /* Get all players of a ranking */
 
-    @GetMapping("/ranking/{rankingId}/players")
+    @GetMapping("/jugador/torneo/{rankingId}")
     public ResponseEntity<List<PlayerDto>> getAllPlayerOfRanking(@PathVariable UUID rankingId) {
         List<Player> rankings = playerServiceImp.getAllPlayersOfRanking(rankingId);
         if (rankings != null) {

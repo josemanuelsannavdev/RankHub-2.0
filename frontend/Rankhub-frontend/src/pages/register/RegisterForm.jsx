@@ -4,6 +4,7 @@ import SubmitButton from "../../components/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import gatewayApi from "../../services/gatewayApi";
+import {useToast} from "../../context/ToastContext";
 
 const RegisterForm = () => {
   const [name, setName] = useState("");
@@ -11,11 +12,12 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+  const {success,warning,error} = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden.");
+      error("Las contraseñas no coinciden");
     }
     else if (email && password && name && confirmPassword) {
       try {
@@ -27,10 +29,10 @@ const RegisterForm = () => {
         navigate("/login");
       } catch (error) {
         console.error("Error en register:", error);
-        alert("Error en el registro. Verifica los campos.");
+        error("Error en el registro. Verifica los campos.");
       }
     } else {
-      alert("Por favor, completa todos los campos.");
+      error("Por favor, completa todos los campos.");
     }
   };
 

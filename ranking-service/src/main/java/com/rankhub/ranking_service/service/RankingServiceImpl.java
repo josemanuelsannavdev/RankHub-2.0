@@ -11,11 +11,10 @@ import com.rankhub.ranking_service.repository.RankingRepository;
 import com.rankhub.ranking_service.request.RankingRequest;
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class RankingServiceImpl implements RankingService {
-    
+
     private final RankingRepository rankingRepository;
 
     @Override
@@ -30,7 +29,7 @@ public class RankingServiceImpl implements RankingService {
 
     @Override
     public Ranking createRanking(RankingRequest rankingRequest) {
-        
+
         Ranking ranking = Ranking.builder()
                 .name(rankingRequest.getName())
                 .icon(rankingRequest.getIcon())
@@ -49,7 +48,8 @@ public class RankingServiceImpl implements RankingService {
 
         // Actualiza los campos del ranking existente con los datos del request
         existingRanking.setName(rankingRequest.getName());
-        
+        existingRanking.setIcon(rankingRequest.getIcon());
+
         // Guarda el ranking actualizado en la base de datos
         return rankingRepository.save(existingRanking);
     }
@@ -65,11 +65,16 @@ public class RankingServiceImpl implements RankingService {
         if (request.getName() != null) {
             existingRanking.setName(request.getName());
         }
-        
+
         // Guarda el ranking actualizado en la base de datos
         return rankingRepository.save(existingRanking);
     }
-    
+
+    @Override
+    public void deleteRanking(UUID rankingId) {
+        rankingRepository.delete(rankingId);
+    }
+
     @Override
     public List<RankingWithRoleDto> getRankingsByUserId(UUID userId) {
         return rankingRepository.getRankingsByUserId(userId);

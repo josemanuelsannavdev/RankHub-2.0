@@ -6,26 +6,19 @@ import SubmitButton from "./components/SubmitButton";
 import { useState } from "react";
 import RankingForm from "./pages/mainPage/RankingForm";
 import BottomNavBar from "./pages/mainPage/BottomNavBar";
-
-
+import { useToast } from "./context/ToastContext";
 function App() {
-  const [icon, setIcon] = useState("");
-  const [name, setName] = useState("");
-  const [createRankingModalOpen, setCreateRankingModalOpen] = useState(false);
-  const handleCreateRankingButton = () => {
-    setCreateRankingModalOpen(true);
-  };
-
+  const {success,error,warning} = useToast();
   return (
     <>
       <h2>APP</h2>
-      <span className="material-symbols-outlined">Expand</span>
 
-      <BottomNavBar onClick={handleCreateRankingButton}/>
-      {createRankingModalOpen && 
-      <Modal>
-        <RankingForm onClose={() => setCreateRankingModalOpen(false)} />
-        </Modal>}
+      
+      <button onClick={() => alert("Ole los caracoles") }>aaaaaa</button>
+            <button onClick={() => error("te equivocaste manin") }>bbbbbb</button>
+
+      <button onClick={() => warning("Cuidao con la faroooola") }>ccccc</button>
+
     </>
   );
 }

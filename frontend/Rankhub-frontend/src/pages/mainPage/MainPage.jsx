@@ -7,7 +7,8 @@ import gatewayApi from "../../services/gatewayApi";
 import { useRanking } from "../../context/RankingContext";
 import Modal from "../../components/Modal";
 import RankingForm from "./RankingForm";
-
+import OptionButton from "../../components/OptionButton";
+import CancelButton from "../../components/CancelButton";
 function MainPage() {
   const [rankingsAdmin, setRankingsAdmin] = useState([]);
   const [rankingsSubAdmin, setRankingsSubAdmin] = useState([]);
@@ -16,42 +17,8 @@ function MainPage() {
   const { selectRanking } = useRanking();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRanking, setEditingRanking] = useState(null);
-
-  const handleCreateRankingButton = () => {
-    setEditingRanking(null); 
-    setModalOpen(true);
-  };
-
-  const handleEditRanking = (ranking) => {
-    setEditingRanking(ranking); // modo editar
-    setModalOpen(true);
-  };
-
-  const handleRankingCreated = (newRanking) => {
-    console.log("Nuevo ranking creado/editado:", newRanking);
-    const updateList = (list) => {
-      const index = list.findIndex((r) => r.id === newRanking.id);
-
-      if (index !== -1) {
-        console.log("Ranking editado, actualizando lista...");
-        // Actualizar: reemplazar en la posición encontrada
-        const newList = [...list];
-        newList[index] = newRanking;
-        return newList;
-      }
-      console.log("Ranking nuevo, añadiendo a la lista...");
-      // Crear: añadir al final
-      return [...list, newRanking];
-    };
-
-    if (newRanking.role === "ADMIN") {
-      setRankingsAdmin((prev) => updateList(prev));
-    } else if (newRanking.role === "SUB_ADMIN") {
-      setRankingsSubAdmin((prev) => updateList(prev));
-    } else {
-      setRankingsGuest((prev) => updateList(prev));
-    }
-  };
+  const [modalOpenOptions, setModalOpenOptions] = useState(false);
+  const [optionRanking, setOptionRanking] = useState([]);
 
   useEffect(() => {
     const fetchRankings = async () => {
@@ -89,9 +56,140 @@ function MainPage() {
     fetchRankings();
   }, [navigate]);
 
+  const handleCreateRankingButton = () => {
+    setEditingRanking(null);
+    setModalOpen(true);
+  };
+
+  const handleEditRanking = (ranking) => {
+    setEditingRanking(ranking); // modo editar
+    setModalOpenOptions(false);
+    setModalOpen(true);
+  };
+
+  const handleRankingCreated = (newRanking) => {
+    const updateList = (list) => {
+      const index = list.findIndex((r) => r.id === newRanking.id);
+
+      if (index !== -1) {
+        // Actualizar: reemplazar en la posición encontrada
+        const newList = [...list];
+        newList[index] = newRanking;
+        return newList;
+      }
+      // Crear: añadir al final
+      return [...list, newRanking];
+    };
+
+    if (newRanking.role === "ADMIN") {
+      setRankingsAdmin((prev) => updateList(prev));
+    } else if (newRanking.role === "SUB_ADMIN") {
+      setRankingsSubAdmin((prev) => updateList(prev));
+    } else {
+      setRankingsGuest((prev) => updateList(prev));
+    }
+  };
+
   const handleRankingClick = (ranking) => {
-    //selectRanking(ranking);
+    selectRanking(ranking); //esto es para que el contexto sepa cuál ranking está seleccionado, así lo puede usar en otras partes de la app
     navigate(`/ranking/${ranking.id}`);
+  };
+
+  const handleOptionRanking = (ranking) => {
+    setOptionRanking(ranking);
+    setModalOpenOptions(true);
+  };
+
+  const handleDeleteRanking = async (ranking) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    try {
+      await gatewayApi.post(
+        `/ranking-service/ranking/${ranking.id}`,
+        {
+          targetMethod: "Delete",
+          queryParams: {},
+          body: {},
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      alert("Ranking Borrado");
+      const updateList = (list) => {
+        const index = list.findIndex((r) => r.id === ranking.id);
+
+        if (index !== -1) {
+          // ❌ lo encontró → lo eliminamos
+          const newList = [...list];
+          newList.splice(index, 1);
+          return newList;
+        }
+      };
+
+      if (ranking.role === "ADMIN") {
+        setRankingsAdmin((prev) => updateList(prev));
+      } else if (ranking.role === "SUB_ADMIN") {
+        setRankingsSubAdmin((prev) => updateList(prev));
+      } else {
+        setRankingsGuest((prev) => updateList(prev));
+      }
+      setModalOpenOptions(false);
+    } catch (error) {
+      console.error("Error al borrar el ranking:", error);
+      alert("Error al borrar el ranking.");
+    }
+  };
+
+  const handleExitRanking = async (ranking) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    try {
+      await gatewayApi.post(
+        `/ranking-service/me/ranking/${ranking.id}`,
+        {
+          targetMethod: "Delete",
+          queryParams: {},
+          body: {},
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      alert("Ranking Borrado");
+      const updateList = (list) => {
+        const index = list.findIndex((r) => r.id === ranking.id);
+
+        if (index !== -1) {
+          // ❌ lo encontró → lo eliminamos
+          const newList = [...list];
+          newList.splice(index, 1);
+          return newList;
+        }
+      };
+
+      if (ranking.role === "ADMIN") {
+        setRankingsAdmin((prev) => updateList(prev));
+      } else if (ranking.role === "SUB_ADMIN") {
+        setRankingsSubAdmin((prev) => updateList(prev));
+      } else {
+        setRankingsGuest((prev) => updateList(prev));
+      }
+      setModalOpenOptions(false);
+    } catch (error) {
+      console.error("Error al borrar el ranking:", error);
+      alert("Error al borrar el ranking.");
+    }
   };
 
   return (
@@ -127,7 +225,7 @@ function MainPage() {
                 key={ranking.id}
                 variant="owner"
                 onClickEntry={() => handleRankingClick(ranking)}
-                onClickEdit={() => handleEditRanking(ranking)}
+                onClickOption={() => handleOptionRanking(ranking)}
               />
             ))}
           </div>
@@ -148,7 +246,7 @@ function MainPage() {
                 ranking={ranking}
                 variant="subadmin"
                 onClickEntry={() => handleRankingClick(ranking)}
-                onClickEdit={() => handleEditRanking(ranking)}
+                onClickOption={() => handleOptionRanking(ranking)}
               />
             ))}
           </div>
@@ -169,7 +267,7 @@ function MainPage() {
                 ranking={ranking}
                 variant="guest"
                 onClickEntry={() => handleRankingClick(ranking)}
-                onClickEdit={() => handleEditRanking(ranking)}
+                onClickOption={() => handleOptionRanking(ranking)}
               />
             ))}
           </div>
@@ -191,6 +289,41 @@ function MainPage() {
             onClose={() => setModalOpen(false)}
             onRankingCreated={handleRankingCreated}
             rankingToEdit={editingRanking}
+          />
+        </Modal>
+      )}
+      {modalOpenOptions && (
+        <Modal
+          title="Opciones"
+          description="Estas son las opciones del ranking"
+        >
+          <OptionButton
+            text="editar"
+            important={false}
+            icon="edit"
+            onClick={() => handleEditRanking(optionRanking)}
+          />
+          <OptionButton
+            text="editar integrantes"
+            important={false}
+            icon="person_edit"
+          />
+          <OptionButton
+            text="borrar"
+            important={true}
+            icon="delete"
+            onClick={() => handleDeleteRanking(optionRanking)}
+          />
+
+          <OptionButton
+            text="salir del ranking"
+            important={true}
+            icon="cancel"
+            onClick={() => handleExitRanking(optionRanking)}
+          />
+          <CancelButton
+            text="Cancelar"
+            onClick={() => setModalOpenOptions(false)}
           />
         </Modal>
       )}
