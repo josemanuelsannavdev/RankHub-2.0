@@ -6,7 +6,7 @@ import App from "./App.jsx";
 import Ranking from "./pages/rankingMain/RankingPage.jsx";
 import RegisterPage from "./pages/register/RegisterPage.jsx";
 import LoginPage from "./pages/login/LoginPage.jsx";
-import MainPage from "./pages/mainPage/mainPage.jsx";
+import MainPage from "./pages/mainPage/MainPage.jsx";
 import { RankingProvider } from "./context/RankingContext.jsx";
 import { ToastContainer } from "react-toastify";
 import { ToastProvider } from "./context/ToastContext.jsx";
