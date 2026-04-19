@@ -2,13 +2,13 @@
 
 import PropTypes from 'prop-types';
 
-function Header({title}) {
+function Header({ title = "RankHub" }) {
   return (
     <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-slate-200 dark:border-white/5">
       
       <div className="flex items-center gap-3">
         <button className="flex items-center justify-center p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
-          <span className="material-symbols-outlined">menu</span>
+          <span className="material-symbols-outlined">arrow_back</span>
         </button>
 
         <h1 className="text-xl font-bold tracking-tight">
@@ -27,7 +27,7 @@ function Header({title}) {
 }
 
 Header.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 export default Header;

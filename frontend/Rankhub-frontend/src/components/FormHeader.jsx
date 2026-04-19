@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 
-const FormHeader = ({titleFirstWord, titleSecondWord,subTitle}) => {
+const FormHeader = ({ title, titleFirstWord, titleSecondWord, subTitle }) => {
+  const computedFirst = title
+    ? title.split(" ").slice(0, -1).join(" ") || title
+    : titleFirstWord;
+  const computedSecond = title
+    ? title.split(" ").slice(-1).join(" ")
+    : titleSecondWord;
+
   return (
     <div className="text-center mb-10">
       
@@ -16,22 +23,25 @@ const FormHeader = ({titleFirstWord, titleSecondWord,subTitle}) => {
 
       {/* Título */}
       <h1 className="text-4xl font-black tracking-tighter text-on-surface uppercase mb-2">
-        {titleFirstWord} <span className="text-primary neon-glow">{titleSecondWord}</span>
+        {computedFirst} <span className="text-primary neon-glow">{computedSecond}</span>
       </h1>
 
       {/* Subtítulo */}
-      <p className="text-on-surface-variant text-sm font-light tracking-wide uppercase">
-        {subTitle}
-      </p>
+      {subTitle && (
+        <p className="text-on-surface-variant text-sm font-light tracking-wide uppercase">
+          {subTitle}
+        </p>
+      )}
 
     </div>
   );
 };
 
 FormHeader.propTypes = {
-  titleFirstWord: PropTypes.string.isRequired,
-  titleSecondWord: PropTypes.string.isRequired,
-  subTitle: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  titleFirstWord: PropTypes.string,
+  titleSecondWord: PropTypes.string,
+  subTitle: PropTypes.string,
 };
 
 export default FormHeader;

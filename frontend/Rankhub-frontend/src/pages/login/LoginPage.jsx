@@ -5,7 +5,7 @@ import LoginForm from "./LoginForm";
 const LoginPage = () => {
   return (
     <LoginRegisterLayout>
-      <FormHeader title="Inicia sesión en tu cuenta" />
+      <FormHeader titleFirstWord="Inicia sesión en tu cuenta" titleSecondWord="ahora" subTitle="Accede a tu cuenta para continuar" />
       <LoginRegisterCard optionalTitle="Inicia sesión en tu cuenta">
           <LoginForm/>
       </LoginRegisterCard>

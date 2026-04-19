@@ -1,6 +1,11 @@
+import PropTypes from "prop-types";
 import '../../styles/rankingMain/podium.css'
 
 function Podium({ podiumPlayers }) {
+  const first = podiumPlayers[0] || {};
+  const second = podiumPlayers[1] || {};
+  const third = podiumPlayers[2] || {};
+
   return (
     <section className="px-4 pt-8 pb-12 flex items-end justify-center gap-2">
       
@@ -10,8 +15,7 @@ function Podium({ podiumPlayers }) {
         <div className="relative mb-3">
           <div className="w-16 h-16 rounded-full border-4 border-slate-400 overflow-hidden bg-center bg-cover"
             style={{
-              backgroundImage:
-                `url(${podiumPlayers[1]?.image})`
+              backgroundImage: second.image ? `url(${second.image})` : "none"
             }}
           />
           <div className="absolute -top-2 -right-2 bg-slate-400 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
@@ -24,12 +28,12 @@ function Podium({ podiumPlayers }) {
             Silver
           </span>
           <span className="text-slate-900 font-bold text-sm mt-1">
-            {podiumPlayers[1]?.score || 0} pts
+            {second.score || 0} pts
           </span>
         </div>
 
         <p className="mt-2 text-xs font-semibold text-center truncate w-full">
-          {podiumPlayers[1]?.name || "No hay Jugador"}
+          {second.name || "No hay Jugador"}
         </p>
       </div>
 
@@ -47,8 +51,7 @@ function Podium({ podiumPlayers }) {
 
           <div className="w-20 h-20 rounded-full border-4 border-primary overflow-hidden bg-center bg-cover"
             style={{
-              backgroundImage:
-                `url(${podiumPlayers[0]?.image})`
+              backgroundImage: first.image ? `url(${first.image})` : "none"
             }}
           />
 
@@ -62,12 +65,12 @@ function Podium({ podiumPlayers }) {
             Gold
           </span>
           <span className="text-background-dark font-bold text-lg mt-1">
-            {podiumPlayers[0]?.score || 0} pts
+            {first.score || 0} pts
           </span>
         </div>
 
         <p className="mt-2 text-sm font-bold text-center truncate w-full">
-          {podiumPlayers[0]?.name || "No hay Jugador"}
+          {first.name || "No hay Jugador"}
         </p>
       </div>
 
@@ -77,8 +80,7 @@ function Podium({ podiumPlayers }) {
         <div className="relative mb-3">
           <div className="w-16 h-16 rounded-full border-4 border-amber-700 overflow-hidden bg-center bg-cover"
             style={{
-              backgroundImage:
-                `url(${podiumPlayers[2]?.image})`
+              backgroundImage: third.image ? `url(${third.image})` : "none"
             }}
           />
           <div className="absolute -top-2 -right-2 bg-amber-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
@@ -91,17 +93,28 @@ function Podium({ podiumPlayers }) {
             Bronze
           </span>
           <span className="text-white font-bold text-sm mt-1">
-            {podiumPlayers[2]?.score || 0} pts
+            {third.score || 0} pts
           </span>
         </div>
 
         <p className="mt-2 text-xs font-semibold text-center truncate w-full">
-          {podiumPlayers[2]?.name || "No hay Jugador"}
+          {third.name || "No hay Jugador"}
         </p>
       </div>
 
     </section>
   );
 }
+
+Podium.propTypes = {
+  podiumPlayers: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      name: PropTypes.string,
+      image: PropTypes.string,
+      score: PropTypes.number,
+    }),
+  ).isRequired,
+};
 
 export default Podium;

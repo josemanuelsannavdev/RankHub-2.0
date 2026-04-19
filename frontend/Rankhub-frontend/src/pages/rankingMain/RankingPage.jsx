@@ -4,69 +4,62 @@ import Header from "../../components/Header";
 import Podium from "./Podium";
 import RankingList from "./RankingList";
 import BottomNav from "../../components/BottomNav";
-import { useNavigate } from "react-router-dom";
-import gatewayApi from "../../services/gatewayApi";
-import { useRanking } from "../../context/RankingContext";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useRanking } from "../../context/RankingContext";
+import { useToast } from "../../context/ToastContext";
+import { getUserMessageFromApiError } from "../../services/apiError";
+import { getRankingPlayers } from "../../services/rankingApi";
 
 function RankingPage() {
+  const { id: rankingId } = useParams();
   const { currentRanking } = useRanking();
   const [podiumPlayers, setPodiumPlayers] = useState([]);
   const [restPlayers, setRestPlayers] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const { error: showError } = useToast();
+
+  const hasMatchingRankingContext =
+    String(currentRanking?.id) === String(rankingId);
+  let rankingTitle = "Ranking";
+
+  if (hasMatchingRankingContext && currentRanking?.name) {
+    rankingTitle = currentRanking.name;
+  } else if (rankingId) {
+    rankingTitle = `Ranking ${rankingId}`;
+  }
 
   useEffect(() => {
     const fetchRankingPlayers = async () => {
+      setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
+        if (!rankingId) {
+          navigate("/mainPage");
           return;
         }
-        console.log("Fetching players for ranking:", currentRanking);
-        const response = await gatewayApi.post(
-          `/ranking-service/jugador/torneo/${currentRanking.id}`,
-          {
-            targetMethod: "GET",
-            queryParams: {},
-            body: {},
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        const response = await getRankingPlayers(rankingId);
         const players = response.data || [];
-        players.sort((a, b) => b.score - a.score); // Ordenar por puntuación descendente
+        players.sort((a, b) => b.points - a.points); // Ordenar por puntuación descendente
         setPodiumPlayers(players.slice(0, 3)); // Top 3 para el podio
         setRestPlayers(players.slice(3)); // Resto de jugadores
-        console.log("Podium Players:", players);
-        if (players.length === 0) {
-          setLoading(true);
-        } else {
-          setLoading(false);
-        }
       } catch (error) {
         console.error("Error fetching ranking players:", error);
+        showError(getUserMessageFromApiError(error, "No se pudo cargar el ranking."));
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchRankingPlayers();
-  }, [navigate]);
+  }, [rankingId, navigate, showError]);
 
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white">
-      <Header title={currentRanking.name} />
+      <Header title={rankingTitle} />
       {loading ? (
-        <div className="flex flex-col items-center justify-center mt-20">
-          <h2 className="text-2xl font-semibold mb-4">
-            No hay jugadores en este ranking
-          </h2>
-          <p className="text-gray-600">
-            Invita a tus amigos a unirse y competir por el podio.
-          </p>
+        <div className="flex items-center justify-center mt-20">
+          <p className="text-gray-600">Cargando ranking...</p>
         </div>
       ) : (
         <>

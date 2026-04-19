@@ -5,7 +5,7 @@ import RegisterForm from "./RegisterForm";
 const RegisterPage = () => {
   return (
     <LoginRegisterLayout>
-      <FormHeader title="Crear Cuenta" />
+      <FormHeader titleFirstWord="Crear Cuenta" titleSecondWord="ahora" subTitle="Crea tu cuenta para comenzar" />
       <LoginRegisterCard>
         <RegisterForm />
       </LoginRegisterCard>

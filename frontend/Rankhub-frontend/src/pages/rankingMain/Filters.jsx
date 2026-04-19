@@ -6,11 +6,11 @@ function Filters() {
         
         {/* Desde juego */}
         <div className="flex-1 min-w-0">
-          <label className="block text-[10px] font-bold text-primary uppercase mb-1 ml-1">
+          <label htmlFor="from-game" className="block text-[10px] font-bold text-primary uppercase mb-1 ml-1">
             Desde juego
           </label>
 
-          <select className="w-full bg-transparent border border-slate-300 dark:border-white/20 rounded-xl px-2 py-2 text-xs">
+          <select id="from-game" className="w-full bg-transparent border border-slate-300 dark:border-white/20 rounded-xl px-2 py-2 text-xs">
             <option>Juego 1</option>
             <option>Juego 2</option>
             <option>Juego 3</option>
@@ -21,11 +21,11 @@ function Filters() {
 
         {/* Hasta juego */}
         <div className="flex-1 min-w-0">
-          <label className="block text-[10px] font-bold text-primary uppercase mb-1 ml-1">
+          <label htmlFor="to-game" className="block text-[10px] font-bold text-primary uppercase mb-1 ml-1">
             Hasta juego
           </label>
 
-          <select className="w-full bg-transparent border border-slate-300 dark:border-white/20 rounded-xl px-2 py-2 text-xs">
+          <select id="to-game" className="w-full bg-transparent border border-slate-300 dark:border-white/20 rounded-xl px-2 py-2 text-xs">
             <option>Juego 1</option>
             <option>Juego 2</option>
             <option>Juego 3</option>
@@ -38,6 +38,7 @@ function Filters() {
         <div className="flex gap-1.5 shrink-0">
           
           <button
+            type="button"
             className="h-[38px] w-10 flex items-center justify-center bg-primary text-background-dark rounded-xl active:scale-95 transition-transform"
             title="Aplicar"
           >
@@ -47,6 +48,7 @@ function Filters() {
           </button>
 
           <button
+            type="button"
             className="h-[38px] w-10 flex items-center justify-center border border-slate-300 dark:border-white/20 rounded-xl active:scale-95 transition-transform"
             title="Reestablecer"
           >

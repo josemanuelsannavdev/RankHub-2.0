@@ -2,7 +2,6 @@ package com.rankhub.ranking_service.controller;
 
 import com.rankhub.ranking_service.service.RoleServiceImpl;
 
-import jakarta.ws.rs.DELETE;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -169,7 +167,7 @@ public class RankingController {
         
 
         roleServiceImpl.delteByRankingIdUserId(rankingId, userId);
-
+        
         return ResponseEntity.ok(
                 "Se ha boorado el ranking");
     }

@@ -3,7 +3,8 @@ import FormInputIcon from "../../components/FormInputIcon";
 import SubmitButton from "../../components/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import gatewayApi from "../../services/gatewayApi";
+import { getUserMessageFromApiError } from "../../services/apiError";
+import { register } from "../../services/authApi";
 import {useToast} from "../../context/ToastContext";
 
 const RegisterForm = () => {
@@ -12,27 +13,28 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const {success,warning,error} = useToast();
+    const { error: showError, success: showSuccess, warning: showWarning } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      error("Las contraseñas no coinciden");
+      showError("Las contraseñas no coinciden");
     }
     else if (email && password && name && confirmPassword) {
       try {
-        await gatewayApi.post("/auth-service/auth/register", {
-          targetMethod: "POST",
-          queryParams: {},
-          body: { email: email, password: password},
+        await register({
+          name: name.trim(),
+          email: email.trim(),
+          password,
         });
+        showSuccess("Registro exitoso. Por favor, inicia sesión.");
         navigate("/login");
       } catch (error) {
         console.error("Error en register:", error);
-        error("Error en el registro. Verifica los campos.");
+        showError(getUserMessageFromApiError(error, "Error en el registro."));
       }
     } else {
-      error("Por favor, completa todos los campos.");
+      showWarning("Por favor, completa todos los campos.");
     }
   };
 

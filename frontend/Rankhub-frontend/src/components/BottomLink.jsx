@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
-
+import { Link } from "react-router-dom";
 const BottomLink = ({ firstPart, secondPart, href }) => {
   return (
     <div className="text-center mt-8">
       <p className="text-slate-400 text-sm">
         {firstPart}
-        <a
-          href={href}
+        <Link
+          to={href}
           className="text-primary font-bold hover:text-yellow-200 transition-colors ml-1 uppercase text-xs tracking-tight"
         >
           {secondPart}
-        </a>
+        </Link>
       </p>
     </div>
   );

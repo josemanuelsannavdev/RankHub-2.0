@@ -1,6 +1,0 @@
-{
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.project.sourcePaths": [
-        "ranking-service/src/main/java/com/rankhub/ranking_service"
-    ]
-}

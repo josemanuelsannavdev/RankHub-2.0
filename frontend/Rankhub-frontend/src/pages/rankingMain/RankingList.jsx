@@ -1,9 +1,11 @@
 import RankingPlayer from "./RankingPlayer";
+import PropTypes from "prop-types";
 
 import { useRanking } from "../../context/RankingContext";
 
 function RankingList({ restPlayers }) {
   const { currentRanking } = useRanking();
+  const players = restPlayers || [];
 
   return (
     <section className="px-4">
@@ -17,7 +19,7 @@ function RankingList({ restPlayers }) {
         </span>
       </div>
 
-      {restPlayers.length === 0 ? (
+      {players.length === 0 ? (
         <div className="flex flex-col items-center justify-center mt-20">
           <h2 className="text-2xl font-semibold mb-4">
             No hay jugadores en este ranking
@@ -30,7 +32,7 @@ function RankingList({ restPlayers }) {
         <>
           {/* lista */}
           <div className="flex flex-col gap-3">
-            {restPlayers.map((player, index) => (
+            {players.map((player, index) => (
               <RankingPlayer key={player.id} player={player} position={index + 4} />
             ))}
           </div>
@@ -40,5 +42,13 @@ function RankingList({ restPlayers }) {
     </section>
   );
 }
+
+RankingList.propTypes = {
+  restPlayers: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+  ),
+};
 
 export default RankingList;

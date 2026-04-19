@@ -3,34 +3,35 @@ import { useNavigate } from "react-router-dom";
 import BottomLink from "../../components/BottomLink";
 import FormInputIcon from "../../components/FormInputIcon";
 import SubmitButton from "../../components/SubmitButton";
+import { useToast } from "../../context/ToastContext";
 
-import gatewayApi from "../../services/gatewayApi";
+import { getUserMessageFromApiError } from "../../services/apiError";
+import { login } from "../../services/authApi";
+import { setSessionToken } from "../../services/session";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { success: showSuccess, error: showError, warning: showWarning } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email && password) {
       try {
-        const response = await gatewayApi.post("/auth-service/auth/login", {
-          targetMethod: "POST",
-          queryParams: {},
-          body: { email: email, password: password },
-        });
+        const response = await login({ email, password });
         const token = response.data.token;
 
-        localStorage.setItem("token", token);
+        setSessionToken(token);
 
+        showSuccess("Sesión iniciada correctamente");
         navigate("/mainPage");
-      } catch (error) {
-        console.error("Error en login:", error);
-        alert("Error en el login. Verifica tus credenciales.");
+      } catch (err) {
+        console.error("Error en login:", err);
+        showError(getUserMessageFromApiError(err, "Error en el login."));
       }
     } else {
-      alert("Por favor, completa todos los campos.");
+      showWarning("Por favor, completa todos los campos.");
     }
   };
 

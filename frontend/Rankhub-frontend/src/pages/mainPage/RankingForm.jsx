@@ -1,65 +1,46 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FormInput from "../../components/FormInput";
 import IconSelect from "../../components/IconSelect";
 import SubmitButton from "../../components/SubmitButton";
-import gatewayApi from "../../services/gatewayApi";
 import CancelButton from "../../components/CancelButton";
 import PropTypes from "prop-types";
+import { createRanking, updateRanking } from "../../services/rankingApi";
+import { useToast } from "../../context/ToastContext";
 
 const RankingForm = ({ onClose, onRankingCreated, rankingToEdit }) => {
   const [icon, setIcon] = useState(rankingToEdit?.icon || "");
   const [name, setName] = useState(rankingToEdit?.name || "");
+  const { success: showSuccess, error: showError, warning: showWarning } = useToast();
 
   const isEditMode = !!rankingToEdit;
-
-  useEffect(() => {
-    setName(rankingToEdit?.name || "");
-    setIcon(rankingToEdit?.icon || "");
-  }, [rankingToEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !icon) {
-      alert("Por favor, completa todos los campos.");
+      showWarning("Por favor, completa todos los campos.");
     } else {
       try {
-        const token = localStorage.getItem("token");
         if (isEditMode) {
-          console.log("Editando ranking :", rankingToEdit);
-          const response = await gatewayApi.post(
-            `/ranking-service/ranking/${rankingToEdit.id}`,
-            {
-              targetMethod: "PUT",
-              queryParams: {},
-              body: { name: name, icon: icon },
-            },
-            { headers: { Authorization: `Bearer ${token}` } },
-          );
-          console.log("Ranking editado:", response.data);
+          const response = await updateRanking(rankingToEdit.id, {
+            name,
+            icon,
+          });
           const editedRanking = {
-            ...rankingToEdit, // Mantiene id, role, etc.
-            ...response.data, // Sobrescribe con name e icon actualizados
+            ...rankingToEdit,
+            ...response.data,
           };
-          alert("Ranking editado exitosamente.");
+          showSuccess("Ranking editado exitosamente.");
           onRankingCreated(editedRanking);
         } else {
-          const newRanking = await gatewayApi.post(
-            "/ranking-service/ranking",
-            {
-              targetMethod: "POST",
-              queryParams: {},
-              body: { name: name, icon: icon },
-            },
-            { headers: { Authorization: `Bearer ${token}` } },
-          );
-          alert("Ranking creado exitosamente.");
+          const newRanking = await createRanking({ name, icon });
+          showSuccess("Ranking creado exitosamente.");
           onRankingCreated(newRanking.data);
         }
 
         onClose();
       } catch (error) {
         console.error("Error al crear o editar ranking:", error);
-        alert("Error al crear o editar el ranking. Intenta nuevamente.");
+        showError("Error al crear o editar el ranking. Intenta nuevamente.");
       }
     }
   };

@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.entity.Role;
 
 import jakarta.transaction.Transactional;
