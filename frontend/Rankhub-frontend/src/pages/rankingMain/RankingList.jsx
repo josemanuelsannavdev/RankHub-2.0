@@ -14,9 +14,7 @@ function RankingList({ restPlayers }) {
         <h2 className="text-lg font-bold">
           Tabla de Posiciones {currentRanking?.name || ""}
         </h2>
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-          Total: 42 Participantes
-        </span>
+        
       </div>
 
       {players.length === 0 ? (

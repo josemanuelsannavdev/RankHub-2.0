@@ -17,9 +17,12 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password) {
+    const normalizedEmail = email.trim();
+    const normalizedPassword = password.trim();
+
+    if (normalizedEmail && normalizedPassword) {
       try {
-        const response = await login({ email, password });
+        const response = await login({ email: normalizedEmail, password: normalizedPassword });
         const token = response.data.token;
 
         setSessionToken(token);
@@ -32,6 +35,7 @@ const LoginForm = () => {
       }
     } else {
       showWarning("Por favor, completa todos los campos.");
+      
     }
   };
 

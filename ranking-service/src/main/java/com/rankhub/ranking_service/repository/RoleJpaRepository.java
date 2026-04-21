@@ -21,13 +21,14 @@ public interface RoleJpaRepository extends JpaRepository<Role, UUID>, JpaSpecifi
                 VALUES (gen_random_uuid(), :rankingId, :userId, CAST(:role AS roles_types))
             """, nativeQuery = true)
     void insertRole(
-            @Param("id") UUID id,
             @Param("rankingId") UUID rankingId,
             @Param("userId") UUID userId,
             @Param("role") String role);
 
+        @Modifying
+        @Transactional
     @Query("DELETE FROM Role r WHERE r.userId = :userId AND r.rankingId = :rankingId" )
-    void delteByRankingIdUserId(@Param("rankingId")UUID rankingId,@Param("userId")UUID userId);
+    void deleteByRankingIdUserId(@Param("rankingId")UUID rankingId,@Param("userId")UUID userId);
 
     @Query("Select r FROM Role r WHERE r.userId = :userId AND r.rankingId = :rankingId" )
     Role getByRankingIdUserId(@Param("rankingId")UUID rankingId,@Param("userId")UUID userId);

@@ -9,14 +9,21 @@ export const login = ({ email, password }) => {
   return gatewayApi.post("/auth-service/auth/login", {
     targetMethod: "POST",
     ...emptyPayload,
-    body: { email, password },
+    body: { "email": email, "password": password },
   });
 };
 
-export const register = ({ name, email, password }) => {
+export const register = ({email, password }) => {
   return gatewayApi.post("/auth-service/auth/register", {
     targetMethod: "POST",
     ...emptyPayload,
-    body: { name, email, password },
+    body: { "email": email, "password": password },
+  });
+};
+
+export const getGoogleAuthorizationUrl = () => {
+  return gatewayApi.post("/auth-service/auth/google",{
+    targetMethod: "GET",
+    ...emptyPayload,
   });
 };

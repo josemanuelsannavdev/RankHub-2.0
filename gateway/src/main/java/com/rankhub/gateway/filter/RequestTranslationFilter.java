@@ -46,26 +46,29 @@ public class RequestTranslationFilter implements GlobalFilter {
             ServerWebExchange exchange,
             GatewayFilterChain chain) {
 
-        // By default, set the response status to 400. This will be overridden if the request is valid.
-        exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
-
-        // Simple check to see if the request has a content type and is a POST request
-        if (exchange.getRequest().getHeaders().getContentType() == null || !exchange.getRequest().getMethod().equals(HttpMethod.POST)) {
-            log.info("Request does not have a content type or is not a POST request");
-            return exchange.getResponse().setComplete();
-        } else {
-            return DataBufferUtils.join(exchange.getRequest().getBody())
-                    .flatMap(dataBuffer -> {
-                        GatewayRequest request = requestBodyExtractor.getRequest(exchange, dataBuffer);
-                        ServerHttpRequest mutatedRequest = requestDecoratorFactory.getDecorator(request);
-                        //RouteToRequestUrlFilter writes the URI to the exchange attributes *before* any global filters run.
-                        exchange.getAttributes().put(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR, mutatedRequest.getURI());
-                        if(request.getQueryParams() != null) {
-                            request.getQueryParams().clear();
-                        }
-                        log.info("Proxying request: {} {}", mutatedRequest.getMethod(), mutatedRequest.getURI());
-                        return chain.filter(exchange.mutate().request(mutatedRequest).build());
-                    });
+        // Only translate wrapped proxy requests (POST with content-type).
+        // Any regular request (e.g. OAuth2 authorization GET) should continue untouched.
+        if (exchange.getRequest().getHeaders().getContentType() == null
+                || !exchange.getRequest().getMethod().equals(HttpMethod.POST)) {
+            return chain.filter(exchange);
         }
+
+        return DataBufferUtils.join(exchange.getRequest().getBody())
+                .flatMap(dataBuffer -> {
+                    GatewayRequest request = requestBodyExtractor.getRequest(exchange, dataBuffer);
+                    ServerHttpRequest mutatedRequest = requestDecoratorFactory.getDecorator(request);
+                    // RouteToRequestUrlFilter writes the URI to the exchange attributes before global filters run.
+                    exchange.getAttributes().put(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR, mutatedRequest.getURI());
+                    if (request.getQueryParams() != null) {
+                        request.getQueryParams().clear();
+                    }
+                    log.info("Proxying request: {} {}", mutatedRequest.getMethod(), mutatedRequest.getURI());
+                    return chain.filter(exchange.mutate().request(mutatedRequest).build());
+                })
+                .onErrorResume(exception -> {
+                    log.warn("Invalid wrapped request payload", exception);
+                    exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+                    return exchange.getResponse().setComplete();
+                });
     }
 }

@@ -8,7 +8,6 @@ import { register } from "../../services/authApi";
 import {useToast} from "../../context/ToastContext";
 
 const RegisterForm = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,10 +19,10 @@ const RegisterForm = () => {
     if (password !== confirmPassword) {
       showError("Las contraseñas no coinciden");
     }
-    else if (email && password && name && confirmPassword) {
+    else if (email && password  && confirmPassword) {
       try {
         await register({
-          name: name.trim(),
+        
           email: email.trim(),
           password,
         });
@@ -40,14 +39,7 @@ const RegisterForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormInputIcon
-        label="Nombre Completo"
-        icon="person"
-        type="text"
-        placeholder="EJ. ALEX HUNTER"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      
 
       <FormInputIcon
         label="Correo Electrónico"

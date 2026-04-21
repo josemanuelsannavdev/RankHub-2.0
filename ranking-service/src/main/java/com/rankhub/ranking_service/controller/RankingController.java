@@ -1,10 +1,8 @@
 package com.rankhub.ranking_service.controller;
 
-import com.rankhub.ranking_service.service.RoleServiceImpl;
-
-
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rankhub.ranking_service.dto.ApiMessageDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.RankingDto;
 import com.rankhub.ranking_service.dto.RoleDto;
@@ -13,7 +11,8 @@ import com.rankhub.ranking_service.entity.Ranking;
 import com.rankhub.ranking_service.entity.Role;
 
 import com.rankhub.ranking_service.entity.utils.RoleType;
-import com.rankhub.ranking_service.service.RankingServiceImpl;
+import com.rankhub.ranking_service.service.RankingService;
+import com.rankhub.ranking_service.service.RoleService;
 import com.rankhub.ranking_service.mapper.RankingMapper;
 import com.rankhub.ranking_service.request.RankingRequest;
 
@@ -24,7 +23,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,105 +41,83 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @Slf4j
 public class RankingController {
 
-    private final RoleServiceImpl roleServiceImpl;
-    private final RankingServiceImpl rankingService;
+    private final RoleService roleService;
+    private final RankingService rankingService;
     private final RankingMapper mapper;
 
     /* Get all rankings */
     @GetMapping("/ranking")
     public ResponseEntity<List<RankingDto>> getAllRankings() {
         List<Ranking> rankings = rankingService.getAllRankings();
-        if (rankings != null) {
-            List<RankingDto> rankingDtos = rankings.stream()
-                    .map(mapper::toDto)
-                    .toList();
-            return ResponseEntity.ok(rankingDtos);
-        } else {
-            return ResponseEntity.ok(Collections.emptyList());
-        }
+        List<RankingDto> rankingDtos = rankings.stream()
+                .map(mapper::toDto)
+                .toList();
+        return ResponseEntity.ok(rankingDtos);
     }
 
     /* Get a ranking by its ID */
     @GetMapping("/ranking/{rankingId}")
     public ResponseEntity<RankingDto> getRankingById(@PathVariable UUID rankingId) {
         Ranking ranking = rankingService.getRankingById(rankingId);
-        if (ranking != null) {
-            return ResponseEntity.ok(mapper.toDto(ranking));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(mapper.toDto(ranking));
     }
 
     /* Create a ranking */
     @PostMapping("/ranking")
     public ResponseEntity<RankingWithRoleDto> createRanking(
-            @RequestBody RankingRequest rankingRequest,
-            @RequestHeader("X-User-Id") String userIdHeader) {
-
-        UUID userId = UUID.fromString(userIdHeader);
+            @Valid @RequestBody RankingRequest rankingRequest,
+            @RequestHeader("X-User-Id") UUID userId) {
 
         Ranking createdRanking = rankingService.createRanking(rankingRequest);
-        if (createdRanking != null) {
-            RoleDto role = new RoleDto();
-            role.setRole(RoleType.ADMIN);
-            role.setUserId(userId);
-            role.setRankingId(createdRanking.getId());
-            roleServiceImpl.createRole(role);
-            RankingWithRoleDto rankingWithRoleDto = new RankingWithRoleDto(
-                    createdRanking.getName(),
-                    createdRanking.getId(),
-                    role.getRole(),
-                    createdRanking.getIcon());
-            return ResponseEntity.ok(rankingWithRoleDto);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        RoleDto role = new RoleDto();
+        role.setRole(RoleType.ADMIN);
+        role.setUserId(userId);
+        role.setRankingId(createdRanking.getId());
+        roleService.createRole(role);
+        RankingWithRoleDto rankingWithRoleDto = new RankingWithRoleDto(
+                createdRanking.getName(),
+                createdRanking.getId(),
+                role.getRole(),
+                createdRanking.getIcon());
+        return ResponseEntity.ok(rankingWithRoleDto);
     }
 
     /* Update a ranking */
     @PutMapping("/ranking/{rankingId}")
     public ResponseEntity<RankingDto> updateRanking(
             @PathVariable UUID rankingId,
-            @RequestBody RankingRequest rankingRequest) {
+            @Valid @RequestBody RankingRequest rankingRequest) {
 
         Ranking updatedRanking = rankingService.updateRanking(rankingId, rankingRequest);
-        if (updatedRanking != null) {
-            RankingDto rankingDto = mapper.toDto(updatedRanking);
-            return ResponseEntity.ok(rankingDto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        RankingDto rankingDto = mapper.toDto(updatedRanking);
+        return ResponseEntity.ok(rankingDto);
     }
 
     /* Patch a ranking */
     @PatchMapping("/ranking/{rankingId}")
     public ResponseEntity<RankingDto> patchRanking(
             @PathVariable UUID rankingId,
-            @RequestBody RankingRequest request) {
+            @Valid @RequestBody RankingRequest request) {
 
         Ranking updatedRanking = rankingService.patchRanking(rankingId, request);
-
-        if (updatedRanking != null) {
-            RankingDto rankingDto = mapper.toDto(updatedRanking);
-            return ResponseEntity.ok(rankingDto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        RankingDto rankingDto = mapper.toDto(updatedRanking);
+        return ResponseEntity.ok(rankingDto);
     }
 
     /*Delete a ranking for everyone  */
     @DeleteMapping("/ranking/{rankingId}")
-    public ResponseEntity<String> deleteRanking(
+    public ResponseEntity<ApiMessageDto> deleteRanking(
             @PathVariable UUID rankingId,
-            @RequestHeader("X-User-Id") String userIdHeader) {
-
-        UUID userId = UUID.fromString(userIdHeader);
-        Role role = roleServiceImpl.getByRankingIdUserId(rankingId, userId);
+            @RequestHeader("X-User-Id") UUID userId) {
+        Role role = roleService.getByRankingIdUserId(rankingId, userId);
+        if (role == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado"));
+        }
         if (role.getRole() == RoleType.ADMIN || role.getRole() == RoleType.SUB_ADMIN ) {
             rankingService.deleteRanking(rankingId);
-            return ResponseEntity.ok("ranking eliminado");
+            return ResponseEntity.ok(new ApiMessageDto("ranking eliminado"));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado"));
         }
 
 
@@ -146,9 +126,7 @@ public class RankingController {
 
     @GetMapping("/me/ranking")
     public ResponseEntity<List<RankingWithRoleDto>> getMyRankings(
-            @RequestHeader("X-User-Id") String userIdHeader) {
-
-        UUID userId = UUID.fromString(userIdHeader);
+            @RequestHeader("X-User-Id") UUID userId) {
 
         List<RankingWithRoleDto> rankingsWithRole = rankingService.getRankingsByUserId(userId);
 
@@ -158,18 +136,16 @@ public class RankingController {
 
     /*Delete a ranking only for "Me" = Exit from the ranking */
     @DeleteMapping("/me/ranking/{rankingId}")
-    public ResponseEntity<String> deleteMyRanking(
-            @RequestHeader("X-User-Id") String userIdHeader,
+    public ResponseEntity<ApiMessageDto> deleteMyRanking(
+            @RequestHeader("X-User-Id") UUID userId,
             @PathVariable UUID rankingId) {
 
-        UUID userId = UUID.fromString(userIdHeader);
-        
-        
+        boolean deleted = roleService.deleteByRankingIdUserId(rankingId, userId);
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado para salir del ranking"));
+        }
 
-        roleServiceImpl.delteByRankingIdUserId(rankingId, userId);
-        
-        return ResponseEntity.ok(
-                "Se ha boorado el ranking");
+        return ResponseEntity.ok(new ApiMessageDto("Se ha borrado el ranking"));
     }
 
 }

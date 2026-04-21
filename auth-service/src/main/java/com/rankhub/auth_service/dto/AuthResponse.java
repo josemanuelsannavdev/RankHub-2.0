@@ -15,4 +15,7 @@ import lombok.Setter;
 @Builder
 public class AuthResponse {
     private String token;
+    private String tokenType;
+    private long expiresIn;
+    private String email;
 }

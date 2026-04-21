@@ -17,5 +17,6 @@ public interface PlayerService {
     Player updatePlayer(UUID playerId, PlayerRequest playerRequest);
 
     Player patchPlayer(UUID playerId, PlayerRequest playerRequest);
+
     
 } 

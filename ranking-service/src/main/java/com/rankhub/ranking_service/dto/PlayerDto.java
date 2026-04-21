@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,6 +14,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class PlayerDto {
+    private UUID id;
     private String name;
     private Double points;
     private Integer gamesPlayed;

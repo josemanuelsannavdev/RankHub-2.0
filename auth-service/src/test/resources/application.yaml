@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:auth_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+
+jwt:
+  secret: test-secret-key-with-minimum-32-length-12345
+  expiration-ms: 3600000
+
+eureka:
+  client:
+    enabled: false

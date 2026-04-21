@@ -1,7 +1,5 @@
 package com.rankhub.ranking_service.repository;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -10,10 +8,13 @@ import org.springframework.stereotype.Repository;
 import com.rankhub.ranking_service.entity.Player;
 
 @Repository
-@RequiredArgsConstructor
 public class PlayerRepository {
 
     private final PlayerJpaRespository playerJpaRespository;
+
+    public PlayerRepository(PlayerJpaRespository playerJpaRespository) {
+        this.playerJpaRespository = playerJpaRespository;
+    }
 
     public List<Player> getAllPlayersOfRanking(UUID rankingId) {
         return playerJpaRespository.getAllPlayersOfRanking(rankingId);
@@ -25,6 +26,10 @@ public class PlayerRepository {
 
     public Player save(Player player) {
         return playerJpaRespository.save(player);
+    }
+
+    public boolean existsByNameIgnoreCase(String name) {
+        return playerJpaRespository.existsByNameIgnoreCase(name);
     }
 
     public void deleteById(UUID id) {

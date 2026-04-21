@@ -5,10 +5,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Ranking from "./pages/rankingMain/RankingPage.jsx";
 import RegisterPage from "./pages/register/RegisterPage.jsx";
 import LoginPage from "./pages/login/LoginPage.jsx";
+import OAuthCallbackPage from "./pages/login/OAuthCallbackPage.jsx";
 import MainPage from "./pages/mainPage/MainPage.jsx";
 import NotFoundPage from "./pages/notFound/NotFoundPage.jsx";
 import { RankingProvider } from "./context/RankingContext.jsx";
-import { ToastContainer } from "react-toastify";
 import { ToastProvider } from "./context/ToastContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -17,11 +17,11 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <RankingProvider>
         <ToastProvider>
-          <ToastContainer />
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/mainPage" element={<MainPage />} />

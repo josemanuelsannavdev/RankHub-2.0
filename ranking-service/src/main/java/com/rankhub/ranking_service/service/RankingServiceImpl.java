@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.entity.Ranking;
@@ -24,54 +25,52 @@ public class RankingServiceImpl implements RankingService {
 
     @Override
     public Ranking getRankingById(UUID id) {
-        return rankingRepository.getRankingById(id);
+        Ranking ranking = rankingRepository.getRankingById(id);
+        if (ranking == null) {
+            throw new IllegalArgumentException("Ranking no encontrado: " + id);
+        }
+        return ranking;
     }
 
     @Override
+    @Transactional
     public Ranking createRanking(RankingRequest rankingRequest) {
 
         Ranking ranking = Ranking.builder()
-                .name(rankingRequest.getName())
+                .name(rankingRequest.getName() != null ? rankingRequest.getName().trim() : null)
                 .icon(rankingRequest.getIcon())
                 .build();
-        ranking = rankingRepository.save(ranking);
-
-        return ranking; // Placeholder, reemplaza con la implementación real
+        return rankingRepository.save(ranking);
     }
 
     @Override
+    @Transactional
     public Ranking updateRanking(UUID rankingId, RankingRequest rankingRequest) {
-        Ranking existingRanking = rankingRepository.getRankingById(rankingId);
-        if (existingRanking == null) {
-            return null; // O lanza una excepción personalizada
-        }
+        Ranking existingRanking = getRankingById(rankingId);
 
-        // Actualiza los campos del ranking existente con los datos del request
-        existingRanking.setName(rankingRequest.getName());
+        existingRanking.setName(rankingRequest.getName() != null ? rankingRequest.getName().trim() : null);
         existingRanking.setIcon(rankingRequest.getIcon());
-
-        // Guarda el ranking actualizado en la base de datos
         return rankingRepository.save(existingRanking);
     }
 
     @Override
+    @Transactional
     public Ranking patchRanking(UUID rankingId, RankingRequest request) {
-        Ranking existingRanking = rankingRepository.getRankingById(rankingId);
-        if (existingRanking == null) {
-            return null; // O lanza una excepción personalizada
-        }
+        Ranking existingRanking = getRankingById(rankingId);
 
-        // Actualiza solo los campos que no sean nulos en el request
         if (request.getName() != null) {
-            existingRanking.setName(request.getName());
+            existingRanking.setName(request.getName().trim());
         }
-
-        // Guarda el ranking actualizado en la base de datos
+        if (request.getIcon() != null) {
+            existingRanking.setIcon(request.getIcon());
+        }
         return rankingRepository.save(existingRanking);
     }
 
     @Override
+    @Transactional
     public void deleteRanking(UUID rankingId) {
+        getRankingById(rankingId);
         rankingRepository.delete(rankingId);
     }
 

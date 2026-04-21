@@ -9,8 +9,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -22,19 +27,31 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
 
-        authService.register(request);
+        AuthResponse response = authService.register(request);
 
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
 
-        String token = authService.login(request);
+        AuthResponse response = authService.login(request);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, String>> me(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(Map.of("email", userDetails.getUsername()));
+    }
+
+    @GetMapping("/google")
+    public ResponseEntity<Map<String, String>> googleLoginUrl() {
+        
+        return ResponseEntity.ok(Map.of("authorizationUrl", "/oauth2/authorization/google"));
+    }
+
 
 }

@@ -28,6 +28,7 @@ public class RankingMapper {
             return null;
         }
         RankingDto rankingDto = new RankingDto();
+        rankingDto.setId(entity.getId());
         rankingDto.setName(entity.getName());
         rankingDto.setIcon(entity.getIcon());
         return rankingDto;

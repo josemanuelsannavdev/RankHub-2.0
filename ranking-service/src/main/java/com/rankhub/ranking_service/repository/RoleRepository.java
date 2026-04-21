@@ -14,12 +14,12 @@ public class RoleRepository {
     private final RoleJpaRepository roleJpaRepository;
 
     public Role save(Role role) {
-        roleJpaRepository.insertRole(role.getId(), role.getRankingId(), role.getUserId(), role.getRole().toString());
+        roleJpaRepository.insertRole(role.getRankingId(), role.getUserId(), role.getRole().toString());
         return role;
     }
 
-    public void delteByRankingIdUserId(UUID rankingId,UUID userId){
-        roleJpaRepository.delteByRankingIdUserId(rankingId,userId);
+    public void deleteByRankingIdUserId(UUID rankingId,UUID userId){
+        roleJpaRepository.deleteByRankingIdUserId(rankingId,userId);
     }
 
     public Role getByRankingIdUserId(UUID rankingId,UUID userId){

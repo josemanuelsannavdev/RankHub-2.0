@@ -15,4 +15,6 @@ public interface PlayerJpaRespository  extends JpaRepository<Player, UUID>, JpaS
     
     @Query("SELECT p FROM Player p WHERE p.rankingId = :rankingId")
     List<Player> getAllPlayersOfRanking(UUID rankingId);
+
+    boolean existsByNameIgnoreCase(String name);
 } 

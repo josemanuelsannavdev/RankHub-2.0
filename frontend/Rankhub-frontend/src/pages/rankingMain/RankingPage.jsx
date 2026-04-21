@@ -10,6 +10,8 @@ import { useRanking } from "../../context/RankingContext";
 import { useToast } from "../../context/ToastContext";
 import { getUserMessageFromApiError } from "../../services/apiError";
 import { getRankingPlayers } from "../../services/rankingApi";
+import { useRankingPageActions } from "./hooks/useRankingPageActions";
+import PlayerFormModal from "./PlayerFormModal";
 
 function RankingPage() {
   const { id: rankingId } = useParams();
@@ -19,6 +21,22 @@ function RankingPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { error: showError } = useToast();
+
+
+  const {
+    modalOpen,
+    editingPlayer,
+    modalOpenOptions,
+    optionPlayer,
+    setModalOpen,
+    setModalOpenOptions,
+    handleCreatePlayerButton,
+    handleEditPlayer,
+    handlePlayerCreated,
+    handlePlayerClick,
+    handleOptionPlayer,
+    handleDeletePlayer,
+  } = useRankingPageActions();
 
   const hasMatchingRankingContext =
     String(currentRanking?.id) === String(rankingId);
@@ -45,7 +63,9 @@ function RankingPage() {
         setRestPlayers(players.slice(3)); // Resto de jugadores
       } catch (error) {
         console.error("Error fetching ranking players:", error);
-        showError(getUserMessageFromApiError(error, "No se pudo cargar el ranking."));
+        showError(
+          getUserMessageFromApiError(error, "No se pudo cargar el ranking."),
+        );
       } finally {
         setLoading(false);
       }
@@ -53,6 +73,10 @@ function RankingPage() {
 
     fetchRankingPlayers();
   }, [rankingId, navigate, showError]);
+
+  const handleOpenAddPlayerModal = () => {
+    handleCreatePlayerButton();
+  };
 
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white">
@@ -65,10 +89,16 @@ function RankingPage() {
         <>
           <Filters />
           <Podium podiumPlayers={podiumPlayers} />
-          <RankingList restPlayers={restPlayers}/>
+          <RankingList restPlayers={restPlayers} />
         </>
       )}
-      <BottomNav />
+      <BottomNav addPlayerClick={handleOpenAddPlayerModal} />
+      {/* Placeholder for Add Player Modal */}
+      {modalOpen && (
+       <PlayerFormModal playerToEdit={editingPlayer}
+          onClose={() => setModalOpen(false)}
+          onPlayerCreated={handlePlayerCreated}/>
+      )}
     </div>
   );
 }

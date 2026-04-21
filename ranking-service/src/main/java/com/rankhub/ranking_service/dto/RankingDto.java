@@ -1,5 +1,7 @@
 package com.rankhub.ranking_service.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class RankingDto {
+    private UUID id;
     private String name;
     private String icon;
 }

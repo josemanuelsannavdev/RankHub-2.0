@@ -7,17 +7,23 @@ spring:
   application:
     name: ranking-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/rankingsdb
-    username: postgres
-    password: tfm1234
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/rankingsdb}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:tfm1234}
 
   jpa:
     hibernate:
-      ddl-auto: validate #lo suyo es cambiarlo por "validate" una vez sepamos la forma de la base de datos
-    show-sql: true 
-    properties: 
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
       hibernate:
         '[format_sql]': true
+
+logging:
+  level:
+    '[org.hibernate.SQL]': warn
+    '[org.springframework.web]': info
 
 
 eureka:

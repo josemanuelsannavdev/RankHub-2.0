@@ -1,9 +1,9 @@
-function BottomNav() {
+function BottomNav({addPlayerClick}) {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-white/10">
       <div className="flex justify-around items-center py-3">
         {/* Añadir jugador */}
-        <button className="flex flex-col items-center text-primary">
+        <button className="flex flex-col items-center text-primary" onClick={addPlayerClick}>
           <span className="material-symbols-outlined text-[22px]">
             person_add
           </span>
@@ -35,13 +35,13 @@ function BottomNav() {
           <span className="material-symbols-outlined text-[22px]">
             sports_esports
           </span>
-          <span className="text-[10px] font-medium">Show games</span>
+          <span className="text-[10px] font-medium">Show games and duels</span>
         </button>
 
         {/* Duelos */}
         <button className="flex flex-col items-center text-slate-500 dark:text-slate-400">
-          <span className="material-symbols-outlined text-[22px]">swords</span>
-          <span className="text-[10px] font-medium">Show Duels</span>
+          <span className="material-symbols-outlined text-[22px]">finance_mode</span>
+          <span className="text-[10px] font-medium">Show bets</span>
         </button>
       </div>
     </div>

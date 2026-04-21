@@ -1,8 +1,16 @@
 package com.rankhub.ranking_service.utils;
 
 
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.SecretKey;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,15 +23,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
 
-    // ⚠️ MUST be the same secret as Auth Service
-    private final String SECRET_KEY = "r7AzZORXtBbbyTduBIxAqK2x76JK75C0cimql1v8JPQ";
+    @Value("${JWT_SECRET:replace-with-strong-jwt-secret-min-32-characters}")
+    private String secret;
+
+    private SecretKey secretKey;
+
+    @PostConstruct
+    void init() {
+        if (secret == null || secret.trim().length() < 32) {
+            throw new IllegalStateException("security.jwt.secret debe tener al menos 32 caracteres");
+        }
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     /**
      * Extract all data from token.
      */
     public Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
                 .parseClaimsJws(token)
                 .getBody();
     }

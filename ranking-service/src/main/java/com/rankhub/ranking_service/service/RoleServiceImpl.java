@@ -28,8 +28,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void delteByRankingIdUserId(UUID rankingId, UUID userId) {
+    public boolean deleteByRankingIdUserId(UUID rankingId, UUID userId) {
         Role role = getByRankingIdUserId(rankingId, userId);
+        if (role == null) {
+            return false;
+        }
 
         /* Si es admin, tiene que convertir a otra persona aleatoria en Admin */
         if (role.getRole() == RoleType.ADMIN) {
@@ -37,8 +40,10 @@ public class RoleServiceImpl implements RoleService {
             
             /* Si no lo hay, cualquiera aleatoria */
             /* Si no hay nadie más, borramos definitivamente el ranking */
+            return false;
         } else {/* Si no es admin, simplemente borramos el rol */
-            roleRepository.delteByRankingIdUserId(rankingId, userId);
+            roleRepository.deleteByRankingIdUserId(rankingId, userId);
+            return true;
         }
 
     }

@@ -27,6 +27,7 @@ public class PlayerMapper {
             return null;
         }
         PlayerDto playerDto = new PlayerDto();
+        playerDto.setId(entity.getId());
         playerDto.setName(entity.getName());
         playerDto.setPoints(entity.getPoints());
         playerDto.setGamesPlayed(entity.getGamesPlayed());
