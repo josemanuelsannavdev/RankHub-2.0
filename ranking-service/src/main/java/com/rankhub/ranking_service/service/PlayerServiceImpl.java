@@ -49,6 +49,7 @@ public class PlayerServiceImpl implements PlayerService {
                 .gamesPlayed(0)
                 .points(0.0)
                 .image(playerRequest.getImage())
+                .rankingId(playerRequest.getRankingId())
                 .build());
     }
 

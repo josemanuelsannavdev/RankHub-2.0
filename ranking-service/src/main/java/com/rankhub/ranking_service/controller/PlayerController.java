@@ -58,7 +58,7 @@ public class PlayerController {
     /*Create a new player */
     @PostMapping("/player")
     public ResponseEntity<PlayerDto> createPlayer(@RequestBody PlayerRequest playerRequest) {
-        
+
         Player createdPlayer = playerService.createPlayer(playerRequest);
         PlayerDto createdPlayerDto = mapper.toDto(createdPlayer);
         return ResponseEntity.ok(createdPlayerDto);

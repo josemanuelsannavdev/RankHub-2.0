@@ -1,5 +1,7 @@
 package com.rankhub.ranking_service.request;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -25,6 +27,8 @@ public class PlayerRequest {
     private Integer gamesLost;
 
     private Integer gamesWon;
-    
+
     private String image;
+
+    private UUID rankingId;
 }

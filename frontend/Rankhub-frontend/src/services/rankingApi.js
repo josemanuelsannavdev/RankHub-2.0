@@ -42,9 +42,4 @@ export const exitRanking = (rankingId) => {
   });
 };
 
-export const getRankingPlayers = (rankingId) => {
-  return gatewayApi.post(`/ranking-service/jugador/torneo/${rankingId}`, {
-    targetMethod: "GET",
-    ...emptyPayload,
-  });
-};
+

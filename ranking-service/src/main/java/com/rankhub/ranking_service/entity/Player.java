@@ -27,7 +27,7 @@ import lombok.ToString;
 @Table(name = "players" )
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     @Column(name = "name")

@@ -6,14 +6,14 @@ const emptyPayload = {
 };
 
 export const getMyPlayers = (rankingId) => {
-  return gatewayApi.post(`/ranking-service/jugador/torneo/${rankingId}`, {
+  return gatewayApi.post(`/ranking-service/ranking/players/${rankingId}`, {
     targetMethod: "GET",
     ...emptyPayload,
   });
 };
 
 export const createPlayer = (player) => {
-  return gatewayApi.post("/ranking-service/jugador", {
+  return gatewayApi.post("/ranking-service/player", {
     targetMethod: "POST",
     ...emptyPayload,
     body: player,

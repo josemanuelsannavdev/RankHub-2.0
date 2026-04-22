@@ -3,10 +3,7 @@ import forms from "@tailwindcss/forms";
 import containerQueries from "@tailwindcss/container-queries";
 
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
     extend: {
@@ -16,7 +13,7 @@ export default {
         "background-dark": "#23220f",
         "inverse-surface": "#e6e3ce",
         "on-secondary": "#1f2937",
-        "error": "#ffb4ab",
+        error: "#ffb4ab",
         "on-primary-fixed": "#23220f",
         "error-container": "#93000a",
         "on-primary": "#23220f",
@@ -33,7 +30,7 @@ export default {
         "on-tertiary-fixed-variant": "#431407",
         "tertiary-fixed-dim": "#a0522d",
         "on-background": "#ffffff",
-        "surface": "#23220f",
+        surface: "#23220f",
         "on-primary-fixed-variant": "#4a4900",
         "on-surface": "#ffffff",
         "inverse-on-surface": "#323123",
@@ -42,25 +39,26 @@ export default {
         "tertiary-fixed": "#cd7f32",
         "on-primary-container": "#23220f",
         "surface-tint": "#f9f506",
-        "tertiary": "#cd7f32",
+        tertiary: "#cd7f32",
         "on-error": "#690005",
         "on-error-container": "#ffdad6",
         "surface-container-low": "#1d1c10",
         "inverse-primary": "#636100",
         "on-secondary-container": "#111827",
-        "secondary": "#d1d5db",
+        secondary: "#d1d5db",
         "primary-fixed-dim": "#b8b504",
         "on-secondary-fixed-variant": "#374151",
         "on-secondary-fixed": "#1f2937",
-        "background": "#23220f",
+        background: "#23220f",
         "on-tertiary-fixed": "#ffffff",
         "secondary-container": "#9ca3af",
         "primary-container": "#f9f506",
-        "outline": "#494832",
+        outline: "#494832",
         "surface-container-high": "#2b2b1d",
         "surface-container-lowest": "#0f0f04",
         "on-surface-variant": "#cbc8ab",
-        
+        "winner-green": "#22c55e",
+        "loser-red": "#ef4444",
       },
       fontFamily: {
         display: ["Lexend", "sans-serif"],
@@ -69,13 +67,9 @@ export default {
         DEFAULT: "0.25rem",
         lg: "0.5rem",
         xl: "0.75rem",
-        full: "9999px"
+        full: "9999px",
       },
     },
   },
-  plugins: [
-    forms,
-    containerQueries,
-  ],
+  plugins: [forms, containerQueries],
 };
-

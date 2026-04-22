@@ -9,34 +9,28 @@ import { useEffect, useState } from "react";
 import { useRanking } from "../../context/RankingContext";
 import { useToast } from "../../context/ToastContext";
 import { getUserMessageFromApiError } from "../../services/apiError";
-import { getRankingPlayers } from "../../services/rankingApi";
+import { getMyPlayers } from "../../services/playerApi";
 import { useRankingPageActions } from "./hooks/useRankingPageActions";
 import PlayerFormModal from "./PlayerFormModal";
 
 function RankingPage() {
   const { id: rankingId } = useParams();
   const { currentRanking } = useRanking();
-  const [podiumPlayers, setPodiumPlayers] = useState([]);
-  const [restPlayers, setRestPlayers] = useState([]);
+  const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { error: showError } = useToast();
 
-
   const {
     modalOpen,
     editingPlayer,
-    modalOpenOptions,
-    optionPlayer,
     setModalOpen,
-    setModalOpenOptions,
     handleCreatePlayerButton,
-    handleEditPlayer,
-    handlePlayerCreated,
-    handlePlayerClick,
-    handleOptionPlayer,
-    handleDeletePlayer,
   } = useRankingPageActions();
+
+  const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+  const podiumPlayers = sortedPlayers.slice(0, 3);
+  const restPlayers = sortedPlayers.slice(3);
 
   const hasMatchingRankingContext =
     String(currentRanking?.id) === String(rankingId);
@@ -56,11 +50,9 @@ function RankingPage() {
           navigate("/mainPage");
           return;
         }
-        const response = await getRankingPlayers(rankingId);
+        const response = await getMyPlayers(rankingId);
         const players = response.data || [];
-        players.sort((a, b) => b.points - a.points); // Ordenar por puntuación descendente
-        setPodiumPlayers(players.slice(0, 3)); // Top 3 para el podio
-        setRestPlayers(players.slice(3)); // Resto de jugadores
+        setPlayers(players);
       } catch (error) {
         console.error("Error fetching ranking players:", error);
         showError(
@@ -76,6 +68,16 @@ function RankingPage() {
 
   const handleOpenAddPlayerModal = () => {
     handleCreatePlayerButton();
+  };
+
+  const handlePlayerCreated = (newPlayer) => {
+    setPlayers((currentPlayers) => {
+      const withoutDuplicate = currentPlayers.filter(
+        (player) => String(player.id) !== String(newPlayer.id),
+      );
+
+      return [...withoutDuplicate, newPlayer];
+    });
   };
 
   return (
@@ -95,9 +97,11 @@ function RankingPage() {
       <BottomNav addPlayerClick={handleOpenAddPlayerModal} />
       {/* Placeholder for Add Player Modal */}
       {modalOpen && (
-       <PlayerFormModal playerToEdit={editingPlayer}
+        <PlayerFormModal
+          playerToEdit={editingPlayer}
           onClose={() => setModalOpen(false)}
-          onPlayerCreated={handlePlayerCreated}/>
+          onPlayerCreated={handlePlayerCreated}
+        />
       )}
     </div>
   );

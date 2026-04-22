@@ -11,7 +11,7 @@ import NotFoundPage from "./pages/notFound/NotFoundPage.jsx";
 import { RankingProvider } from "./context/RankingContext.jsx";
 import { ToastProvider } from "./context/ToastContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-
+import CreateGamePage from "./pages/createGamePage/CreateGamePage.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -22,6 +22,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
+            <Route path="/createGame" element={<CreateGamePage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/mainPage" element={<MainPage />} />
