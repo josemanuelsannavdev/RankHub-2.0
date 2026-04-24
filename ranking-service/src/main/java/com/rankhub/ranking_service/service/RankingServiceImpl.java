@@ -8,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.entity.Ranking;
+import com.rankhub.ranking_service.entity.Role;
+import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.repository.RankingRepository;
+import com.rankhub.ranking_service.repository.RoleRepository;
 import com.rankhub.ranking_service.request.RankingRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -17,11 +20,9 @@ import lombok.RequiredArgsConstructor;
 public class RankingServiceImpl implements RankingService {
 
     private final RankingRepository rankingRepository;
+    private final RoleRepository roleRepository;
 
-    @Override
-    public List<Ranking> getAllRankings() {
-        return rankingRepository.getAllRankings();
-    }
+   
 
     @Override
     public Ranking getRankingById(UUID id) {
@@ -32,15 +33,33 @@ public class RankingServiceImpl implements RankingService {
         return ranking;
     }
 
-    @Override
-    @Transactional
-    public Ranking createRanking(RankingRequest rankingRequest) {
+    
 
+    private Ranking saveRanking(RankingRequest rankingRequest) {
         Ranking ranking = Ranking.builder()
                 .name(rankingRequest.getName() != null ? rankingRequest.getName().trim() : null)
                 .icon(rankingRequest.getIcon())
                 .build();
         return rankingRepository.save(ranking);
+    }
+
+    @Override
+    @Transactional
+    public RankingWithRoleDto createRankingForUser(RankingRequest rankingRequest, UUID userId) {
+        Ranking createdRanking = saveRanking(rankingRequest);
+
+        Role adminRole = Role.builder()
+                .rankingId(createdRanking.getId())
+                .userId(userId)
+                .role(RoleType.ADMIN)
+                .build();
+        roleRepository.save(adminRole);
+
+        return new RankingWithRoleDto(
+                createdRanking.getName(),
+                createdRanking.getId(),
+                adminRole.getRole(),
+                createdRanking.getIcon());
     }
 
     @Override

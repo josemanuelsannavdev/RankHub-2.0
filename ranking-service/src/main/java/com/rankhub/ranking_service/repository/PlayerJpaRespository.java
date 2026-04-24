@@ -17,4 +17,6 @@ public interface PlayerJpaRespository  extends JpaRepository<Player, UUID>, JpaS
     List<Player> getAllPlayersOfRanking(UUID rankingId);
 
     boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByIdAndRankingId(UUID id, UUID rankingId);
 } 

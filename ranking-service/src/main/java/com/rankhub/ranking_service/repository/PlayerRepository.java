@@ -7,14 +7,15 @@ import org.springframework.stereotype.Repository;
 
 import com.rankhub.ranking_service.entity.Player;
 
+import lombok.RequiredArgsConstructor;
+
 @Repository
+@RequiredArgsConstructor
 public class PlayerRepository {
 
     private final PlayerJpaRespository playerJpaRespository;
 
-    public PlayerRepository(PlayerJpaRespository playerJpaRespository) {
-        this.playerJpaRespository = playerJpaRespository;
-    }
+    
 
     public List<Player> getAllPlayersOfRanking(UUID rankingId) {
         return playerJpaRespository.getAllPlayersOfRanking(rankingId);
@@ -30,6 +31,10 @@ public class PlayerRepository {
 
     public boolean existsByNameIgnoreCase(String name) {
         return playerJpaRespository.existsByNameIgnoreCase(name);
+    }
+
+    public boolean existsByIdAndRankingId(UUID id, UUID rankingId) {
+        return playerJpaRespository.existsByIdAndRankingId(id, rankingId);
     }
 
     public void deleteById(UUID id) {

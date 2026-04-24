@@ -8,11 +8,12 @@ import com.rankhub.ranking_service.entity.Ranking;
 import com.rankhub.ranking_service.request.RankingRequest;
 
 public interface RankingService {
-    List<Ranking> getAllRankings();
+    
 
     Ranking getRankingById(UUID id);
 
-    Ranking createRanking(RankingRequest rankingRequest);
+
+    RankingWithRoleDto createRankingForUser(RankingRequest rankingRequest, UUID userId);
 
     Ranking updateRanking(UUID rankingId, RankingRequest rankingRequest);
 

@@ -1,11 +1,11 @@
 package com.rankhub.ranking_service.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rankhub.ranking_service.dto.ApiMessageDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.RankingDto;
-import com.rankhub.ranking_service.dto.RoleDto;
 
 import com.rankhub.ranking_service.entity.Ranking;
 import com.rankhub.ranking_service.entity.Role;
@@ -45,15 +45,7 @@ public class RankingController {
     private final RankingService rankingService;
     private final RankingMapper mapper;
 
-    /* Get all rankings */
-    @GetMapping("/ranking")
-    public ResponseEntity<List<RankingDto>> getAllRankings() {
-        List<Ranking> rankings = rankingService.getAllRankings();
-        List<RankingDto> rankingDtos = rankings.stream()
-                .map(mapper::toDto)
-                .toList();
-        return ResponseEntity.ok(rankingDtos);
-    }
+    
 
     /* Get a ranking by its ID */
     @GetMapping("/ranking/{rankingId}")
@@ -68,17 +60,8 @@ public class RankingController {
             @Valid @RequestBody RankingRequest rankingRequest,
             @RequestHeader("X-User-Id") UUID userId) {
 
-        Ranking createdRanking = rankingService.createRanking(rankingRequest);
-        RoleDto role = new RoleDto();
-        role.setRole(RoleType.ADMIN);
-        role.setUserId(userId);
-        role.setRankingId(createdRanking.getId());
-        roleService.createRole(role);
-        RankingWithRoleDto rankingWithRoleDto = new RankingWithRoleDto(
-                createdRanking.getName(),
-                createdRanking.getId(),
-                role.getRole(),
-                createdRanking.getIcon());
+        RankingWithRoleDto rankingWithRoleDto = rankingService.createRankingForUser(rankingRequest, userId);
+
         return ResponseEntity.ok(rankingWithRoleDto);
     }
 
@@ -136,7 +119,7 @@ public class RankingController {
 
     /*Delete a ranking only for "Me" = Exit from the ranking */
     @DeleteMapping("/me/ranking/{rankingId}")
-    public ResponseEntity<ApiMessageDto> deleteMyRanking(
+    public ResponseEntity<ApiMessageDto> exitRanking(
             @RequestHeader("X-User-Id") UUID userId,
             @PathVariable UUID rankingId) {
 
