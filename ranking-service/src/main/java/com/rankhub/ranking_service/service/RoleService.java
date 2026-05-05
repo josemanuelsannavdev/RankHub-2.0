@@ -4,10 +4,11 @@ import java.util.UUID;
 
 import com.rankhub.ranking_service.dto.RoleDto;
 import com.rankhub.ranking_service.entity.Role;
+import com.rankhub.ranking_service.entity.utils.RoleType;
 
 public interface RoleService {
     Role createRole(RoleDto role);
     boolean deleteByRankingIdUserId(UUID rankingId,UUID userId);
     Role getByRankingIdUserId(UUID rankingId,UUID userId);
-
+    Role getRoleByRankingIdRoleType(UUID rankingId, RoleType roleType);
 }

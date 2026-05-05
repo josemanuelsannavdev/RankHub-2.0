@@ -26,9 +26,7 @@ public class IndividualGameRequest {
     @NotNull
     private UUID rankingId;
 
-    @NotNull
-    private Timestamp date;
-
+    
     @NotEmpty
     @Valid
     private List<ParticipantRequest> participants;

@@ -1,5 +1,6 @@
 package com.rankhub.ranking_service.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class RoleServiceImpl implements RoleService {
         Role newRole = new Role();
         newRole.setUserId(role.getUserId());
         newRole.setRankingId(role.getRankingId());
-        newRole.setRole(role.getRole());
+        newRole.setRoleType(role.getRole());
         roleRepository.save(newRole);
         return newRole;
     }
@@ -35,7 +36,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         /* Si es admin, tiene que convertir a otra persona aleatoria en Admin */
-        if (role.getRole() == RoleType.ADMIN) {
+        if (role.getRoleType() == RoleType.ADMIN) {
             /* Si hay algun subadmin, lo convierte en Admin */
             
             /* Si no lo hay, cualquiera aleatoria */
@@ -51,5 +52,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role getByRankingIdUserId(UUID rankingId, UUID userId) {
         return roleRepository.getByRankingIdUserId(rankingId, userId);
+    }
+
+    @Override
+    public Role getRoleByRankingIdRoleType(UUID rankingId, RoleType roleType) {
+        List<Role> roles = roleRepository.getRoleByRankingIdRoleType(rankingId, roleType);
+        return roles.isEmpty() ? null : roles.get(0);
     }
 }

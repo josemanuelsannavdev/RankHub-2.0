@@ -1,8 +1,6 @@
 package com.rankhub.ranking_service.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.rankhub.ranking_service.dto.ApiMessageDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.RankingDto;
@@ -96,15 +94,12 @@ public class RankingController {
         if (role == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado"));
         }
-        if (role.getRole() == RoleType.ADMIN || role.getRole() == RoleType.SUB_ADMIN ) {
+        if (role.getRoleType() == RoleType.ADMIN || role.getRoleType() == RoleType.SUB_ADMIN ) {
             rankingService.deleteRanking(rankingId);
             return ResponseEntity.ok(new ApiMessageDto("ranking eliminado"));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado"));
         }
-
-
-        /*nO HE COMPROBADO SI HACE FALTA IMPLEMENTAR LA LOGICA EN LA QUE SE BORRAN TODOS LOS ROLES QUE TENGAN ESE RANKING_id */
     }
 
     @GetMapping("/me/ranking")
@@ -119,16 +114,16 @@ public class RankingController {
 
     /*Delete a ranking only for "Me" = Exit from the ranking */
     @DeleteMapping("/me/ranking/{rankingId}")
-    public ResponseEntity<ApiMessageDto> exitRanking(
+    public ResponseEntity<ApiMessageDto> leaveRanking(
             @RequestHeader("X-User-Id") UUID userId,
             @PathVariable UUID rankingId) {
 
-        boolean deleted = roleService.deleteByRankingIdUserId(rankingId, userId);
-        if (!deleted) {
+        boolean left = rankingService.leaveRanking(rankingId, userId);
+        if (!left) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado para salir del ranking"));
         }
 
-        return ResponseEntity.ok(new ApiMessageDto("Se ha borrado el ranking"));
+        return ResponseEntity.ok(new ApiMessageDto("Has salido del ranking"));
     }
 
 }

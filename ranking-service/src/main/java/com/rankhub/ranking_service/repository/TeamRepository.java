@@ -1,6 +1,7 @@
 package com.rankhub.ranking_service.repository;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,13 @@ public class TeamRepository {
 
     public List<Team> saveAll(List<Team> teams) {
         return teamJpaRepository.saveAll(teams);
+    }
+
+    public List<Team> findByGameIdIn(List<UUID> gameIds) {
+        return teamJpaRepository.findByGameIdIn(gameIds);
+    }
+
+    public List<Team> findByGameId(UUID gameId) {
+        return teamJpaRepository.findByGameId(gameId);
     }
 }

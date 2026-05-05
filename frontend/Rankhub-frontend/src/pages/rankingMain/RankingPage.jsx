@@ -1,8 +1,8 @@
 import "../../styles/index.css";
-import Filters from "./Filters";
+import Filters from "./components/Filters";
 import Header from "../../components/Header";
-import Podium from "./Podium";
-import RankingList from "./RankingList";
+import Podium from "./components/Podium";
+import RankingList from "./components/RankingList";
 import BottomNav from "../../components/BottomNav";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import { useToast } from "../../context/ToastContext";
 import { getUserMessageFromApiError } from "../../services/apiError";
 import { getMyPlayers } from "../../services/playerApi";
 import { useRankingPageActions } from "./hooks/useRankingPageActions";
-import PlayerFormModal from "./PlayerFormModal";
+import PlayerFormModal from "./components/PlayerFormModal";
 
 function RankingPage() {
   const { id: rankingId } = useParams();
@@ -21,12 +21,8 @@ function RankingPage() {
   const [loading, setLoading] = useState(true);
   const { error: showError } = useToast();
 
-  const {
-    modalOpen,
-    editingPlayer,
-    setModalOpen,
-    handleCreatePlayerButton,
-  } = useRankingPageActions();
+  const { modalOpen, editingPlayer, setModalOpen, handleCreatePlayerButton } =
+    useRankingPageActions();
 
   const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
   const podiumPlayers = sortedPlayers.slice(0, 3);
@@ -80,7 +76,15 @@ function RankingPage() {
     });
   };
 
+  const handleCreateGame = () => {
+    navigate(`/createGame`);
+  };
+const handleViewGames = () => {
+    navigate(`/viewGames`);
+  };
   return (
+    <div className="bg-surface min-h-screen pb-24">
+
     <div className="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white">
       <Header title={rankingTitle} />
       {loading ? (
@@ -94,7 +98,11 @@ function RankingPage() {
           <RankingList restPlayers={restPlayers} />
         </>
       )}
-      <BottomNav addPlayerClick={handleOpenAddPlayerModal} />
+      <BottomNav
+        addPlayerClick={handleOpenAddPlayerModal}
+        createGameClick={handleCreateGame}
+        viewGamesClick={() => handleViewGames()}
+      />
       {/* Placeholder for Add Player Modal */}
       {modalOpen && (
         <PlayerFormModal
@@ -103,6 +111,7 @@ function RankingPage() {
           onPlayerCreated={handlePlayerCreated}
         />
       )}
+    </div>
     </div>
   );
 }

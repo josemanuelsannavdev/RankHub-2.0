@@ -8,6 +8,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        "dark-primary": "#f9f506",
+        "dark-first": "#f9f506",
+        "dark-second": "#94A3B8",
+        "dark-third": "#a0522d",
+        "dark-rest": "#CBD5E1",
+        "winner-green": "#22c55e",
+        "loser-red": "#ef4444",
+
         primary: "#f9f506",
         "background-light": "#f8f8f5",
         "background-dark": "#23220f",
@@ -57,8 +65,6 @@ export default {
         "surface-container-high": "#2b2b1d",
         "surface-container-lowest": "#0f0f04",
         "on-surface-variant": "#cbc8ab",
-        "winner-green": "#22c55e",
-        "loser-red": "#ef4444",
       },
       fontFamily: {
         display: ["Lexend", "sans-serif"],

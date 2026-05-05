@@ -9,6 +9,9 @@ import jakarta.persistence.Table;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.rankhub.ranking_service.entity.utils.RoleType;
 
 import jakarta.persistence.Column;
@@ -41,6 +44,7 @@ public class Role {
     private UUID rankingId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role",columnDefinition = "roles_types")
-    private RoleType role;
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "role", columnDefinition = "roles_types")
+    private RoleType roleType;
 }

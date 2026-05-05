@@ -1,4 +1,4 @@
-function BottomNav({addPlayerClick}) {
+function BottomNav({addPlayerClick, createGameClick,viewGamesClick}) {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-white/10">
       <div className="flex justify-around items-center py-3">
@@ -17,7 +17,7 @@ function BottomNav({addPlayerClick}) {
         </button>
 
         {/* BOTÓN CENTRAL -> crear juego  */}
-        <button className="relative -top-6 w-1/5 flex flex-col items-center">
+        <button className="relative -top-6 w-1/5 flex flex-col items-center" onClick={createGameClick}>
           <div className="w-16 h-16 bg-primary text-background-dark rounded-full flex items-center justify-center shadow-xl border-4 border-background-light dark:border-background-dark hover:scale-105 transition-transform">
             <span className="material-symbols-outlined text-3xl font-bold">
               add
@@ -31,7 +31,7 @@ function BottomNav({addPlayerClick}) {
 
 
         {/* Mostrar juegos */}
-        <button className="flex flex-col items-center text-slate-500 dark:text-slate-400">
+        <button onClick={viewGamesClick} className="flex flex-col items-center text-slate-500 dark:text-slate-400">
           <span className="material-symbols-outlined text-[22px]">
             sports_esports
           </span>

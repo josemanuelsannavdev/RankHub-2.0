@@ -26,8 +26,6 @@ public class TeamGameRequest {
     @NotNull
     private UUID rankingId;
 
-    @NotNull
-    private Timestamp date;
 
     @NotEmpty
     @Valid

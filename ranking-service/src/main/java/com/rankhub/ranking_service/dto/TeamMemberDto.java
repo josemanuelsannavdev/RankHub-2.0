@@ -19,4 +19,5 @@ public class TeamMemberDto {
     private UUID id;
     private UUID playerId;
     private String guestName;
+    private PlayerDto player;
 }

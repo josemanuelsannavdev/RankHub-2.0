@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
+
 import Ranking from "./pages/rankingMain/RankingPage.jsx";
 import RegisterPage from "./pages/register/RegisterPage.jsx";
 import LoginPage from "./pages/login/LoginPage.jsx";
@@ -12,6 +13,8 @@ import { RankingProvider } from "./context/RankingContext.jsx";
 import { ToastProvider } from "./context/ToastContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CreateGamePage from "./pages/createGamePage/CreateGamePage.jsx";
+import ViewGamePage from "./pages/viewGamesPage/ViewGamePage.jsx";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -22,11 +25,12 @@ createRoot(document.getElementById("root")).render(
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
-            <Route path="/createGame" element={<CreateGamePage />} />
+             <Route path="/viewGames" element={<ViewGamePage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/mainPage" element={<MainPage />} />
               <Route path="/ranking/:id" element={<Ranking />} />
+              <Route path="/createGame" element={<CreateGamePage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

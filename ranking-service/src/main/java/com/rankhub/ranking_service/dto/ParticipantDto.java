@@ -21,4 +21,5 @@ public class ParticipantDto {
     private String guestName;
     private int position;
     private int points;
+    private PlayerDto player;
 }

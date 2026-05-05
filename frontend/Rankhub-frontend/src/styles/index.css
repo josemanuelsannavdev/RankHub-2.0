@@ -19,3 +19,8 @@ body {
 .neon-glow-text {
   text-shadow: 0 0 10px rgba(249, 245, 6, 0.4);
 }
+
+:root {
+  --background-dark: #23220f;
+  --primary-color-dark: #f9f506;
+}

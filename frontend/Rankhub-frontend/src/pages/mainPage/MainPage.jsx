@@ -1,5 +1,5 @@
 import Header from "../../components/Header";
-import BottomNavBar from "./BottomNavBar";
+import BottomNavOneButton from "../../components/BottomNavOneButton";
 import { useCallback } from "react";
 import { useToast } from "../../context/ToastContext";
 import RankingSection from "./RankingSection";
@@ -21,7 +21,7 @@ function MainPage() {
     upsertByRole,
     removeByRole,
   } = useMyRankings({ onFetchError: handleFetchError });
-  
+
   const {
     modalOpen,
     editingRanking,
@@ -45,7 +45,7 @@ function MainPage() {
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/*<TopNavbar /> */}
-      <Header/>
+      <Header />
       {/*  Main Content */}
       <main className="pt-24 px-6 max-w-4xl mx-auto">
         <header className="mb-10">
@@ -67,7 +67,7 @@ function MainPage() {
         <RankingSection
           title="SUBADMIN"
           badgeText="SECTION"
-          badgeClassName="text-on-surface-variant bg-surface-container-high border-outline-variant"
+          badgeClassName="bg-slate-300/20 text-slate-300 border border-slate-300/35"
           rankings={rankingsSubAdmin}
           variant="subadmin"
           onEntryClick={handleRankingClick}
@@ -76,7 +76,7 @@ function MainPage() {
         <RankingSection
           title="GUEST"
           badgeText="SECTION"
-          badgeClassName="text-on-surface-variant bg-surface-container-high border-outline-variant"
+          badgeClassName="bg-[#cd7f32]/20 text-[#cd7f32] border border-[#cd7f32]/35"
           rankings={rankingsGuest}
           variant="guest"
           onEntryClick={handleRankingClick}
@@ -85,7 +85,10 @@ function MainPage() {
       </main>
 
       {/*Bottom Navbar*/}
-      <BottomNavBar onClick={handleCreateRankingButton} />
+      <BottomNavOneButton
+        onClick={handleCreateRankingButton}
+        buttonTitle="Create Ranking"
+      />
       {modalOpen && (
         <RankingFormModal
           rankingToEdit={editingRanking}
