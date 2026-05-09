@@ -136,6 +136,7 @@ public class GameServiceImpl implements GameService {
                 historico.setPlayerId(player.getId());
                 historico.setTotalPoints(player.getPoints());
                 historico.setObtainedPoints((double) participant.getPoints());
+                historico.setPosition(participant.getPosition());
                 historicoRepository.save(historico);
             } else {
                 // Si el jugador no participó en el juego, también podríamos querer crear un
@@ -145,6 +146,7 @@ public class GameServiceImpl implements GameService {
                 historico.setPlayerId(player.getId());
                 historico.setTotalPoints(player.getPoints());
                 historico.setObtainedPoints(null);
+                historico.setPosition(null);
                 historicoRepository.save(historico);
             }
         }
@@ -254,8 +256,10 @@ public class GameServiceImpl implements GameService {
                         .orElse(null);
                 if (teamOfMember != null) {
                     historico.setObtainedPoints((double) teamOfMember.getPoints());
+                    historico.setPosition(teamOfMember.getPosition()); // En los juegos por equipos no hay una posición individual, así que la dejamos a null
                 } else {
                     historico.setObtainedPoints(null);
+                    historico.setPosition(null);
                 }
                 historicoRepository.save(historico);
             } else {
@@ -266,6 +270,7 @@ public class GameServiceImpl implements GameService {
                 historico.setPlayerId(player.getId());
                 historico.setTotalPoints(player.getPoints());
                 historico.setObtainedPoints(null);
+                historico.setPosition(null);
                 historicoRepository.save(historico);
             }
         }
@@ -328,6 +333,7 @@ public class GameServiceImpl implements GameService {
                 historico.setObtainedPoints((double) -bet);
             } else {
                 historico.setObtainedPoints(null);
+                historico.setPosition(null);
             }
             historicoRepository.save(historico);
         }

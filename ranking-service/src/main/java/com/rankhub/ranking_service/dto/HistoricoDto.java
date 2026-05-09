@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,9 +18,9 @@ import java.util.UUID;
 @ToString
 
 public class HistoricoDto {
+    private String gameName;
     private UUID gameId;
-    private UUID playerId;
-    private Double totalPoints;
-    private Double obtainedPoints;
-    
+    private Timestamp date;
+    private String type;
+    private List<HistoricoPlayerDto> players;
 }

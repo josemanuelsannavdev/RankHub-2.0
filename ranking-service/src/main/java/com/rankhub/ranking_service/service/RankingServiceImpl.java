@@ -37,6 +37,7 @@ public class RankingServiceImpl implements RankingService {
         Ranking ranking = Ranking.builder()
                 .name(rankingRequest.getName() != null ? rankingRequest.getName().trim() : null)
                 .icon(rankingRequest.getIcon())
+                .description(rankingRequest.getDescription())
                 .build();
         return rankingRepository.save(ranking);
     }
@@ -57,7 +58,9 @@ public class RankingServiceImpl implements RankingService {
                 createdRanking.getName(),
                 createdRanking.getId(),
                 adminRole.getRoleType(),
-                createdRanking.getIcon());
+                createdRanking.getIcon(),
+                createdRanking.getDescription()
+            );
     }
 
     @Override
@@ -71,6 +74,7 @@ public class RankingServiceImpl implements RankingService {
 
         existingRanking.setName(rankingRequest.getName() != null ? rankingRequest.getName().trim() : null);
         existingRanking.setIcon(rankingRequest.getIcon());
+        existingRanking.setDescription(rankingRequest.getDescription());
         return rankingRepository.save(existingRanking);
     }
 
@@ -84,6 +88,9 @@ public class RankingServiceImpl implements RankingService {
         }
         if (request.getIcon() != null) {
             existingRanking.setIcon(request.getIcon());
+        }
+        if (request.getDescription() != null) {
+            existingRanking.setDescription(request.getDescription());
         }
         return rankingRepository.save(existingRanking);
     }

@@ -76,7 +76,7 @@ function CreateGamePage() {
   };
 
   return (
-    <div className="bg-surface min-h-screen pb-24">
+    <div className="bg-surface min-h-screen pb-24" >
       <Header title="Crear Juego" />
 
       <main className="px-4 pb-32">

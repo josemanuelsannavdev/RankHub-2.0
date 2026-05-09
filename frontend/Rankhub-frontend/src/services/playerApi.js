@@ -12,6 +12,13 @@ export const getMyPlayers = (rankingId) => {
   });
 };
 
+export const getPlayer = (playerId) => {
+  return gatewayApi.post(`/ranking-service/player/${playerId}`, {
+    targetMethod: "GET",
+    ...emptyPayload,
+  });
+};
+
 export const createPlayer = (player) => {
   return gatewayApi.post("/ranking-service/player", {
     targetMethod: "POST",

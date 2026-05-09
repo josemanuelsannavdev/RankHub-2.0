@@ -17,4 +17,7 @@ public class RankingRequest {
 
     @Size(max = 255)
     private String icon;
+
+    @Size(max = 50)
+    private String description;
 }

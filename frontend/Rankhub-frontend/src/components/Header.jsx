@@ -22,11 +22,7 @@ function Header({ title = "RankHub" }) {
         </h1>
       </div>
 
-      <button className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-background-dark">
-        <span className="material-symbols-outlined">
-          person
-        </span>
-      </button>
+      
 
     </header>
   );

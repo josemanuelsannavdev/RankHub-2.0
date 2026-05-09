@@ -19,6 +19,7 @@ public class RankingMapper {
 
         ranking.setName(request.getName());
         ranking.setIcon(request.getIcon());
+        ranking.setDescription(request.getDescription());
         return ranking;
     }
 
@@ -31,6 +32,7 @@ public class RankingMapper {
         rankingDto.setId(entity.getId());
         rankingDto.setName(entity.getName());
         rankingDto.setIcon(entity.getIcon());
+        rankingDto.setDescription(entity.getDescription());
         return rankingDto;
     }
 

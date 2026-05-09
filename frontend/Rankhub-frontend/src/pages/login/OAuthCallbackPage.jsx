@@ -1,42 +1,39 @@
-import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "../../context/ToastContext";
-import { setSessionToken } from "../../services/session";
+import React from "react";
+import { useOAuthCallback } from "../../hooks/useOAuthCallback";
 
 const OAuthCallbackPage = () => {
-  const navigate = useNavigate();
-  const { success: showSuccess, error: showError } = useToast();
-  const hasHandledCallback = useRef(false);
-
-  useEffect(() => {
-    if (hasHandledCallback.current) {
-      return;
-    }
-    hasHandledCallback.current = true;
-
-    const searchParams = new URLSearchParams(globalThis.location.search);
-    const token = searchParams.get("token");
-    const providerError = searchParams.get("error");
-
-    if (token) {
-      setSessionToken(token);
-      showSuccess("Sesion iniciada correctamente con Google");
-      navigate("/mainPage", { replace: true });
-      return;
-    }
-    
-    if (providerError) {
-      showError("No se pudo iniciar sesion con Google.");
-    } else {
-      showError("Respuesta OAuth invalida.");
-    }
-
-    navigate("/login", { replace: true });
-  }, [navigate, showError, showSuccess]);
+  useOAuthCallback();
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-slate-200 text-sm">
-      Procesando inicio de sesion con Google...
+    <div
+      className="min-h-screen flex items-center justify-center text-slate-200 text-sm"
+      role="status"
+      aria-live="polite"
+    >
+      <div className="flex items-center gap-3">
+        <svg
+          className="w-5 h-5 animate-spin text-slate-200"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          />
+        </svg>
+        <span>Procesando inicio de sesión con Google…</span>
+      </div>
     </div>
   );
 };

@@ -9,12 +9,12 @@ const LoginPage = () => {
   return (
     <LoginRegisterLayout>
       <FormHeader
-        titleFirstWord="Inicia sesión en tu cuenta"
-        titleSecondWord="ahora"
-        subTitle="Accede a tu cuenta para continuar"
+        titleFirstWord="Log in to your account"
+        titleSecondWord="now"
+        subTitle="Log in to your account to continue"
       />
       <LoginRegisterCard
-        optionalTitle="Inicia sesión en tu cuenta"
+        optionalTitle="Log in to your account with Google"
         onGoogleLogin={handleGoogleLogin}
       >
         <LoginForm />

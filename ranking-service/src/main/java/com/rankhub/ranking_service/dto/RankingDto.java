@@ -19,4 +19,5 @@ public class RankingDto {
     private UUID id;
     private String name;
     private String icon;
+    private String description;
 }

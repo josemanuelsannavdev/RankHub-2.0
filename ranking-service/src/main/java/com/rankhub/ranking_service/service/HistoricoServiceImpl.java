@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rankhub.ranking_service.dto.DuelGameDto;
 import com.rankhub.ranking_service.dto.HistoricoDto;
+import com.rankhub.ranking_service.dto.HistoricoPlayerDto;
 import com.rankhub.ranking_service.dto.IndividualGameDto;
 import com.rankhub.ranking_service.dto.ParticipantDto;
 import com.rankhub.ranking_service.dto.TeamDto;
@@ -53,25 +54,37 @@ public class HistoricoServiceImpl implements HistoricoService {
     
     private final HistoricoRepository historicoRepository;
     private final GameRepository gameRepository;
-    
+    private final PlayerRepository playerRepository;
     @Override
     public List<HistoricoDto> getAllHistoricos(UUID rankingId) {
         List<Game> games = gameRepository.findAllGamesByRankingId(rankingId);
-        List<Historico> historicos = new ArrayList<>();
+        List<HistoricoDto> historicosDto= new ArrayList<>();
         for (Game game : games) {
             List<Historico> historicosGame = historicoRepository.findByGameId(game.getId());
-            //Añadir historicos a la lista de historicos    
-            historicos.addAll(historicosGame);
+            //Mapear historico a HistoricoPlayerDto
+            List<HistoricoPlayerDto> historicoPlayers = historicosGame.stream().map(historico -> {
+                HistoricoPlayerDto playerDto = new HistoricoPlayerDto();
+                playerDto.setPlayerId(historico.getPlayerId());
+                playerDto.setTotalPoints(historico.getTotalPoints());
+                playerDto.setObtainedPoints(historico.getObtainedPoints());
+                playerDto.setPlayerName(playerRepository.getPlayerById(historico.getPlayerId()).getName());
+                playerDto.setPosition(historico.getPosition());
+
+                return playerDto;
+            }).collect(Collectors.toList());
+            //Crear HistoricoDto para el juego
+            HistoricoDto historicoDto = new HistoricoDto();
+            historicoDto.setGameId(game.getId());
+            historicoDto.setGameName(game.getName());
+            historicoDto.setDate(game.getDate());
+            historicoDto.setPlayers(historicoPlayers);
+            historicoDto.setType(game.getType().name());
+            //Añadir HistoricoDto a la lista de historicosDto
+            historicosDto.add(historicoDto);
+
         }   
         
-        return historicos.stream()
-                .map(historico -> new HistoricoDto(
-                        historico.getGameId(),
-                        historico.getPlayerId(),
-                        historico.getTotalPoints(),
-                        historico.getObtainedPoints()
-                ))
-                .collect(Collectors.toList());
+        return historicosDto;
     }    
     
 }

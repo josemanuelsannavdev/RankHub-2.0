@@ -18,10 +18,7 @@ public class HistoricoMapper {
 
         HistoricoDto response = new HistoricoDto();
 
-        response.setGameId(historico.getGameId());
-        response.setPlayerId(historico.getPlayerId());
-        response.setTotalPoints(historico.getTotalPoints());
-        response.setObtainedPoints(historico.getObtainedPoints());
+       
 
         return response;
     }

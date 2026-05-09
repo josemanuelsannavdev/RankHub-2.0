@@ -18,4 +18,5 @@ public class RankingWithRoleDto {
     private UUID id;
     private RoleType role;
     private String icon;
+    private String description;
 }

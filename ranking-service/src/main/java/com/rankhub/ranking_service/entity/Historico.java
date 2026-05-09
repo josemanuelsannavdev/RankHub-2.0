@@ -41,4 +41,7 @@ public class Historico {
 
     @Column(name = "obtained_points")
     private Double obtainedPoints;
+
+    @Column(name = "position")
+    private Integer position;
 }

@@ -1,6 +1,19 @@
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 
 const Modal = ({children,title,description}) => {
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, []);
   
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
@@ -15,7 +28,9 @@ const Modal = ({children,title,description}) => {
               {description}
             </p>
           </div>
-          {children}
+
+          
+            {children}
         </div>
       </div>
     </div>
