@@ -131,22 +131,35 @@ public class GameServiceImpl implements GameService {
                     .orElse(null);
 
             if (participant != null) {// si aparece en la lista de participantes
-                Historico historico = new Historico();
+               /*  Historico historico = new Historico();
                 historico.setGameId(gameId);
                 historico.setPlayerId(player.getId());
                 historico.setTotalPoints(player.getPoints());
                 historico.setObtainedPoints((double) participant.getPoints());
-                historico.setPosition(participant.getPosition());
+                historico.setPosition(participant.getPosition());*/
+                Historico historico = Historico.builder()
+                        .gameId(gameId)
+                        .playerId(player.getId())
+                        .totalPoints(player.getPoints())
+                        .obtainedPoints((double) participant.getPoints())
+                        .position(participant.getPosition())
+                        .build();
                 historicoRepository.save(historico);
             } else {
                 // Si el jugador no participó en el juego, también podríamos querer crear un
                 // histórico con 0 puntos obtenidos
-                Historico historico = new Historico();
-                historico.setGameId(gameId); // Asignamos el id del juego aunque no haya participado
+                Historico historico = Historico.builder()
+                        .gameId(gameId)
+                        .playerId(player.getId())
+                        .totalPoints(player.getPoints())
+                        .obtainedPoints(null)
+                        .position(null)
+                        .build();
+                /*historico.setGameId(gameId); // Asignamos el id del juego aunque no haya participado
                 historico.setPlayerId(player.getId());
                 historico.setTotalPoints(player.getPoints());
                 historico.setObtainedPoints(null);
-                historico.setPosition(null);
+                historico.setPosition(null);*/
                 historicoRepository.save(historico);
             }
         }
@@ -244,10 +257,15 @@ public class GameServiceImpl implements GameService {
                     .orElse(null);
 
             if (member != null) {// si aparece en la lista de miembros de equipos
-                Historico historico = new Historico();
+                /*Historico historico = new Historico();
                 historico.setGameId(gameId);
                 historico.setPlayerId(player.getId());
-                historico.setTotalPoints(player.getPoints());
+                historico.setTotalPoints(player.getPoints());*/
+                Historico historico = Historico.builder()
+                        .gameId(gameId)
+                        .playerId(player.getId())
+                        .totalPoints(player.getPoints())
+                        .build();
                 // obtenemos el equipo al que pertenece ese miembro para saber los puntos que ha
                 // obtenido
                 Team teamOfMember = teams.stream()
@@ -265,12 +283,19 @@ public class GameServiceImpl implements GameService {
             } else {
                 // Si el jugador no participó en el juego, también podríamos querer crear un
                 // histórico con 0 puntos obtenidos
-                Historico historico = new Historico();
+                /*Historico historico = new Historico();
                 historico.setGameId(gameId); // Asignamos el id del juego aunque no haya participado
                 historico.setPlayerId(player.getId());
                 historico.setTotalPoints(player.getPoints());
                 historico.setObtainedPoints(null);
-                historico.setPosition(null);
+                historico.setPosition(null);*/
+                Historico historico = Historico.builder()
+                        .gameId(gameId)
+                        .playerId(player.getId())
+                        .totalPoints(player.getPoints())
+                        .obtainedPoints(null)
+                        .position(null)
+                        .build();
                 historicoRepository.save(historico);
             }
         }
@@ -284,11 +309,17 @@ public class GameServiceImpl implements GameService {
         // correspondientes, y actualizar sus puntos en la base de datos
         DuelParticipantsRequest participantsRequest = request.getParticipants();
 
-        Duel duel = new Duel();
+        /*Duel duel = new Duel();
         duel.setGameId(game.getId());
         duel.setWinnerId(participantsRequest.getWinnerId());
         duel.setLoserId(participantsRequest.getLoserId());
-        duel.setBet(participantsRequest.getBet());
+        duel.setBet(participantsRequest.getBet());*/
+        Duel duel = Duel.builder()
+                .gameId(game.getId())
+                .winnerId(participantsRequest.getWinnerId())
+                .loserId(participantsRequest.getLoserId())
+                .bet(participantsRequest.getBet())
+                .build();
         duelRepository.save(duel);
 
         assignPointsToPlayersInDuel(participantsRequest.getWinnerId(), participantsRequest.getLoserId(),
@@ -323,10 +354,17 @@ public class GameServiceImpl implements GameService {
         List<Player> players = playerRepository.getAllPlayersOfRanking(rankingId);
 
         for (Player player : players) {
-            Historico historico = new Historico();
+            /*Historico historico = new Historico();
             historico.setGameId(gameId);
             historico.setPlayerId(player.getId());
-            historico.setTotalPoints(player.getPoints());
+            historico.setTotalPoints(player.getPoints());*/
+            Historico historico = Historico.builder()
+                    .gameId(gameId)
+                    .playerId(player.getId())
+                    .totalPoints(player.getPoints())
+                    .obtainedPoints(null)
+                    .position(null)
+                    .build();
             if (player.getId().equals(winnerId)) {
                 historico.setObtainedPoints((double) bet);
             } else if (player.getId().equals(loserId)) {

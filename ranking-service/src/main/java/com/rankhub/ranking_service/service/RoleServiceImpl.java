@@ -20,10 +20,15 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role createRole(RoleDto role) {
-        Role newRole = new Role();
+        /*Role newRole = new Role();
         newRole.setUserId(role.getUserId());
         newRole.setRankingId(role.getRankingId());
-        newRole.setRoleType(role.getRole());
+        newRole.setRoleType(role.getRole());*/
+        Role newRole = Role.builder()
+                .userId(role.getUserId())
+                .rankingId(role.getRankingId())
+                .roleType(role.getRole())
+                .build();
         roleRepository.save(newRole);
         return newRole;
     }

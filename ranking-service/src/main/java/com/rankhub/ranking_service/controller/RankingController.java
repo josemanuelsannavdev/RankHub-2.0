@@ -41,15 +41,12 @@ public class RankingController {
 
     private final RoleService roleService;
     private final RankingService rankingService;
-    private final RankingMapper mapper;
-
-    
 
     /* Get a ranking by its ID */
     @GetMapping("/ranking/{rankingId}")
     public ResponseEntity<RankingDto> getRankingById(@PathVariable UUID rankingId) {
-        Ranking ranking = rankingService.getRankingById(rankingId);
-        return ResponseEntity.ok(mapper.toDto(ranking));
+        RankingDto rankingDto = rankingService.getRankingById(rankingId);
+        return ResponseEntity.ok(rankingDto);
     }
 
     /* Create a ranking */
@@ -65,41 +62,67 @@ public class RankingController {
 
     /* Update a ranking */
     @PutMapping("/ranking/{rankingId}")
-    public ResponseEntity<RankingDto> updateRanking(
+    public ResponseEntity<?> updateRanking(
             @PathVariable UUID rankingId,
-            @Valid @RequestBody RankingRequest rankingRequest) {
+            @Valid @RequestBody RankingRequest rankingRequest,
+            @RequestHeader("X-User-Id") UUID userId) {
 
-        Ranking updatedRanking = rankingService.updateRanking(rankingId, rankingRequest);
-        RankingDto rankingDto = mapper.toDto(updatedRanking);
+        // Verificar autorización
+        Role role = roleService.getByRankingIdUserId(rankingId, userId);
+        if (role == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
+        }
+
+        if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes permisos para actualizar este ranking"));
+        }
+        RankingDto rankingDto = rankingService.updateRanking(rankingId, rankingRequest);
         return ResponseEntity.ok(rankingDto);
     }
 
     /* Patch a ranking */
     @PatchMapping("/ranking/{rankingId}")
-    public ResponseEntity<RankingDto> patchRanking(
+    public ResponseEntity<?> patchRanking(
             @PathVariable UUID rankingId,
-            @Valid @RequestBody RankingRequest request) {
+            @Valid @RequestBody RankingRequest request,
+            @RequestHeader("X-User-Id") UUID userId) {
 
-        Ranking updatedRanking = rankingService.patchRanking(rankingId, request);
-        RankingDto rankingDto = mapper.toDto(updatedRanking);
+        // Verificar autorización
+        Role role = roleService.getByRankingIdUserId(rankingId, userId);
+        if (role == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
+        }
+
+        if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes permisos para actualizar este ranking"));
+        }
+        RankingDto rankingDto = rankingService.patchRanking(rankingId, request);
         return ResponseEntity.ok(rankingDto);
     }
 
-    /*Delete a ranking for everyone  */
+    /* Delete a ranking for everyone */
     @DeleteMapping("/ranking/{rankingId}")
     public ResponseEntity<ApiMessageDto> deleteRanking(
             @PathVariable UUID rankingId,
             @RequestHeader("X-User-Id") UUID userId) {
         Role role = roleService.getByRankingIdUserId(rankingId, userId);
         if (role == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
         }
-        if (role.getRoleType() == RoleType.ADMIN || role.getRoleType() == RoleType.SUB_ADMIN ) {
-            rankingService.deleteRanking(rankingId);
-            return ResponseEntity.ok(new ApiMessageDto("ranking eliminado"));
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado"));
+
+        if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes permisos para eliminar este ranking"));
         }
+
+        rankingService.deleteRanking(rankingId);
+        return ResponseEntity.ok(new ApiMessageDto("Ranking eliminado correctamente"));
+
     }
 
     @GetMapping("/me/ranking")
@@ -112,18 +135,20 @@ public class RankingController {
                 rankingsWithRole != null ? rankingsWithRole : Collections.emptyList());
     }
 
-    /*Delete a ranking only for "Me" = Exit from the ranking */
+    /* Delete a ranking only for "Me" = Exit from the ranking */
     @DeleteMapping("/me/ranking/{rankingId}")
     public ResponseEntity<ApiMessageDto> leaveRanking(
             @RequestHeader("X-User-Id") UUID userId,
             @PathVariable UUID rankingId) {
 
-        boolean left = rankingService.leaveRanking(rankingId, userId);
-        if (!left) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiMessageDto("No autorizado para salir del ranking"));
+        try {
+            rankingService.leaveRanking(rankingId, userId);
+            return ResponseEntity.ok(new ApiMessageDto("Has salido del ranking correctamente"));
+        } catch (IllegalArgumentException e) {
+            log.error("Error al salir del ranking: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiMessageDto(e.getMessage()));
         }
-
-        return ResponseEntity.ok(new ApiMessageDto("Has salido del ranking"));
     }
 
 }

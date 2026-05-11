@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rankhub.ranking_service.dto.GameNameDto;
-import com.rankhub.ranking_service.dto.IndividualGameDto;
-import com.rankhub.ranking_service.dto.TeamGameDto;
+
 import com.rankhub.ranking_service.request.GameNameRequest;
-import com.rankhub.ranking_service.request.IndividualGameRequest;
-import com.rankhub.ranking_service.request.TeamGameRequest;
+
 import com.rankhub.ranking_service.service.GameNameService;
 
 import jakarta.validation.Valid;

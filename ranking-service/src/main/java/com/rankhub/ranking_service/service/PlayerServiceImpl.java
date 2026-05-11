@@ -2,47 +2,51 @@ package com.rankhub.ranking_service.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rankhub.ranking_service.dto.PlayerDto;
 import com.rankhub.ranking_service.entity.Player;
+import com.rankhub.ranking_service.mapper.PlayerMapper;
 import com.rankhub.ranking_service.repository.PlayerRepository;
 import com.rankhub.ranking_service.request.PlayerRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final PlayerMapper mapper;
 
-    public PlayerServiceImpl(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    @Override
+    public List<PlayerDto> getAllPlayersOfRanking(UUID rankingId) {
+        List<Player> players = playerRepository.getAllPlayersOfRanking(rankingId);
+        return players.stream().map(mapper::toDto).toList();
     }
 
     @Override
-    public List<Player> getAllPlayersOfRanking(UUID rankingId) {
-        return playerRepository.getAllPlayersOfRanking(rankingId);
-    }
-
-    @Override
-    public Player getPlayerById(UUID id) {
+    public PlayerDto getPlayerById(UUID id) {
         Player player = playerRepository.getPlayerById(id);
         if (player == null) {
             throw new IllegalArgumentException("Jugador no encontrado: " + id);
         }
-        return player;
+        return mapper.toDto(player);
     }
 
     @Override
     @Transactional
-    public Player createPlayer(PlayerRequest playerRequest) {
+    public PlayerDto createPlayer(PlayerRequest playerRequest) {
         String normalizedName = playerRequest.getName() != null ? playerRequest.getName().trim() : null;
 
         if (normalizedName != null && playerRepository.existsByNameIgnoreCase(normalizedName)) {
             throw new IllegalArgumentException("Player ya existente, cambiar nombre");
         }
 
-        return playerRepository.save(Player.builder()
+        Player newPlayer = playerRepository.save(Player.builder()
                 .name(normalizedName)
                 .gamesLost(0)
                 .gamesWon(0)
@@ -51,29 +55,39 @@ public class PlayerServiceImpl implements PlayerService {
                 .image(playerRequest.getImage())
                 .rankingId(playerRequest.getRankingId())
                 .build());
+
+        return mapper.toDto(newPlayer);
     }
 
     @Override
     @Transactional
-    public Player updatePlayer(UUID playerId, PlayerRequest playerRequest) {
-        Player existingPlayer = getPlayerById(playerId);
+    public PlayerDto updatePlayer(UUID playerId, PlayerRequest playerRequest) {
+
+        Player existingPlayer = playerRepository.getPlayerById(playerId);
+        if (existingPlayer == null) {
+            throw new IllegalArgumentException("Jugador no encontrado: " + playerId);
+        }
         existingPlayer.setName(playerRequest.getName() != null ? playerRequest.getName().trim() : null);
         existingPlayer.setGamesPlayed(playerRequest.getGamesPlayed() != null ? playerRequest.getGamesPlayed() : 0);
         existingPlayer.setGamesLost(playerRequest.getGamesLost() != null ? playerRequest.getGamesLost() : 0);
         existingPlayer.setGamesWon(playerRequest.getGamesWon() != null ? playerRequest.getGamesWon() : 0);
         existingPlayer.setPoints(playerRequest.getPoints() != null ? playerRequest.getPoints() : 0.0);
         existingPlayer.setImage(playerRequest.getImage());
-        return playerRepository.save(existingPlayer);
+
+        return mapper.toDto(playerRepository.save(existingPlayer));
     }
 
     @Override
     @Transactional
-    public Player patchPlayer(UUID playerId, PlayerRequest playerRequest) {
-        Player existingPlayer = getPlayerById(playerId);
+    public PlayerDto patchPlayer(UUID playerId, PlayerRequest playerRequest) {
+        Player existingPlayer = playerRepository.getPlayerById(playerId);
+        if (existingPlayer == null) {
+            throw new IllegalArgumentException("Jugador no encontrado: " + playerId);
+        }
         if (playerRequest.getName() != null) {
             existingPlayer.setName(playerRequest.getName().trim());
         }
-        return playerRepository.save(existingPlayer);
+        return mapper.toDto(playerRepository.save(existingPlayer));
     }
 
 }

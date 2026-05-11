@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.rankhub.ranking_service.entity.utils.RoleType;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RankingWithRoleDto {
     private String name;
     private UUID id;
