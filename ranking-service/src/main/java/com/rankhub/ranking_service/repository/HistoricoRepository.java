@@ -21,4 +21,8 @@ public class HistoricoRepository {
     public List<Historico> findByGameId(UUID gameId) {
         return historicoJpaRepository.findByGameId(gameId);
     }
+
+    public List<Historico> findByGameIdIn(List<UUID> gameIds) {
+        return historicoJpaRepository.findByGameIdIn(gameIds);
+    }
 }

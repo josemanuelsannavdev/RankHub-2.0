@@ -24,6 +24,9 @@ function RankingPage() {
     navigate("/viewGames");
   };
 
+  const handleViewHistorico = () => {
+    navigate("/historico");
+  };
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white">
       <Header title={rankingTitle} />
@@ -42,7 +45,7 @@ function RankingPage() {
         addPlayerClick={handleCreatePlayerButton}
         createGameClick={handleCreateGame}
         viewGamesClick={handleViewGames}
-        viewHistoricoClick={() => navigate("/historico")}
+        viewHistoricoClick={handleViewHistorico}
       />
       {/* Placeholder for Add Player Modal */}
       {modalOpen && (

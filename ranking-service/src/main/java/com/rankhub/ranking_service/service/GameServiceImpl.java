@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ import com.rankhub.ranking_service.request.TeamRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
 
@@ -95,13 +97,21 @@ public class GameServiceImpl implements GameService {
     }
 
     private void addPointsToAssociatedPlayersIndividual(List<Participant> participants) {
+        List<UUID> playerIds = participants.stream()
+                .map(Participant::getPlayerId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        Map<UUID, Player> playersById = playerRepository.getPlayersByIds(playerIds).stream()
+                .collect(Collectors.toMap(Player::getId, player -> player));
 
         for (Participant participant : participants) {
             if (participant.getPlayerId() == null) {
                 continue; // Si no hay playerId, no podemos asignar puntos, así que saltamos este
                           // participante
             }
-            Player player = playerRepository.getPlayerById(participant.getPlayerId());
+            Player player = playersById.get(participant.getPlayerId());
             if (player == null) {
                 throw new IllegalArgumentException("Jugador no encontrado: " + participant.getPlayerId());
             }
@@ -116,9 +126,9 @@ public class GameServiceImpl implements GameService {
                 player.setGamesLost(player.getGamesLost() + 1);
             }
             player.setGamesPlayed(player.getGamesPlayed() + 1);
-            playerRepository.save(player);
-
         }
+
+        playerRepository.saveAll(new ArrayList<>(playersById.values()));
     }
 
     private void crearHistoricoForIndividualGame(List<Participant> participants, UUID rankingId) {
@@ -131,12 +141,7 @@ public class GameServiceImpl implements GameService {
                     .orElse(null);
 
             if (participant != null) {// si aparece en la lista de participantes
-               /*  Historico historico = new Historico();
-                historico.setGameId(gameId);
-                historico.setPlayerId(player.getId());
-                historico.setTotalPoints(player.getPoints());
-                historico.setObtainedPoints((double) participant.getPoints());
-                historico.setPosition(participant.getPosition());*/
+
                 Historico historico = Historico.builder()
                         .gameId(gameId)
                         .playerId(player.getId())
@@ -155,11 +160,7 @@ public class GameServiceImpl implements GameService {
                         .obtainedPoints(null)
                         .position(null)
                         .build();
-                /*historico.setGameId(gameId); // Asignamos el id del juego aunque no haya participado
-                historico.setPlayerId(player.getId());
-                historico.setTotalPoints(player.getPoints());
-                historico.setObtainedPoints(null);
-                historico.setPosition(null);*/
+
                 historicoRepository.save(historico);
             }
         }
@@ -224,6 +225,15 @@ public class GameServiceImpl implements GameService {
     }
 
     private void addPointsToAssociatedPlayersTeam(List<Team> teams, List<TeamMember> teamMembers) {
+        List<UUID> playerIds = teamMembers.stream()
+                .map(TeamMember::getPlayerId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        Map<UUID, Player> playersById = playerRepository.getPlayersByIds(playerIds).stream()
+                .collect(Collectors.toMap(Player::getId, player -> player));
+
         for (Team team : teams) {
             List<TeamMember> membersOfTeam = teamMembers.stream()
                     .filter(member -> member.getTeamId().equals(team.getId()))
@@ -234,17 +244,18 @@ public class GameServiceImpl implements GameService {
                     continue; // Si no hay playerId, no podemos asignar puntos, así que saltamos este
                               // miembro
                 }
-                Player player = playerRepository.getPlayerById(member.getPlayerId());
+                Player player = playersById.get(member.getPlayerId());
                 if (player == null) {
                     throw new IllegalArgumentException("Jugador no encontrado: " + member.getPlayerId());
                 }
 
                 double currentPoints = player.getPoints() != null ? player.getPoints() : 0.0;
                 player.setPoints(currentPoints + team.getPoints());
-                playerRepository.save(player);
 
             }
         }
+
+        playerRepository.saveAll(new ArrayList<>(playersById.values()));
     }
 
     private void crearHistoricoForTeamGame(List<Team> teams, List<TeamMember> teamMembers, UUID rankingId) {
@@ -257,10 +268,7 @@ public class GameServiceImpl implements GameService {
                     .orElse(null);
 
             if (member != null) {// si aparece en la lista de miembros de equipos
-                /*Historico historico = new Historico();
-                historico.setGameId(gameId);
-                historico.setPlayerId(player.getId());
-                historico.setTotalPoints(player.getPoints());*/
+
                 Historico historico = Historico.builder()
                         .gameId(gameId)
                         .playerId(player.getId())
@@ -274,7 +282,8 @@ public class GameServiceImpl implements GameService {
                         .orElse(null);
                 if (teamOfMember != null) {
                     historico.setObtainedPoints((double) teamOfMember.getPoints());
-                    historico.setPosition(teamOfMember.getPosition()); // En los juegos por equipos no hay una posición individual, así que la dejamos a null
+                    historico.setPosition(teamOfMember.getPosition()); // En los juegos por equipos no hay una posición
+                                                                       // individual, así que la dejamos a null
                 } else {
                     historico.setObtainedPoints(null);
                     historico.setPosition(null);
@@ -283,12 +292,7 @@ public class GameServiceImpl implements GameService {
             } else {
                 // Si el jugador no participó en el juego, también podríamos querer crear un
                 // histórico con 0 puntos obtenidos
-                /*Historico historico = new Historico();
-                historico.setGameId(gameId); // Asignamos el id del juego aunque no haya participado
-                historico.setPlayerId(player.getId());
-                historico.setTotalPoints(player.getPoints());
-                historico.setObtainedPoints(null);
-                historico.setPosition(null);*/
+
                 Historico historico = Historico.builder()
                         .gameId(gameId)
                         .playerId(player.getId())
@@ -303,17 +307,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    @Transactional
     public DuelGameDto createDuelGame(DuelGameRequest request) {
         Game game = gameRepository.save(gameMapper.toEntity(request, GameType.DUEL_GAME));
         // obtener ganador y perdedor de la request, asignarles los puntos
         // correspondientes, y actualizar sus puntos en la base de datos
         DuelParticipantsRequest participantsRequest = request.getParticipants();
 
-        /*Duel duel = new Duel();
-        duel.setGameId(game.getId());
-        duel.setWinnerId(participantsRequest.getWinnerId());
-        duel.setLoserId(participantsRequest.getLoserId());
-        duel.setBet(participantsRequest.getBet());*/
         Duel duel = Duel.builder()
                 .gameId(game.getId())
                 .winnerId(participantsRequest.getWinnerId())
@@ -354,10 +354,7 @@ public class GameServiceImpl implements GameService {
         List<Player> players = playerRepository.getAllPlayersOfRanking(rankingId);
 
         for (Player player : players) {
-            /*Historico historico = new Historico();
-            historico.setGameId(gameId);
-            historico.setPlayerId(player.getId());
-            historico.setTotalPoints(player.getPoints());*/
+
             Historico historico = Historico.builder()
                     .gameId(gameId)
                     .playerId(player.getId())
@@ -380,124 +377,244 @@ public class GameServiceImpl implements GameService {
     @Override
     @Transactional(readOnly = true)
     public List<Object> getAllGamesDetailed(UUID rankingId) {
+        // Obtener todos los juegos del ranking
         List<Game> games = gameRepository.findAllGamesByRankingId(rankingId);
         if (games == null || games.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // Preload players of the ranking to avoid many DB calls
-        List<Player> players = playerRepository.getAllPlayersOfRanking(rankingId);
-        Map<UUID, Player> playersById = players.stream()
-                .collect(Collectors.toMap(Player::getId, p -> p));
+        // Precargar jugadores para evitar N+1 queries
+        Map<UUID, Player> playerCache = loadPlayerCache(rankingId);
 
+        // Procesar juegos por tipo
         List<Object> result = new ArrayList<>();
-
-        // INDIVIDUAL GAMES
-        List<UUID> individualGameIds = games.stream()
-                .filter(g -> g.getType() == GameType.INDIVIDUAL_GAME)
-                .map(Game::getId)
+        List<Game> individualGames = games.stream()
+                .filter(game -> game.getType() == GameType.INDIVIDUAL_GAME)
                 .toList();
 
-        List<Participant> participants = individualGameIds.isEmpty() ? Collections.emptyList()
-                : participantRepository.findByGameIdIn(individualGameIds);
+        processIndividualGames(individualGames, playerCache, result);
 
-        Map<UUID, List<ParticipantDto>> participantsByGameId = participants.stream()
-                .collect(Collectors.groupingBy(Participant::getGameId,
-                        Collectors.mapping(participantMapper::toDto, Collectors.toList())));
-
-        // attach player info to participant DTOs
-        for (List<ParticipantDto> pList : participantsByGameId.values()) {
-            for (ParticipantDto pd : pList) {
-                if (pd.getPlayerId() != null) {
-                    Player player = playersById.get(pd.getPlayerId());
-                    if (player != null) {
-                        pd.setPlayer(playerMapper.toDto(player));
-                    }
-                }
-            }
-        }
-
-        // Build individual game DTOs
-        for (Game game : games) {
-            if (game.getType() == GameType.INDIVIDUAL_GAME) {
-                List<ParticipantDto> partDtos = participantsByGameId.getOrDefault(game.getId(),
-                        Collections.emptyList());
-                result.add(gameMapper.toIndividualGameDto(game, partDtos));
-            }
-        }
-
-        // TEAM GAMES
-        List<UUID> teamGameIds = games.stream()
-                .filter(g -> g.getType() == GameType.TEAM_GAME)
-                .map(Game::getId)
+        List<Game> teamGames = games.stream()
+                .filter(game -> game.getType() == GameType.TEAM_GAME)
                 .toList();
 
-        List<Team> teams = teamGameIds.isEmpty() ? Collections.emptyList() : teamRepository.findByGameIdIn(teamGameIds);
-        List<UUID> teamIds = teams.stream().map(Team::getId).toList();
-        List<TeamMember> members = teamIds.isEmpty() ? Collections.emptyList()
-                : teamMemberRepository.findByTeamIdIn(teamIds);
+        processTeamGames(teamGames, playerCache, result);
 
-        Map<UUID, List<TeamMemberDto>> membersByTeamId = members.stream()
-                .collect(Collectors.groupingBy(TeamMember::getTeamId,
-                        Collectors.mapping(teamMemberMapper::toDto, Collectors.toList())));
-
-        // attach player info to team member DTOs
-        for (List<TeamMemberDto> mList : membersByTeamId.values()) {
-            for (TeamMemberDto md : mList) {
-                if (md.getPlayerId() != null) {
-                    Player player = playersById.get(md.getPlayerId());
-                    if (player != null) {
-                        md.setPlayer(playerMapper.toDto(player));
-                    }
-                }
-            }
-        }
-
-        Map<UUID, List<Team>> teamsByGameId = teams.stream()
-                .collect(Collectors.groupingBy(Team::getGameId));
-
-        for (Game game : games) {
-            if (game.getType() == GameType.TEAM_GAME) {
-                List<Team> teamsOfGame = teamsByGameId.getOrDefault(game.getId(), Collections.emptyList());
-                List<TeamDto> teamsDto = teamsOfGame.stream()
-                        .map(team -> teamMapper.toDto(team,
-                                membersByTeamId.getOrDefault(team.getId(), Collections.emptyList())))
-                        .toList();
-                result.add(gameMapper.toTeamGameDto(game, teamsDto));
-            }
-        }
-
-        // DUEL GAMES
-        List<UUID> duelGameIds = games.stream()
-                .filter(g -> g.getType() == GameType.DUEL_GAME)
-                .map(Game::getId)
+        List<Game> duelGames = games.stream()
+                .filter(game -> game.getType() == GameType.DUEL_GAME)
                 .toList();
 
-        List<Duel> duels = duelGameIds.isEmpty() ? Collections.emptyList() : duelRepository.findByGameIdIn(duelGameIds);
-        Map<UUID, Duel> duelByGameId = duels.stream().collect(Collectors.toMap(Duel::getGameId, d -> d));
-
-        for (Game game : games) {
-            if (game.getType() == GameType.DUEL_GAME) {
-                Duel duel = duelByGameId.get(game.getId());
-                DuelGameDto dto = gameMapper.toDuelGameDto(game);
-                if (duel != null) {
-                    if (duel.getWinnerId() != null) {
-                        Player winner = playersById.get(duel.getWinnerId());
-                        if (winner != null)
-                            dto.setWinner(playerMapper.toDto(winner));
-                    }
-                    if (duel.getLoserId() != null) {
-                        Player loser = playersById.get(duel.getLoserId());
-                        if (loser != null)
-                            dto.setLoser(playerMapper.toDto(loser));
-                    }
-                    dto.setBet(duel.getBet());
-                }
-                result.add(dto);
-            }
-        }
+        processDuelGames(duelGames, playerCache, result);
 
         return result;
     }
 
+    /**
+     * Carga todos los jugadores del ranking en un mapa para acceso rápido
+     */
+    private Map<UUID, Player> loadPlayerCache(UUID rankingId) {
+        List<Player> players = playerRepository.getAllPlayersOfRanking(rankingId);
+        return players.stream()
+                .collect(Collectors.toMap(Player::getId, player -> player));
+    }
+
+    /**
+     * Procesa juegos individuales y los añade al resultado
+     */
+    private void processIndividualGames(List<Game> games, Map<UUID, Player> playerCache, List<Object> result) {
+        List<UUID> individualGameIds = games.stream()
+                .filter(game -> game.getType() == GameType.INDIVIDUAL_GAME)
+                .map(Game::getId)
+                .toList();
+
+        if (individualGameIds.isEmpty()) {
+            return;
+        }
+
+        // Cargar participantes de todos los juegos individuales
+        List<Participant> participants = participantRepository.findByGameIdIn(individualGameIds);
+        Map<UUID, List<ParticipantDto>> participantsByGameId = groupParticipantsByGame(participants, playerCache);
+
+        // Construir DTOs de juegos individuales
+        for (Game game : games) {
+
+            List<ParticipantDto> participantDtos = participantsByGameId.getOrDefault(
+                    game.getId(),
+                    Collections.emptyList());
+            result.add(gameMapper.toIndividualGameDto(game, participantDtos));
+
+        }
+    }
+
+    /**
+     * Agrupa participantes por juego y enriquece con información del jugador
+     */
+    private Map<UUID, List<ParticipantDto>> groupParticipantsByGame(
+            List<Participant> participants,
+            Map<UUID, Player> playerCache) {
+
+        Map<UUID, List<ParticipantDto>> participantsByGameId = participants.stream()
+                .collect(Collectors.groupingBy(
+                        Participant::getGameId,
+                        Collectors.mapping(participantMapper::toDto, Collectors.toList())));
+
+        // Enriquecer cada participante con información del jugador
+        participantsByGameId.values()
+                .forEach(participantList -> enrichParticipantsWithPlayerInfo(participantList, playerCache));
+
+        return participantsByGameId;
+    }
+
+    /**
+     * Añade información del jugador a cada participante
+     */
+    private void enrichParticipantsWithPlayerInfo(
+            List<ParticipantDto> participants,
+            Map<UUID, Player> playerCache) {
+
+        for (ParticipantDto participant : participants) {
+            if (participant.getPlayerId() != null) {
+                Player player = playerCache.get(participant.getPlayerId());
+                if (player != null) {
+                    participant.setPlayer(playerMapper.toDto(player));
+                }
+            }
+        }
+    }
+
+    /**
+     * Procesa juegos por equipos y los añade al resultado
+     */
+    private void processTeamGames(List<Game> games, Map<UUID, Player> playerCache, List<Object> result) {
+        List<UUID> teamGameIds = games.stream()
+                .filter(game -> game.getType() == GameType.TEAM_GAME)
+                .map(Game::getId)
+                .toList();
+
+        if (teamGameIds.isEmpty()) {
+            return;
+        }
+
+        // Cargar equipos y miembros
+        List<Team> teams = teamRepository.findByGameIdIn(teamGameIds);
+        Map<UUID, List<TeamMemberDto>> membersByTeamId = loadTeamMembers(teams, playerCache);
+        Map<UUID, List<Team>> teamsByGameId = teams.stream()
+                .collect(Collectors.groupingBy(Team::getGameId));
+
+        // Construir DTOs de juegos por equipos
+        for (Game game : games) {
+            
+                List<Team> gameTeams = teamsByGameId.getOrDefault(game.getId(), Collections.emptyList());
+                List<TeamDto> teamDtos = gameTeams.stream()
+                        .map(team -> teamMapper.toDto(
+                                team,
+                                membersByTeamId.getOrDefault(team.getId(), Collections.emptyList())))
+                        .toList();
+                result.add(gameMapper.toTeamGameDto(game, teamDtos));
+            
+        }
+    }
+
+    /**
+     * Carga miembros de equipos y los enriquece con información del jugador
+     */
+    private Map<UUID, List<TeamMemberDto>> loadTeamMembers(
+            List<Team> teams,
+            Map<UUID, Player> playerCache) {
+
+        if (teams.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<UUID> teamIds = teams.stream()
+                .map(Team::getId)
+                .toList();
+
+        List<TeamMember> members = teamMemberRepository.findByTeamIdIn(teamIds);
+        Map<UUID, List<TeamMemberDto>> membersByTeamId = members.stream()
+                .collect(Collectors.groupingBy(
+                        TeamMember::getTeamId,
+                        Collectors.mapping(teamMemberMapper::toDto, Collectors.toList())));
+
+        // Enriquecer cada miembro con información del jugador
+        membersByTeamId.values().forEach(memberList -> enrichTeamMembersWithPlayerInfo(memberList, playerCache));
+
+        return membersByTeamId;
+    }
+
+    /**
+     * Añade información del jugador a cada miembro del equipo
+     */
+    private void enrichTeamMembersWithPlayerInfo(
+            List<TeamMemberDto> members,
+            Map<UUID, Player> playerCache) {
+
+        for (TeamMemberDto member : members) {
+            if (member.getPlayerId() != null) {
+                Player player = playerCache.get(member.getPlayerId());
+                if (player != null) {
+                    member.setPlayer(playerMapper.toDto(player));
+                }
+            }
+        }
+    }
+
+    /**
+     * Procesa juegos de duelo y los añade al resultado
+     */
+    private void processDuelGames(List<Game> games, Map<UUID, Player> playerCache, List<Object> result) {
+        List<UUID> duelGameIds = games.stream()
+                .filter(game -> game.getType() == GameType.DUEL_GAME)
+                .map(Game::getId)
+                .toList();
+
+        if (duelGameIds.isEmpty()) {
+            return;
+        }
+
+        // Cargar duelos
+        List<Duel> duels = duelRepository.findByGameIdIn(duelGameIds);
+        Map<UUID, Duel> duelByGameId = duels.stream()
+                .collect(Collectors.toMap(Duel::getGameId, duel -> duel));
+
+        // Construir DTOs de juegos de duelo
+        for (Game game : games) {
+            
+                DuelGameDto duelDto = buildDuelGameDto(game, duelByGameId.get(game.getId()), playerCache);
+                result.add(duelDto);
+            
+        }
+    }
+
+    /**
+     * Construye un DTO de juego de duelo con información completa
+     */
+    private DuelGameDto buildDuelGameDto(Game game, Duel duel, Map<UUID, Player> playerCache) {
+        DuelGameDto dto = gameMapper.toDuelGameDto(game);
+
+        if (duel == null) {
+            return dto;
+        }
+
+        // Establecer ganador
+        if (duel.getWinnerId() != null) {
+            Player winner = playerCache.get(duel.getWinnerId());
+            if (winner != null) {
+                dto.setWinner(playerMapper.toDto(winner));
+            }
+        }
+
+        // Establecer perdedor
+        if (duel.getLoserId() != null) {
+            Player loser = playerCache.get(duel.getLoserId());
+            if (loser != null) {
+                dto.setLoser(playerMapper.toDto(loser));
+            }
+        }
+
+        // Establecer apuesta
+        dto.setBet(duel.getBet());
+
+        return dto;
+    }
 }

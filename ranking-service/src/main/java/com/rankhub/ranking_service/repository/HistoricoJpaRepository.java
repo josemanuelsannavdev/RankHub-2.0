@@ -11,4 +11,6 @@ import com.rankhub.ranking_service.entity.Historico;
 public interface HistoricoJpaRepository extends JpaRepository<Historico, UUID>, JpaSpecificationExecutor<Historico>{
     
     public List<Historico> findByGameId(UUID gameId);
+
+    List<Historico> findByGameIdIn(List<UUID> gameIds);
 }

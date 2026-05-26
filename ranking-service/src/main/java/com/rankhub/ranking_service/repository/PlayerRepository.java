@@ -25,8 +25,16 @@ public class PlayerRepository {
         return playerJpaRespository.findById(id).orElse(null);
     }
 
+    public List<Player> getPlayersByIds(List<UUID> ids) {
+        return playerJpaRespository.findAllById(ids);
+    }
+
     public Player save(Player player) {
         return playerJpaRespository.save(player);
+    }
+
+    public List<Player> saveAll(List<Player> players) {
+        return playerJpaRespository.saveAll(players);
     }
 
     public boolean existsByNameIgnoreCase(String name) {

@@ -75,6 +75,7 @@ const usePlayerPageData = ({ playerId, currentRankingId }) => {
 
   return {
     player,
+    setPlayer,
     historicos,
     loading,
     error,

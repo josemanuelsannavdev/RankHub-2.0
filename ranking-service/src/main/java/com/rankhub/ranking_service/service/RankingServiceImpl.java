@@ -18,6 +18,7 @@ import com.rankhub.ranking_service.request.RankingRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RankingServiceImpl implements RankingService {
 

@@ -5,13 +5,11 @@ import com.rankhub.ranking_service.dto.ApiMessageDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.RankingDto;
 
-import com.rankhub.ranking_service.entity.Ranking;
 import com.rankhub.ranking_service.entity.Role;
 
 import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.service.RankingService;
 import com.rankhub.ranking_service.service.RoleService;
-import com.rankhub.ranking_service.mapper.RankingMapper;
 import com.rankhub.ranking_service.request.RankingRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
+import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -62,7 +61,7 @@ public class RankingController {
 
     /* Update a ranking */
     @PutMapping("/ranking/{rankingId}")
-    public ResponseEntity<?> updateRanking(
+    public ResponseEntity<RankingDto> updateRanking(
             @PathVariable UUID rankingId,
             @Valid @RequestBody RankingRequest rankingRequest,
             @RequestHeader("X-User-Id") UUID userId) {
@@ -70,21 +69,22 @@ public class RankingController {
         // Verificar autorización
         Role role = roleService.getByRankingIdUserId(rankingId, userId);
         if (role == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "No tienes acceso a este ranking");
         }
 
         if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiMessageDto("No tienes permisos para actualizar este ranking"));
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "No tienes permisos para actualizar este ranking");
         }
+
         RankingDto rankingDto = rankingService.updateRanking(rankingId, rankingRequest);
         return ResponseEntity.ok(rankingDto);
     }
 
     /* Patch a ranking */
     @PatchMapping("/ranking/{rankingId}")
-    public ResponseEntity<?> patchRanking(
+    public ResponseEntity<RankingDto> patchRanking(
             @PathVariable UUID rankingId,
             @Valid @RequestBody RankingRequest request,
             @RequestHeader("X-User-Id") UUID userId) {
@@ -92,13 +92,13 @@ public class RankingController {
         // Verificar autorización
         Role role = roleService.getByRankingIdUserId(rankingId, userId);
         if (role == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "No tienes acceso a este ranking");
         }
 
         if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiMessageDto("No tienes permisos para actualizar este ranking"));
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "No tienes permisos para actualizar este ranking");
         }
         RankingDto rankingDto = rankingService.patchRanking(rankingId, request);
         return ResponseEntity.ok(rankingDto);
@@ -145,7 +145,6 @@ public class RankingController {
             rankingService.leaveRanking(rankingId, userId);
             return ResponseEntity.ok(new ApiMessageDto("Has salido del ranking correctamente"));
         } catch (IllegalArgumentException e) {
-            log.error("Error al salir del ranking: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiMessageDto(e.getMessage()));
         }

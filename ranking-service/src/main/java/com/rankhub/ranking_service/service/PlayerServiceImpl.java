@@ -16,6 +16,7 @@ import com.rankhub.ranking_service.request.PlayerRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
 
@@ -67,12 +68,10 @@ public class PlayerServiceImpl implements PlayerService {
         if (existingPlayer == null) {
             throw new IllegalArgumentException("Jugador no encontrado: " + playerId);
         }
-        existingPlayer.setName(playerRequest.getName() != null ? playerRequest.getName().trim() : null);
-        existingPlayer.setGamesPlayed(playerRequest.getGamesPlayed() != null ? playerRequest.getGamesPlayed() : 0);
-        existingPlayer.setGamesLost(playerRequest.getGamesLost() != null ? playerRequest.getGamesLost() : 0);
-        existingPlayer.setGamesWon(playerRequest.getGamesWon() != null ? playerRequest.getGamesWon() : 0);
-        existingPlayer.setPoints(playerRequest.getPoints() != null ? playerRequest.getPoints() : 0.0);
-        existingPlayer.setImage(playerRequest.getImage());
+
+        existingPlayer.setName(playerRequest.getName() != null ? playerRequest.getName().trim() : existingPlayer.getName());
+        
+        existingPlayer.setImage(playerRequest.getImage() != null ? playerRequest.getImage() : existingPlayer.getImage());
 
         return mapper.toDto(playerRepository.save(existingPlayer));
     }

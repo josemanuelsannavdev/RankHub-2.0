@@ -28,7 +28,7 @@ export const createPlayer = (player) => {
 };
 
 export const updatePlayer = (playerId, player) => {
-  return gatewayApi.post(`/ranking-service/jugador/${playerId}`, {
+  return gatewayApi.post(`/ranking-service/player/${playerId}`, {
     targetMethod: "PUT",
     ...emptyPayload,
     body: player,

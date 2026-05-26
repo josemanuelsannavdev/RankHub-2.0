@@ -1,46 +1,19 @@
-import PlayerCard from './PlayerCard';
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import PlayerCard from "./PlayerCard";
+import PropTypes from "prop-types";
+import { usePlayerList } from "../hooks/usePlayerList";
 
-function PlayersInMatchSection({ title, players, onPlayersChange, onPlayerDelete }) {
-  const [orderedPlayers, setOrderedPlayers] = useState(players);
 
-  useEffect(() => {
-    setOrderedPlayers(players);
-  }, [players]);
-
-  const movePlayer = (fromIndex, toIndex) => {
-    if (toIndex < 0 || toIndex >= orderedPlayers.length) {
-      return;
-    }
-
-    const nextPlayers = [...orderedPlayers];
-    const [playerToMove] = nextPlayers.splice(fromIndex, 1);
-    nextPlayers.splice(toIndex, 0, playerToMove);
-
-    setOrderedPlayers(nextPlayers);
-
-    if (onPlayersChange) {
-      onPlayersChange(nextPlayers);
-    }
-  };
-
-  const deletePlayer = (indexToDelete) => {
-    const deletedPlayer = orderedPlayers[indexToDelete];
-    const nextPlayers = orderedPlayers.filter(
-      (_, currentIndex) => currentIndex !== indexToDelete,
-    );
-
-    setOrderedPlayers(nextPlayers);
-
-    if (onPlayersChange) {
-      onPlayersChange(nextPlayers);
-    }
-
-    if (deletedPlayer && onPlayerDelete) {
-      onPlayerDelete(deletedPlayer);
-    }
-  };
+function PlayersInMatchSection({
+  title,
+  players,
+  onPlayersChange,
+  onPlayerDelete,
+}) {
+  const { orderedPlayers, movePlayer, deletePlayer } = usePlayerList(
+    players,
+    onPlayersChange,
+    onPlayerDelete,
+  );
 
   return (
     <div className="mt-8">
@@ -48,7 +21,9 @@ function PlayersInMatchSection({ title, players, onPlayersChange, onPlayerDelete
         <h2 className="text-sm font-bold uppercase tracking-widest text-primary">
           {title}
         </h2>
-        <span className="text-xs font-medium text-slate-400">Total: {orderedPlayers.length}</span>
+        <span className="text-xs font-medium text-slate-400">
+          Total: {orderedPlayers.length}
+        </span>
       </div>
 
       <div className="space-y-3">
@@ -84,7 +59,7 @@ PlayersInMatchSection.propTypes = {
       name: PropTypes.string.isRequired,
       points: PropTypes.number,
       avatarUrl: PropTypes.string,
-    })
+    }),
   ).isRequired,
   onPlayersChange: PropTypes.func,
   onPlayerDelete: PropTypes.func,
