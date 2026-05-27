@@ -15,4 +15,8 @@ public interface DuelJpaRepository extends JpaRepository<Duel, UUID>, JpaSpecifi
 
 	List<Duel> findByGameIdIn(List<UUID> gameIds);
 	Duel findByGameId(UUID gameId);
+
+	List<Duel> findByWinnerId(UUID winnerId);
+
+	List<Duel> findByLoserId(UUID loserId);
 }

@@ -5,7 +5,7 @@ import GameFilters from "./components/GameFilters";
 import GamesList from "./components/GamesList";
 import { useRanking } from "../../context/RankingContext.jsx";
 import { getGames } from "../../services/gameApi";
-
+import GameOptionModal from "./components/GameOptionModal";
 const splitGameDateTime = (rawDate) => {
   if (typeof rawDate !== "string" || rawDate.trim() === "") {
     return { date: "--", time: "--" };
@@ -62,6 +62,8 @@ const ViewGamePage = () => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const { currentRanking } = useRanking();
+  const [gameOptionModalOpen, setGameOptionModalOpen] = useState(false);
+  const [selectedGameId, setSelectedGameId] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -132,8 +134,24 @@ const ViewGamePage = () => {
 
   const handleMenuClick = (gameId) => {
     console.log("Menu clicked for game:", gameId);
-    // TODO: Implementar lógica del menú
+    setSelectedGameId(gameId);
+    setGameOptionModalOpen(true);
   };
+
+  const handleViewGameStats = (game) => {
+    console.log("View game stats:", game);
+    // Implement view stats functionality here
+  };
+const handleEditGame = (game) => {
+    console.log("Edit game:", game);
+    // Implement edit functionality here
+  }
+  const handleDeleteGame = (game) => {
+    console.log("Delete game:", game);
+    // Implement delete functionality here
+  } ;
+
+  
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white">
@@ -181,6 +199,17 @@ const ViewGamePage = () => {
           </section>
         )}
         <GamesList games={filteredGames} onMenuClick={handleMenuClick} />
+
+        {gameOptionModalOpen && (
+          <GameOptionModal
+            game={filteredGames.find((g) => g.id === selectedGameId)}
+            onViewStats={handleViewGameStats}
+            onEdit={handleEditGame}
+            onDelete={handleDeleteGame}
+            onClose={() => setGameOptionModalOpen(false)}
+          />
+        )}
+      
       </main>
     </div>
   );

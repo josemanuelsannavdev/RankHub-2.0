@@ -1,7 +1,7 @@
 import GameTypeTag from "../shared/GameTypeTag";
 import GameDateTime from "../shared/GameDateTime";
 import PropTypes from "prop-types";
-
+import GameCard from "./GameCard";
 const DuelGameCard = ({
   gameTitle,
   date,
@@ -10,12 +10,12 @@ const DuelGameCard = ({
   loser,
   bet,
   onMenuClick,
+  winnerGuestName,
+  loserGuestName,
 }) => {
   return (
-    <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-4 shadow-sm relative overflow-hidden">
-      <button className="absolute top-4 right-2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors z-10">
-        <span className="material-symbols-outlined">more_vert</span>
-      </button>
+    <GameCard onMenuClick={onMenuClick}>
+      
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
         <span className="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">
           DUELO
@@ -71,7 +71,7 @@ const DuelGameCard = ({
               </div>
             )}
             <span className="text-xs font-bold text-center text-winner-green">
-              {winner?.name || "Jugador 1"}
+              {winner?.name || winnerGuestName || "Jugador 1"}
             </span>
           </div>
         </div>
@@ -99,7 +99,7 @@ const DuelGameCard = ({
             )}
 
             <span className="text-xs font-bold text-center text-loser-red">
-              {loser?.name || "Jugador 2"}
+              {loser?.name || loserGuestName || "Jugador 2"}
             </span>
           </div>
         </div>
@@ -115,7 +115,7 @@ const DuelGameCard = ({
           </span>
         </div>
       </div>
-    </div>
+    </GameCard>
   );
 };
 
@@ -126,10 +126,12 @@ DuelGameCard.propTypes = {
   winner: PropTypes.shape({
     name: PropTypes.string,
     image: PropTypes.string,
+    winnerGuestName: PropTypes.string,
   }),
   loser: PropTypes.shape({
     name: PropTypes.string,
     image: PropTypes.string,
+    loserGuestName: PropTypes.string,
   }),
   bet: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onMenuClick: PropTypes.func.isRequired,

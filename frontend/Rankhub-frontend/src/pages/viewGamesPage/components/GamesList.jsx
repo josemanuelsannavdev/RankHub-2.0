@@ -17,6 +17,8 @@ const GamesList = ({ games, onMenuClick }) => {
           loser={game.loser}
           bet={game.bet}
           onMenuClick={() => onMenuClick(game.id)}
+          winnerGuestName={game.winnerGuestName}
+          loserGuestName={game.loserGuestName}
         />
       );
     }
@@ -32,7 +34,7 @@ const GamesList = ({ games, onMenuClick }) => {
         />
       );
     }
-
+    
     return (
       <IndividualGameCard
         gameTitle={game.name}

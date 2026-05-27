@@ -26,4 +26,12 @@ public class ParticipantRepository {
     public List<Participant> findByGameId(UUID gameId) {
         return participantJpaRepository.findByGameId(gameId);
     }
+
+    public void deleteByPlayerId(UUID playerId) {
+        participantJpaRepository.deleteByPlayerId(playerId);
+    }
+
+    public List<Participant> findAllByPlayerId(UUID playerId) {
+        return participantJpaRepository.findAllByPlayerId(playerId);
+    }
 }

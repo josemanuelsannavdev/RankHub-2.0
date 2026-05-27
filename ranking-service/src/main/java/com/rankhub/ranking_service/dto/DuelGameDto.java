@@ -26,4 +26,6 @@ public class DuelGameDto {
     private PlayerDto winner;
     private PlayerDto loser;
     private Integer bet;
+    private String winnerGuestName;
+    private String loserGuestName;
 }

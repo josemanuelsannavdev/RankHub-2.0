@@ -34,3 +34,14 @@ export const updatePlayer = (playerId, player) => {
     body: player,
   });
 };
+
+export const deletePlayer = (playerId,player,rankingId) => {
+  return gatewayApi.post(`/ranking-service/player/${playerId}`, {
+    targetMethod: "DELETE",
+    ...emptyPayload,
+    body: {
+      player,
+      rankingId
+    },
+  });
+};

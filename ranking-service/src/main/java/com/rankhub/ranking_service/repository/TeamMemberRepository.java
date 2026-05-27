@@ -26,4 +26,12 @@ public class TeamMemberRepository {
     public List<TeamMember> findByTeamId(UUID teamId) {
         return teamMemberJpaRepository.findByTeamId(teamId);
     }
+
+    public void deleteByPlayerId(UUID playerId) {
+        teamMemberJpaRepository.deleteByPlayerId(playerId);
+    }
+
+    public List<TeamMember> findAllByPlayerId(UUID playerId) {
+        return teamMemberJpaRepository.findAllByPlayerId(playerId);
+    }
 }

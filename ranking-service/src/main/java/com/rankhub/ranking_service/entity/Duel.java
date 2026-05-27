@@ -49,4 +49,10 @@ public class Duel {
     
     @Column(name = "bet")
     private int bet;
+
+    @Column(name="winner_guest_name")
+    private String winnerGuestName;
+
+    @Column(name="loser_guest_name")
+    private String loserGuestName;
 }

@@ -7,6 +7,7 @@ import com.rankhub.ranking_service.dto.DuelGameDto;
 import com.rankhub.ranking_service.dto.IndividualGameDto;
 import com.rankhub.ranking_service.dto.TeamGameDto;
 import com.rankhub.ranking_service.entity.Game;
+import com.rankhub.ranking_service.entity.Player;
 import com.rankhub.ranking_service.request.DuelGameRequest;
 import com.rankhub.ranking_service.request.IndividualGameRequest;
 import com.rankhub.ranking_service.request.TeamGameRequest;
@@ -23,4 +24,6 @@ public interface GameService {
     TeamGameDto createTeamGame(TeamGameRequest request);
 
     DuelGameDto createDuelGame(DuelGameRequest request);
+
+    void deletePlayerFromDuels(Player player);
 }

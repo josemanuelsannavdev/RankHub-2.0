@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -96,4 +97,23 @@ public class PlayerController {
     }
 
 
+    @DeleteMapping("/player/{playerId}")
+    public ResponseEntity<ApiMessageDto> deletePlayer(@PathVariable UUID playerId,
+            @RequestBody PlayerRequest playerRequest,
+            @RequestHeader("X-User-Id") UUID userId) {
+        Role userRole = roleService.getByRankingIdUserId(playerRequest.getRankingId(), userId);
+        if (userRole == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "No tienes acceso a este ranking");
+        }
+
+        if (userRole.getRoleType() != RoleType.ADMIN && userRole.getRoleType() != RoleType.SUB_ADMIN) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "No tienes permisos para eliminar un jugador en este ranking");
+        }
+
+
+        playerService.deletePlayer(playerId);
+        return ResponseEntity.ok(new ApiMessageDto("Jugador eliminado correctamente"));
+    }
 }

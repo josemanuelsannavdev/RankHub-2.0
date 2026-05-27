@@ -388,18 +388,22 @@ public class GameServiceImpl implements GameService {
 
         // Procesar juegos por tipo
         List<Object> result = new ArrayList<>();
+
+        // Individual games
         List<Game> individualGames = games.stream()
                 .filter(game -> game.getType() == GameType.INDIVIDUAL_GAME)
                 .toList();
 
         processIndividualGames(individualGames, playerCache, result);
 
+        // Team games
         List<Game> teamGames = games.stream()
                 .filter(game -> game.getType() == GameType.TEAM_GAME)
                 .toList();
 
         processTeamGames(teamGames, playerCache, result);
 
+        // Duel games
         List<Game> duelGames = games.stream()
                 .filter(game -> game.getType() == GameType.DUEL_GAME)
                 .toList();
@@ -503,15 +507,15 @@ public class GameServiceImpl implements GameService {
 
         // Construir DTOs de juegos por equipos
         for (Game game : games) {
-            
-                List<Team> gameTeams = teamsByGameId.getOrDefault(game.getId(), Collections.emptyList());
-                List<TeamDto> teamDtos = gameTeams.stream()
-                        .map(team -> teamMapper.toDto(
-                                team,
-                                membersByTeamId.getOrDefault(team.getId(), Collections.emptyList())))
-                        .toList();
-                result.add(gameMapper.toTeamGameDto(game, teamDtos));
-            
+
+            List<Team> gameTeams = teamsByGameId.getOrDefault(game.getId(), Collections.emptyList());
+            List<TeamDto> teamDtos = gameTeams.stream()
+                    .map(team -> teamMapper.toDto(
+                            team,
+                            membersByTeamId.getOrDefault(team.getId(), Collections.emptyList())))
+                    .toList();
+            result.add(gameMapper.toTeamGameDto(game, teamDtos));
+
         }
     }
 
@@ -579,10 +583,10 @@ public class GameServiceImpl implements GameService {
 
         // Construir DTOs de juegos de duelo
         for (Game game : games) {
-            
-                DuelGameDto duelDto = buildDuelGameDto(game, duelByGameId.get(game.getId()), playerCache);
-                result.add(duelDto);
-            
+
+            DuelGameDto duelDto = buildDuelGameDto(game, duelByGameId.get(game.getId()), playerCache);
+            result.add(duelDto);
+
         }
     }
 
@@ -603,6 +607,9 @@ public class GameServiceImpl implements GameService {
                 dto.setWinner(playerMapper.toDto(winner));
             }
         }
+        if (duel.getWinnerGuestName() != null) {
+            dto.setWinnerGuestName(duel.getWinnerGuestName());
+        }
 
         // Establecer perdedor
         if (duel.getLoserId() != null) {
@@ -611,10 +618,29 @@ public class GameServiceImpl implements GameService {
                 dto.setLoser(playerMapper.toDto(loser));
             }
         }
-
+        if (duel.getLoserGuestName() != null) {
+            dto.setLoserGuestName(duel.getLoserGuestName());
+        }
         // Establecer apuesta
         dto.setBet(duel.getBet());
 
         return dto;
+    }
+
+    @Override
+    public void deletePlayerFromDuels(Player player) {
+        List<Duel> duelsWithPlayerAsWinner = duelRepository.findByWinnerId(player.getId());
+        for (Duel duel : duelsWithPlayerAsWinner) {
+            duel.setWinnerId(null);
+            duel.setWinnerGuestName("Invitado: " + player.getName());
+            duelRepository.save(duel);
+        }
+
+        List<Duel> duelsWithPlayerAsLoser = duelRepository.findByLoserId(player.getId());
+        for (Duel duel : duelsWithPlayerAsLoser) {
+            duel.setLoserId(null);
+            duel.setLoserGuestName("Invitado: " + player.getName());
+            duelRepository.save(duel);
+        }
     }
 }

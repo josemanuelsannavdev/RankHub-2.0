@@ -45,8 +45,8 @@ public class PlayerRepository {
         return playerJpaRespository.existsByIdAndRankingId(id, rankingId);
     }
 
-    public void deleteById(UUID id) {
-        playerJpaRespository.deleteById(id);
+    public void deleteById(UUID playerId) {
+        playerJpaRespository.deleteById(playerId);
     }
 
 }

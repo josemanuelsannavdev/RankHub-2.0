@@ -27,4 +27,13 @@ public class DuelRepository {
     public Duel findByGameId(UUID gameId) {
         return duelJpaRepository.findByGameId(gameId);
     }
+
+    public List<Duel> findByWinnerId( UUID winnerId) {
+        return duelJpaRepository.findByWinnerId(winnerId);
+    }
+
+    public List<Duel> findByLoserId(UUID loserId) {
+        return duelJpaRepository.findByLoserId( loserId);
+    }
+
 }

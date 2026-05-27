@@ -18,5 +18,7 @@ public interface PlayerService {
 
     PlayerDto patchPlayer(UUID playerId, PlayerRequest playerRequest);
 
+    void deletePlayer(UUID playerId);
+
     
 } 

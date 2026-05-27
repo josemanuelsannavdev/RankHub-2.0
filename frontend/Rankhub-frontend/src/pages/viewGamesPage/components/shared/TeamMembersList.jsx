@@ -1,5 +1,4 @@
 const TeamMembersList = ({ members, isSecondTeam = false }) => {
-  console.log("TeamMembersList render", { members, isSecondTeam });
   return (
     <div className="flex flex-wrap gap-2 py-1">
       {members.map((member, index) => (

@@ -21,4 +21,6 @@ public interface PlayerJpaRespository  extends JpaRepository<Player, UUID>, JpaS
     boolean existsByNameIgnoreCase(String name);
 
     boolean existsByIdAndRankingId(UUID id, UUID rankingId);
+
+    boolean deletePlayerById(UUID playerId);
 } 

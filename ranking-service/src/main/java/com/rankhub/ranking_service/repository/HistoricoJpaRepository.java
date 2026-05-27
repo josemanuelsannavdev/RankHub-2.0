@@ -13,4 +13,6 @@ public interface HistoricoJpaRepository extends JpaRepository<Historico, UUID>, 
     public List<Historico> findByGameId(UUID gameId);
 
     List<Historico> findByGameIdIn(List<UUID> gameIds);
+
+    void deleteByPlayerId(UUID playerId);
 }

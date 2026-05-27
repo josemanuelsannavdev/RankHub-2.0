@@ -9,8 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rankhub.ranking_service.dto.PlayerDto;
 import com.rankhub.ranking_service.entity.Player;
+import com.rankhub.ranking_service.entity.Team;
 import com.rankhub.ranking_service.mapper.PlayerMapper;
+import com.rankhub.ranking_service.repository.DuelRepository;
+import com.rankhub.ranking_service.repository.HistoricoRepository;
+import com.rankhub.ranking_service.repository.ParticipantRepository;
 import com.rankhub.ranking_service.repository.PlayerRepository;
+import com.rankhub.ranking_service.repository.TeamMemberRepository;
 import com.rankhub.ranking_service.request.PlayerRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +27,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
     private final PlayerMapper mapper;
+    private final HistoricoRepository historicoRepository;
+    private final GameService gameService;
+    private final TeamMemberService teamMemberService;
+    private final ParticipantService participantService;
 
     @Override
     public List<PlayerDto> getAllPlayersOfRanking(UUID rankingId) {
@@ -69,9 +78,11 @@ public class PlayerServiceImpl implements PlayerService {
             throw new IllegalArgumentException("Jugador no encontrado: " + playerId);
         }
 
-        existingPlayer.setName(playerRequest.getName() != null ? playerRequest.getName().trim() : existingPlayer.getName());
-        
-        existingPlayer.setImage(playerRequest.getImage() != null ? playerRequest.getImage() : existingPlayer.getImage());
+        existingPlayer
+                .setName(playerRequest.getName() != null ? playerRequest.getName().trim() : existingPlayer.getName());
+
+        existingPlayer
+                .setImage(playerRequest.getImage() != null ? playerRequest.getImage() : existingPlayer.getImage());
 
         return mapper.toDto(playerRepository.save(existingPlayer));
     }
@@ -87,6 +98,30 @@ public class PlayerServiceImpl implements PlayerService {
             existingPlayer.setName(playerRequest.getName().trim());
         }
         return mapper.toDto(playerRepository.save(existingPlayer));
+    }
+
+    @Override
+    @Transactional
+    public void deletePlayer(UUID playerId) {
+        Player existingPlayer = playerRepository.getPlayerById(playerId);
+        if (existingPlayer == null) {
+            throw new IllegalArgumentException("Jugador no encontrado: " + playerId);
+        }
+
+        // Borrar historico con su Id
+        historicoRepository.deleteByPlayerId(playerId);
+
+        // Player id <=> Guest_Name
+        teamMemberService.playerToGuest(playerId);
+
+        // Player id <=> Guest_Name
+        participantService.playerToGuest(playerId);
+
+        // Modificar Duelos con su id
+        gameService.deletePlayerFromDuels(existingPlayer);
+
+        playerRepository.deleteById(playerId);
+
     }
 
 }
