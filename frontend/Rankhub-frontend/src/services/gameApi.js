@@ -47,4 +47,11 @@ export const getGames = (rankingId) => {
     targetMethod: "GET",
     ...emptyPayload,
   });
-}
+};
+
+export const getGame = (gameId) => {
+  return gatewayApi.post(`/ranking-service/game/${gameId}`, {
+    targetMethod: "GET",
+    ...emptyPayload,
+  });
+};

@@ -1,6 +1,5 @@
 package com.rankhub.ranking_service.service;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -21,17 +20,18 @@ import com.rankhub.ranking_service.repository.GameRepository;
 import com.rankhub.ranking_service.repository.HistoricoRepository;
 import com.rankhub.ranking_service.repository.PlayerRepository;
 
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class HistoricoServiceImpl implements HistoricoService {
-    
+
     private final HistoricoRepository historicoRepository;
     private final GameRepository gameRepository;
+    private final GameService gameService;
     private final PlayerRepository playerRepository;
+
     @Override
     public List<HistoricoDto> getAllHistoricos(UUID rankingId) {
         List<Game> games = gameRepository.findAllGamesByRankingId(rankingId);
@@ -54,10 +54,10 @@ public class HistoricoServiceImpl implements HistoricoService {
         Map<UUID, List<Historico>> historicosByGameId = historicoRepository.findByGameIdIn(gameIds).stream()
                 .collect(Collectors.groupingBy(Historico::getGameId));
 
-        List<HistoricoDto> historicosDto= new ArrayList<>();
+        List<HistoricoDto> historicosDto = new ArrayList<>();
         for (Game game : games) {
             List<Historico> historicosGame = historicosByGameId.getOrDefault(game.getId(), Collections.emptyList());
-            //Mapear historico a HistoricoPlayerDto
+            // Mapear historico a HistoricoPlayerDto
             List<HistoricoPlayerDto> historicoPlayers = historicosGame.stream().map(historico -> {
                 HistoricoPlayerDto playerDto = new HistoricoPlayerDto();
                 playerDto.setPlayerId(historico.getPlayerId());
@@ -68,19 +68,50 @@ public class HistoricoServiceImpl implements HistoricoService {
 
                 return playerDto;
             }).toList();
-            //Crear HistoricoDto para el juego
+            // Crear HistoricoDto para el juego
             HistoricoDto historicoDto = new HistoricoDto();
             historicoDto.setGameId(game.getId());
             historicoDto.setGameName(game.getName());
             historicoDto.setDate(game.getDate());
             historicoDto.setPlayers(historicoPlayers);
             historicoDto.setType(game.getType().name());
-            //Añadir HistoricoDto a la lista de historicosDto
+            // Añadir HistoricoDto a la lista de historicosDto
             historicosDto.add(historicoDto);
 
-        }   
+        }
+
+        return historicosDto;
+    }
+
+    @Override
+    public List<HistoricoDto> getHistoricosByGame(UUID gameId) {
+        Game game = gameRepository.findById(gameId);
+        if (game == null) {
+            return Collections.emptyList();
+        }
+        List<UUID> gameIds = gameService.getGameIdsByRankingIdAndGameName(game.getRankingId(), game.getName());
+        List<Historico> historicos = historicoRepository.findByGamesIds(gameIds);
+        // Mapear historicos a HistoricoDto
+        List<HistoricoDto> historicosDto = new ArrayList<>();
+        for (Historico historico : historicos) {
+            HistoricoPlayerDto playerDto = new HistoricoPlayerDto();
+            playerDto.setPlayerId(historico.getPlayerId());
+            playerDto.setTotalPoints(historico.getTotalPoints());
+            playerDto.setObtainedPoints(historico.getObtainedPoints());
+            playerDto.setPlayerName(playerRepository.getPlayerById(historico.getPlayerId()).getName());
+            playerDto.setPosition(historico.getPosition());
+
+            HistoricoDto historicoDto = new HistoricoDto();
+            historicoDto.setGameId(game.getId());
+            historicoDto.setGameName(game.getName());
+            historicoDto.setDate(game.getDate());
+            historicoDto.setPlayers(List.of(playerDto));
+            historicoDto.setType(game.getType().name());
+
+            historicosDto.add(historicoDto);
+        }
         
         return historicosDto;
-    }    
-    
+    }
+
 }

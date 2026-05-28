@@ -23,4 +23,8 @@ public class GameRepository {
     public Game save(Game game) {
         return gameJpaRespository.save(game);
     }
+
+    public Game findById(UUID gameId) {
+        return gameJpaRespository.findById(gameId).orElse(null);
+    }
 }

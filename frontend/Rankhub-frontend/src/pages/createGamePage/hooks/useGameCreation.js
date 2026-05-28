@@ -52,7 +52,6 @@ export const useGameCreation = () => {
         return;
       }
 
-      console.log(`Crear ${config.label}`, formData);
 
       try {
         await config.apiCall(formData);

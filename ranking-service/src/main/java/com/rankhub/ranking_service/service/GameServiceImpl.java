@@ -643,4 +643,49 @@ public class GameServiceImpl implements GameService {
             duelRepository.save(duel);
         }
     }
+
+    @Override
+    public Object getGameDetailed(UUID gameId) {
+        Game game = gameRepository.findById(gameId);
+        if (game == null) {
+            throw new IllegalArgumentException("Juego no encontrado: " + gameId);
+        }
+
+
+        if (game.getType() == GameType.INDIVIDUAL_GAME) {
+            List<Participant> participants = participantRepository.findByGameId(gameId);
+            List<ParticipantDto> participantDtos = participants.stream()
+                    .map(participantMapper::toDto)
+                    .toList();
+            return gameMapper.toIndividualGameDto(game, participantDtos);
+
+
+        } else if (game.getType() == GameType.TEAM_GAME) {
+            List<Team> teams = teamRepository.findByGameId(gameId);
+            Map<UUID, List<TeamMemberDto>> membersByTeamId = loadTeamMembers(teams, loadPlayerCache(game.getRankingId()));
+            List<TeamDto> teamDtos = teams.stream()
+                    .map(team -> teamMapper.toDto(
+                            team,
+                            membersByTeamId.getOrDefault(team.getId(), Collections.emptyList())))
+                    .toList();
+            return gameMapper.toTeamGameDto(game, teamDtos);
+
+
+        } else if (game.getType() == GameType.DUEL_GAME) {
+            Duel duel = duelRepository.findByGameId(gameId);
+            return buildDuelGameDto(game, duel, loadPlayerCache(game.getRankingId()));
+        } else {
+            throw new IllegalArgumentException("Tipo de juego desconocido: " + game.getType());
+        }
+    }
+
+
+    @Override
+    public List<UUID> getGameIdsByRankingIdAndGameName(UUID rankingId, String gameName) {
+        return gameRepository.findAllGamesByRankingId(rankingId).stream()
+                .filter(game -> game.getName().equals(gameName))
+                .map(Game::getId)
+                .toList();
+    }
+
 }

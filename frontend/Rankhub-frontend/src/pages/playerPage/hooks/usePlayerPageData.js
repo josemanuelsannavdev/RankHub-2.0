@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import gatewayApi from "../../../services/gatewayApi";
 import { getPlayer } from "../../../services/playerApi";
+import { getHistoricos } from "../../../services/historicoApi";
 
 const EMPTY_HISTORY = [];
 
@@ -30,12 +31,9 @@ const usePlayerPageData = ({ playerId, currentRankingId }) => {
 
         if (currentRankingId) {
           requests.push(
-            gatewayApi.post(`/ranking-service/historicos/${currentRankingId}`, {
-              targetMethod: "GET",
-              queryParams: {},
-              body: {},
-            }),
+            getHistoricos(currentRankingId)
           );
+          
         }
 
         const [playerResponse, historicosResponse] = await Promise.all(requests);

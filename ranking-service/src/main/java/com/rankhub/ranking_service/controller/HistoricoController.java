@@ -29,4 +29,8 @@ public class HistoricoController {
       return historicoService.getAllHistoricos(rankingId);
    }
 
+   @GetMapping("/historicos/game/{gameId}")
+   public List<HistoricoDto> getHistoricosByGame(@PathVariable UUID gameId) {
+      return historicoService.getHistoricosByGame(gameId);
+   }
 }

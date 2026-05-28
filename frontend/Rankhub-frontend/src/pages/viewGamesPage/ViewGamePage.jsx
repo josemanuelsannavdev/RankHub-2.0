@@ -6,6 +6,7 @@ import GamesList from "./components/GamesList";
 import { useRanking } from "../../context/RankingContext.jsx";
 import { getGames } from "../../services/gameApi";
 import GameOptionModal from "./components/GameOptionModal";
+import { useNavigate } from "react-router-dom";
 const splitGameDateTime = (rawDate) => {
   if (typeof rawDate !== "string" || rawDate.trim() === "") {
     return { date: "--", time: "--" };
@@ -64,6 +65,8 @@ const ViewGamePage = () => {
   const { currentRanking } = useRanking();
   const [gameOptionModalOpen, setGameOptionModalOpen] = useState(false);
   const [selectedGameId, setSelectedGameId] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
@@ -140,6 +143,7 @@ const ViewGamePage = () => {
 
   const handleViewGameStats = (game) => {
     console.log("View game stats:", game);
+    navigate(`/gamePage/${game.id}`);
     // Implement view stats functionality here
   };
 const handleEditGame = (game) => {

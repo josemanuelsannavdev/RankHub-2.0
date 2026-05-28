@@ -8,4 +8,6 @@ import com.rankhub.ranking_service.dto.HistoricoDto;
 public interface HistoricoService {
     
     List<HistoricoDto> getAllHistoricos(UUID rankingId);
+
+    List<HistoricoDto>getHistoricosByGame(UUID gameId);
 }

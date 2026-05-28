@@ -51,4 +51,6 @@ public class Game {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "type", columnDefinition = "games_types")
     private GameType type;
+
+    
 }

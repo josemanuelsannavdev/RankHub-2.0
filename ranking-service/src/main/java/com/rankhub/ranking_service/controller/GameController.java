@@ -94,4 +94,8 @@ public class GameController {
       return gameService.getAllGamesDetailed(rankingId);
    }
 
+   @GetMapping("/game/{gameId}")
+   public Object getGameDetailed(@PathVariable UUID gameId) {
+      return gameService.getGameDetailed(gameId);
+   }
 }

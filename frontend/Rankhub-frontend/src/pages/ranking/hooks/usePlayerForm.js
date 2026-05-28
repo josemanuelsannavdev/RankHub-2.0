@@ -57,7 +57,6 @@ export const usePlayerForm = ({ playerToEdit, onPlayerCreated, onClose }) => {
         const imageUrl = await uploadImageToCloudinary(image);
 
         if (isEditMode) {
-          console.log("Plater to edit:", playerToEdit);
           const response = await updatePlayer(playerToEdit.id, {
             name,
             image: imageUrl || playerToEdit.image,

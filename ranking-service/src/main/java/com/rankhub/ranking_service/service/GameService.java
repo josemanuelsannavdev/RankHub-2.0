@@ -26,4 +26,9 @@ public interface GameService {
     DuelGameDto createDuelGame(DuelGameRequest request);
 
     void deletePlayerFromDuels(Player player);
-}
+
+    Object getGameDetailed(UUID gameId);
+
+    List<UUID> getGameIdsByRankingIdAndGameName(UUID rankingId,String gameName);
+
+}    
