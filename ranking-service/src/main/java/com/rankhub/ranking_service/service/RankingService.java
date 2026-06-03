@@ -3,10 +3,9 @@ package com.rankhub.ranking_service.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.tomcat.util.http.parser.HttpHeaderParser.HeaderDataSource;
-
 import com.rankhub.ranking_service.dto.RankingDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
+import com.rankhub.ranking_service.dto.UserDto;
 import com.rankhub.ranking_service.entity.Ranking;
 import com.rankhub.ranking_service.request.RankingRequest;
 
@@ -28,6 +27,11 @@ public interface RankingService {
 
     boolean leaveRanking(UUID rankingId, UUID userId);
 
+    List<UserDto> getRankingMembers(UUID rankingId);
 
+    void joinRanking(UUID rankingId, String email);
 
+    void removeMemberFromRanking(UUID rankingId, String email);
+
+    void changeRole(UUID rankingId, String email);
 }

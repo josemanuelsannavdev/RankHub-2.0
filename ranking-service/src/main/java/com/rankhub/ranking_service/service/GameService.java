@@ -31,4 +31,7 @@ public interface GameService {
 
     List<UUID> getGameIdsByRankingIdAndGameName(UUID rankingId,String gameName);
 
+    void deleteGame(UUID gameId);
+
+    Game getGameById(UUID gameId);
 }    

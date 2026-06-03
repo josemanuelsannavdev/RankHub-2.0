@@ -65,6 +65,10 @@ export const useRankingDashboardActions = ({ removeByRole, upsertByRole }) => {
     }
   };
 
+  const handleMembersSection = (ranking) => {
+    selectRanking(ranking);
+    navigate(`/ranking/${ranking.id}/members`);
+  };
   return {
     modalOpen,
     editingRanking,
@@ -79,5 +83,6 @@ export const useRankingDashboardActions = ({ removeByRole, upsertByRole }) => {
     handleOptionRanking,
     handleDeleteRanking,
     handleExitRanking,
+    handleMembersSection,
   };
 };

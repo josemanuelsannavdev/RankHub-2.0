@@ -61,7 +61,8 @@ function MainPage() {
     handleOptionRanking,
     handleDeleteRanking,
     handleExitRanking,
-  } = useRankingDashboardActions({ removeByRole, upsertByRole });
+    handleMembersSection,
+      } = useRankingDashboardActions({ removeByRole, upsertByRole });
 
   const rankingsByTab = useMemo(
     () => ({
@@ -139,6 +140,7 @@ function MainPage() {
           onDelete={handleDeleteRanking}
           onExit={handleExitRanking}
           onClose={() => setModalOpenOptions(false)}
+          onMembersSection={handleMembersSection}
         />
       )}
     </div>

@@ -33,4 +33,8 @@ public class HistoricoRepository {
     public List<Historico> findByGamesIds(List<UUID> gameIds) {
         return historicoJpaRepository.findByGameIdIn(gameIds);
     }
+
+    public void deleteByGameId(UUID gameId) {
+        historicoJpaRepository.deleteByGameId(gameId);
+    }
 }

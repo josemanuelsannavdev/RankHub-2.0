@@ -251,7 +251,13 @@ public class GameServiceImpl implements GameService {
 
                 double currentPoints = player.getPoints() != null ? player.getPoints() : 0.0;
                 player.setPoints(currentPoints + team.getPoints());
-
+                if (team.getPosition() == 1) {
+                    player.setGamesWon(player.getGamesWon() + 1);
+                }
+                if (team.getPosition() == teams.size()) {
+                    player.setGamesLost(player.getGamesLost() + 1);
+                }
+                player.setGamesPlayed(player.getGamesPlayed() + 1);
             }
         }
 
@@ -651,7 +657,6 @@ public class GameServiceImpl implements GameService {
             throw new IllegalArgumentException("Juego no encontrado: " + gameId);
         }
 
-
         if (game.getType() == GameType.INDIVIDUAL_GAME) {
             List<Participant> participants = participantRepository.findByGameId(gameId);
             List<ParticipantDto> participantDtos = participants.stream()
@@ -659,17 +664,16 @@ public class GameServiceImpl implements GameService {
                     .toList();
             return gameMapper.toIndividualGameDto(game, participantDtos);
 
-
         } else if (game.getType() == GameType.TEAM_GAME) {
             List<Team> teams = teamRepository.findByGameId(gameId);
-            Map<UUID, List<TeamMemberDto>> membersByTeamId = loadTeamMembers(teams, loadPlayerCache(game.getRankingId()));
+            Map<UUID, List<TeamMemberDto>> membersByTeamId = loadTeamMembers(teams,
+                    loadPlayerCache(game.getRankingId()));
             List<TeamDto> teamDtos = teams.stream()
                     .map(team -> teamMapper.toDto(
                             team,
                             membersByTeamId.getOrDefault(team.getId(), Collections.emptyList())))
                     .toList();
             return gameMapper.toTeamGameDto(game, teamDtos);
-
 
         } else if (game.getType() == GameType.DUEL_GAME) {
             Duel duel = duelRepository.findByGameId(gameId);
@@ -679,7 +683,6 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-
     @Override
     public List<UUID> getGameIdsByRankingIdAndGameName(UUID rankingId, String gameName) {
         return gameRepository.findAllGamesByRankingId(rankingId).stream()
@@ -688,4 +691,66 @@ public class GameServiceImpl implements GameService {
                 .toList();
     }
 
+    @Transactional
+    @Override
+    public void deleteGame(UUID gameId) {
+        Game game = gameRepository.findById(gameId);
+        if (game == null) {
+            throw new IllegalArgumentException("Juego no encontrado: " + gameId);
+        }
+        List<Historico> historicosGame = historicoRepository.findByGameId(gameId);
+        if (historicosGame == null) {
+            throw new IllegalArgumentException("No se han encontrado históricos para el juego: " + gameId);
+        }
+
+        long numeroPosiciones = historicosGame.stream().filter(h -> h.getPosition() != null).count();
+
+        List<Game> gamesOfRanking = gameRepository.findAllGamesByRankingId(game.getRankingId());
+
+        List<Game> gamesOfRankingAfterGame = gamesOfRanking.stream()
+                .filter(g -> g.getDate().after(game.getDate()))
+                .toList();
+
+        List<UUID> gameIdsOfRanking = gamesOfRankingAfterGame.stream().map(Game::getId).toList();
+
+        List<Historico> allHistoricosAfterGame = historicoRepository.findByGameIdIn(gameIdsOfRanking);
+
+        for (Historico historicoGame : historicosGame) {
+            // Si el juego que se elimina no le otorgaba puntos a ese jugador, no
+            // modificamos los históricos posteriores de ese jugador
+            if (historicoGame.getObtainedPoints() == null) {
+                continue;
+            }
+            // MODIFICAR LOS PUNTOS TOTALES DE LOS HISTÓRICOS DE LOS JUEGOS POSTERIORES AL
+            // JUEGO QUE SE ELIMINA, RESTÁNDOLE LOS PUNTOS OBTENIDOS EN EL JUEGO QUE SE
+            // ELIMINA
+            for (Historico historicoAfterGame : allHistoricosAfterGame) {
+                if (historicoGame.getPlayerId().equals(historicoAfterGame.getPlayerId())) {
+
+                    Double pointsAfter = historicoAfterGame.getTotalPoints() - historicoGame.getObtainedPoints();
+                    historicoAfterGame.setTotalPoints(pointsAfter);
+                    historicoRepository.save(historicoAfterGame);
+                }
+            }
+            Player player = playerRepository.getPlayerById(historicoGame.getPlayerId());
+            if (player != null) {
+                Double newPoints = player.getPoints() - historicoGame.getObtainedPoints();
+                player.setPoints(newPoints);
+                player.setGamesPlayed(player.getGamesPlayed() - 1);
+                if (numeroPosiciones == historicoGame.getPosition()) {
+                    player.setGamesLost(player.getGamesLost() - 1);
+                } else if (historicoGame.getPosition() == 1) {
+                    player.setGamesWon(player.getGamesWon() - 1);
+                }
+                playerRepository.save(player);
+            }
+        }
+
+        historicoRepository.deleteByGameId(gameId);
+        gameRepository.deleteById(gameId);
+    }
+
+    public Game getGameById(UUID gameId) {
+        return gameRepository.findById(gameId);
+    }
 }

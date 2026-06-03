@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const GameDateTime = ({ date, time }) => {
   return (
     <div className="flex items-center gap-2">
@@ -12,5 +14,11 @@ const GameDateTime = ({ date, time }) => {
     </div>
   );
 };
+
+GameDateTime.propTypes = {
+  date: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+};
+
 
 export default GameDateTime;

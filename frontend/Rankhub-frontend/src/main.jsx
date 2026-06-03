@@ -16,6 +16,10 @@ import ViewGamePage from "./pages/viewGamesPage/ViewGamePage.jsx";
 import HistoricoPage from "./pages/historico/HistoricoPage.jsx";
 import PlayerPage from "./pages/playerPage/PlayerPage.jsx";
 import GamePage from "./pages/gamePage/GamePage.jsx";
+import RankingMembersPage from "./pages/rankingMembers/RankingMembersPage.jsx";
+
+
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -35,6 +39,7 @@ createRoot(document.getElementById("root")).render(
               <Route path="/historico" element={<HistoricoPage />} />
               <Route path="/playerPage/:playerId" element={<PlayerPage />} />
               <Route path="/gamePage/:gameId" element={<GamePage />} />
+              <Route path="/ranking/:id/members" element={<RankingMembersPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

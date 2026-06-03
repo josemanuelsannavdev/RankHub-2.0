@@ -3,7 +3,7 @@
  * Transforms team objects into API-ready format
  */
 
-import { isRegisteredPlayer } from "./validationUtils";
+
 
 /**
  * Build member payload for a single team member

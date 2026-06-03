@@ -55,3 +55,10 @@ export const getGame = (gameId) => {
     ...emptyPayload,
   });
 };
+
+export const deleteGame = (gameId) => {
+  return gatewayApi.post(`/ranking-service/game/${gameId}`, {
+    targetMethod: "DELETE",
+    ...emptyPayload,
+  });
+} ;

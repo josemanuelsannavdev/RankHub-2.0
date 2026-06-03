@@ -3,7 +3,7 @@ import Modal from "../../../components/Modal";
 import OptionButton from "../../../components/OptionButton";
 import CancelButton from "../../../components/CancelButton";
 
-function RankingOptionsModal({ ranking, onEdit, onDelete, onExit, onClose }) {
+function RankingOptionsModal({ ranking, onEdit, onDelete, onExit, onClose,onMembersSection }) {
   return (
     <Modal title="Options" description="These are the options for the ranking">
       <OptionButton
@@ -16,6 +16,7 @@ function RankingOptionsModal({ ranking, onEdit, onDelete, onExit, onClose }) {
         text="edit members"
         important={false}
         icon="person_edit"
+        onClick={() => onMembersSection(ranking)}
       />
       <OptionButton
         text="delete"
@@ -43,6 +44,7 @@ RankingOptionsModal.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onExit: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onMembersSection: PropTypes.func.isRequired,
 };
 
 export default RankingOptionsModal;

@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const GameMenuButton = ({ onClick }) => {
   return (
     <button
@@ -7,6 +9,10 @@ const GameMenuButton = ({ onClick }) => {
       <span className="material-symbols-outlined">more_vert</span>
     </button>
   );
+};
+
+GameMenuButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
 
 export default GameMenuButton;

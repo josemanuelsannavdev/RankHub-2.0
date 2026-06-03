@@ -4,12 +4,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rankhub.ranking_service.dto.ApiMessageDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.RankingDto;
+import com.rankhub.ranking_service.dto.UserDto;
 
 import com.rankhub.ranking_service.entity.Role;
 
 import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.service.RankingService;
 import com.rankhub.ranking_service.service.RoleService;
+import com.rankhub.ranking_service.request.JoinRankingRequest;
 import com.rankhub.ranking_service.request.RankingRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.Valid;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,6 +35,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -149,5 +154,80 @@ public class RankingController {
                     .body(new ApiMessageDto(e.getMessage()));
         }
     }
+
+    @GetMapping("/ranking/{rankingId}/members")
+    public ResponseEntity<List<UserDto>> getRankingMembers(
+            @PathVariable UUID rankingId) {
+
+        List<UserDto> members = rankingService.getRankingMembers(rankingId);
+        return ResponseEntity.ok(members);
+    }
+
+    @PostMapping("/ranking/join")
+    public ResponseEntity<ApiMessageDto> joinRanking(@RequestBody JoinRankingRequest request) {
+
+        try {
+            rankingService.joinRanking(request.getRankingId(), request.getEmail());
+            return ResponseEntity.ok(new ApiMessageDto("Has unido al ranking correctamente"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiMessageDto(e.getMessage()));
+        }
+    }
+    
+
+    @DeleteMapping("/ranking/{rankingId}/member")
+    public ResponseEntity<ApiMessageDto> removeMemberFromRanking(
+            @PathVariable UUID rankingId,
+            @RequestParam String email,
+            @RequestHeader("X-User-Id") UUID userId) {
+
+        // Verificar autorización
+        Role role = roleService.getByRankingIdUserId(rankingId, userId);
+        if (role == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
+        }
+
+        if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes permisos para eliminar miembros de este ranking"));
+        }
+
+        try {
+            rankingService.removeMemberFromRanking(rankingId, email);
+            return ResponseEntity.ok(new ApiMessageDto("Miembro eliminado del ranking correctamente"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiMessageDto(e.getMessage()));
+        }
+    }
+    
+    @PutMapping("/ranking/{rankingId}/member")
+    public ResponseEntity<ApiMessageDto> changeRole( @PathVariable UUID rankingId,
+            @RequestParam String email,
+            @RequestHeader("X-User-Id") UUID userId) {
+        // Verificar autorización
+        Role role = roleService.getByRankingIdUserId(rankingId, userId);
+        if (role == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes acceso a este ranking"));
+        }
+
+        if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiMessageDto("No tienes permisos para eliminar miembros de este ranking"));
+        }
+
+        try {
+            rankingService.changeRole(rankingId, email);
+            return ResponseEntity.ok(new ApiMessageDto("Miembro modificado en el ranking correctamente"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiMessageDto(e.getMessage()));
+        }
+        
+    }
+    
 
 }

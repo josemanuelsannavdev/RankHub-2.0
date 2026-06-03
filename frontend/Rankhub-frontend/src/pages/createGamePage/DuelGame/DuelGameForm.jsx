@@ -4,7 +4,7 @@ import DuelBetInput from "./components/DuelBetInput";
 import DuelParticipantActions from "./components/DuelParticipantActions";
 import DuelParticipantsSection from "./components/DuelParticipantsSection";
 import PlayerSelectModal from "../components/PlayerSelectModal";
-import { useDuelGameForm } from "./hooks/useDuelGameForm";
+import { useDuelGameForm } from "../hooks/useDuelGameForm";
 
 /**
  * DuelGameForm - Form for creating head-to-head duel games
@@ -20,7 +20,6 @@ import { useDuelGameForm } from "./hooks/useDuelGameForm";
  */
 function DuelGameForm({ onFormDataChange }) {
   const {
-    gameName,
     setGameName,
     bet,
     winner,

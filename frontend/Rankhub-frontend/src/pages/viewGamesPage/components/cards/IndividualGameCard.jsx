@@ -1,6 +1,7 @@
 import GameCard from "./GameCard";
 import GameTypeTag from "../shared/GameTypeTag";
 import GameDateTime from "../shared/GameDateTime";
+import PropTypes from "prop-types";
 
 const IndividualGameCard = ({
   gameTitle,
@@ -26,7 +27,7 @@ const IndividualGameCard = ({
         <div className="flex flex-col gap-2">
           {participants.map((participant, index) => (
             <div
-              key={index}
+              key={participant.player?.name || participant.guestName || index}
               className="flex items-center justify-between text-xs"
             >
               <div className="flex items-center gap-2">
@@ -41,10 +42,10 @@ const IndividualGameCard = ({
                 </span>
 
                 <div
-                  key={index}
+                  key={participant.player?.name || participant.guestName || index}
                   className={`inline-flex items-center gap-2 bg-slate-100 dark:bg-white/5 px-3 py-1 rounded-full border border-slate-200 dark:border-white/10 max-w-max whitespace-nowrap`}
                 >
-                  {participant.player && participant.player.image ? (
+                  {participant.player?.image ? (
                   <div
                     className="w-6 h-6 rounded-full bg-cover flex-shrink-0"
                     style={{
@@ -78,6 +79,25 @@ const IndividualGameCard = ({
       </div>
     </GameCard>
   );
+};
+
+IndividualGameCard.propTypes = {
+  gameTitle: PropTypes.string.isRequired,
+  gameType: PropTypes.string,
+  date: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+  participants: PropTypes.arrayOf(
+    PropTypes.shape({
+      player: PropTypes.shape({
+        name: PropTypes.string,
+        image: PropTypes.string,
+      }),
+      guestName: PropTypes.string,
+      points: PropTypes.number,
+    })
+  ).isRequired,
+  onMenuClick: PropTypes.func.isRequired,
+  isOpacity: PropTypes.bool,
 };
 
 export default IndividualGameCard;

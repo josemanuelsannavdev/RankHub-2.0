@@ -1,5 +1,4 @@
-import GameTypeTag from "../shared/GameTypeTag";
-import GameDateTime from "../shared/GameDateTime";
+
 import PropTypes from "prop-types";
 import GameCard from "./GameCard";
 const DuelGameCard = ({
@@ -135,6 +134,8 @@ DuelGameCard.propTypes = {
   }),
   bet: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onMenuClick: PropTypes.func.isRequired,
+  winnerGuestName: PropTypes.string,
+  loserGuestName: PropTypes.string,
 };
 
 DuelGameCard.defaultProps = {

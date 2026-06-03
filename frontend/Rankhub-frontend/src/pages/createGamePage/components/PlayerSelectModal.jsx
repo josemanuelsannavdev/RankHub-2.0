@@ -1,68 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../components/Modal";
-import { getMyPlayers } from "../../../services/playerApi";
-import { useRanking } from "../../../context/RankingContext";
+import { usePlayerSelector } from "../hooks/usePlayerSelector";
 
 function PlayerSelectModal({ onClose, onPlayerAdded, selectedPlayerIds }) {
-  const [players, setPlayers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { currentRanking } = useRanking();
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchPlayers = async () => {
-      setIsLoading(true);
-
-      try {
-        if (!currentRanking?.id) {
-          if (isMounted) {
-            setPlayers([]);
-          }
-          return;
-        }
-
-        const response = await getMyPlayers(currentRanking.id);
-
-        if (!isMounted) {
-          return;
-        }
-
-        const playerList = Array.isArray(response?.data) ? response.data : [];
-        setPlayers(playerList);
-      } catch (error) {
-        if (!isMounted) {
-          return;
-        }
-
-        console.error("Error al cargar jugadores para el modal:", error);
-        setPlayers([]);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchPlayers();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [currentRanking?.id]);
-
-  const sortedPlayers = useMemo(() => {
-    return players.toSorted((a, b) => {
-      const nameA = a?.name || "";
-      const nameB = b?.name || "";
-      return nameA.localeCompare(nameB, "es", { sensitivity: "base" });
-    });
-  }, [players]);
-
-  const selectedSet = useMemo(() => {
-    return new Set(selectedPlayerIds);
-  }, [selectedPlayerIds]);
+  const { sortedPlayers, isLoading, selectedSet } = usePlayerSelector(
+    selectedPlayerIds,
+  );
 
   return (
     <Modal

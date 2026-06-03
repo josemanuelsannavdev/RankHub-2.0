@@ -1,40 +1,11 @@
-import { useRef, useState } from "react";
 import FormInput from "../../../components/FormInput";
 import SubmitButton from "../../../components/SubmitButton";
 import CancelButton from "../../../components/CancelButton";
 import PropTypes from "prop-types";
-import { useToast } from "../../../context/ToastContext";
-import { useRanking } from "../../../context/RankingContext";
-import { createGameName } from "../../../services/gameApi";
+import { useGameName } from "../hooks/useGameName";
+
 const GameNameForm = ({ onClose, onGameNameCreated }) => {
-  const [name, setName] = useState("");
-  const { currentRanking } = useRanking();
-  const {
-    success: showSuccess,
-    error: showError,
-    warning: showWarning,
-  } = useToast();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name) {
-      showWarning("Por favor, completa todos los campos.");
-    } else {
-      try {
-        const newGame = await createGameName({
-          name,
-          rankingId: currentRanking?.id,
-        });
-        showSuccess("Nombre del juego creado exitosamente.");
-        onGameNameCreated(newGame.data);
-
-        onClose();
-      } catch (error) {
-        console.error("Error al añadir nombre del juego:", error);
-        showError("Error al añadir el juego. Intenta nuevamente.");
-      }
-    }
-  };
+  const { name, setName, handleSubmit } = useGameName(onClose, onGameNameCreated);
 
   return (
     <form onSubmit={handleSubmit}>

@@ -1,4 +1,5 @@
 import GameMenuButton from "../shared/GameMenuButton";
+import PropTypes from "prop-types";
 
 const GameCard = ({
   children,
@@ -17,5 +18,12 @@ const GameCard = ({
     </div>
   );
 };
+
+GameCard.propTypes = {
+  children: PropTypes.node.isRequired,
+  onMenuClick: PropTypes.func.isRequired,
+  isHighlighted: PropTypes.bool,
+  isOpacity: PropTypes.bool,
+};  
 
 export default GameCard;

@@ -32,4 +32,9 @@ public class RoleRepository {
     public List<Role> getRoleByRankingIdRoleType(UUID rankingId, RoleType roleType) {
         return roleJpaRepository.getRoleByRankingIdAndRoleType(rankingId, roleType);
     }
+
+    public List<Role> getRolesByRankingId(UUID rankingId) {
+        return roleJpaRepository.getRolesByRankingId(rankingId);
+     }
+     
 }

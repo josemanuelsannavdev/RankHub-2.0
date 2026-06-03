@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useRanking } from "../../../../context/RankingContext";
-import { buildDuelParticipantsPayload } from "../../utils/duelPayloadBuilder";
+import { useRanking } from "../../../context/RankingContext";
+import { buildDuelParticipantsPayload } from "../utils/duelPayloadBuilder";
 
 const EMPTY_PARTICIPANT = {
   id: null,

@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { useRanking } from "../../../../context/RankingContext";
-import { buildParticipantsPayload } from "../../utils/participantPayloadBuilder";
+import { useRanking } from "../../../context/RankingContext";
+import { buildParticipantsPayload } from "../utils/participantPayloadBuilder";
 
 /**
  * Custom hook for individual game form management

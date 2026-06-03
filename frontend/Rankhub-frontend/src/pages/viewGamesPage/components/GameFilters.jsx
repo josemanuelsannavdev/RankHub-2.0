@@ -1,3 +1,6 @@
+import PropTypes from "prop-types";
+
+
 const GameFilters = ({
   activeFilter,
   onFilterChange,
@@ -24,7 +27,7 @@ const GameFilters = ({
           <span className="material-symbols-outlined text-sm">
             filter_list_off
           </span>
-          LIMPIAR
+          {"LIMPIAR"}
         </button>
       </div>
 
@@ -58,6 +61,14 @@ const GameFilters = ({
       </div>
     </section>
   );
+};
+
+GameFilters.propTypes = {
+  activeFilter: PropTypes.string.isRequired,
+  onFilterChange: PropTypes.func.isRequired,
+  searchValue: PropTypes.string.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
+  onClearFilters: PropTypes.func.isRequired,
 };
 
 export default GameFilters;

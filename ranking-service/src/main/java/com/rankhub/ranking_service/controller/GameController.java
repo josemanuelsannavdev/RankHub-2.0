@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rankhub.ranking_service.dto.DuelGameDto;
 import com.rankhub.ranking_service.dto.IndividualGameDto;
 import com.rankhub.ranking_service.dto.TeamGameDto;
+import com.rankhub.ranking_service.entity.Game;
 import com.rankhub.ranking_service.entity.Role;
 import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.request.DuelGameRequest;
@@ -25,6 +26,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.server.ResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -97,5 +100,27 @@ public class GameController {
    @GetMapping("/game/{gameId}")
    public Object getGameDetailed(@PathVariable UUID gameId) {
       return gameService.getGameDetailed(gameId);
+   }
+
+   @DeleteMapping("/game/{gameId}")
+   public ResponseEntity<Void> deleteGame(@PathVariable UUID gameId, @RequestHeader("X-User-Id") UUID userId) {
+      Game game = gameService.getGameById(gameId);
+      if (game == null) {
+         throw new ResponseStatusException(
+               HttpStatus.NOT_FOUND, "Juego no encontrado");
+      }
+      Role role = roleService.getByRankingIdUserId(game.getRankingId(), userId);
+      if (role == null) {
+         throw new ResponseStatusException(
+               HttpStatus.FORBIDDEN, "No tienes acceso a este juego");
+      }
+
+      if (role.getRoleType() != RoleType.ADMIN && role.getRoleType() != RoleType.SUB_ADMIN) {
+         throw new ResponseStatusException(
+               HttpStatus.FORBIDDEN, "No tienes permisos para eliminar este juego");
+      }
+      gameService.deleteGame(gameId);
+      
+      return ResponseEntity.noContent().build();
    }
 }

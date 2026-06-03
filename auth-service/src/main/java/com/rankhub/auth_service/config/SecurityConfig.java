@@ -50,10 +50,12 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/auth/register",
                                         "/auth/login",
+                                        "/auth/emails",
                                         "/auth/google",
                                         "/oauth2/**",
                                         "/login/oauth2/**",
-                                        "/error"
+                                        "/error",
+                                        "/auth/user-id"
                                 ).permitAll()
                                 .anyRequest().authenticated())
                         .oauth2Login(oauth -> oauth

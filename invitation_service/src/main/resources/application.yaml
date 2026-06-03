@@ -1,0 +1,57 @@
+server:
+  port: 8085
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/invitationdb
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:tfm1234}
+  
+  application:
+    name: invitation-service
+
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+    properties:
+      hibernate:
+        '[format_sql]': true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: teuscarapoyen@gmail.com
+    password: eeyt legp xsti mgwd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls: 
+            enable: true
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
+    hostname: ms-invitation
+
+management:
+  endpoints:
+    enabled-by-default: true
+
+services:
+  ranking:
+    url: http://localhost:8082
+
+resend:
+  api-key: re_TsH7A7ri_QKGjmZ54GMKQrHrTbRNz7EJA
+  from-email: "onboarding@tuapp.com"
+
+logging:
+  level:
+    org.springframework.security: DEBUG

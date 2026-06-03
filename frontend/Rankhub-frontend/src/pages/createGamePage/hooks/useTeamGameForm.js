@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useRanking } from "../../../../context/RankingContext";
-import { buildTeamsPayload } from "../../utils/teamPayloadBuilder";
+import { useRanking } from "../../../context/RankingContext";
+import { buildTeamsPayload } from "../utils/teamPayloadBuilder";
 
 /**
  * Generate unique ID for team

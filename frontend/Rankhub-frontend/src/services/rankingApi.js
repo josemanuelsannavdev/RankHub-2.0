@@ -42,4 +42,29 @@ export const exitRanking = (rankingId) => {
   });
 };
 
+export const getMembers = (rankingId) => {
+  return gatewayApi.post(`/ranking-service/ranking/${rankingId}/members`, {
+    targetMethod: "GET",
+    ...emptyPayload,
+  });
+};
 
+export const changeMemberRole = (rankingId, memberEmail) => {
+  return gatewayApi.post(
+    `/ranking-service/ranking/${rankingId}/member?email=${memberEmail}`,
+    {
+      targetMethod: "PUT",
+      ...emptyPayload,
+    },
+  );
+};
+
+export const deleteMember = (rankingId, memberEmail) => {
+  return gatewayApi.post(
+    `/ranking-service/ranking/${rankingId}/member?email=${memberEmail}`,
+    {
+      targetMethod: "DELETE",
+      ...emptyPayload,
+    },
+  );
+};

@@ -4,13 +4,12 @@ import PlayersInMatchSection from "./PlayersInMatchSection";
 import PlayerSelectModal from "../components/PlayerSelectModal";
 import GuestPlayerModal from "../components/GuestPlayerModal";
 import PropTypes from "prop-types";
-import { useIndividualGameForm } from "./hooks/useIndividualGameForm";
+import { useIndividualGameForm } from "../hooks/useIndividualGameForm";
 
 
 function IndividualGameForm({ onFormDataChange }) {
   const {
     players,
-    gameName,
     setGameName,
     modalPlayerOpen,
     setModalPlayerOpen,

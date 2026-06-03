@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const GameTabSelector = ({ activeTab, onChange }) => {
   const tabs = [
     {
@@ -32,6 +34,11 @@ const GameTabSelector = ({ activeTab, onChange }) => {
       </div>
     </section>
   );
+};
+
+GameTabSelector.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default GameTabSelector;

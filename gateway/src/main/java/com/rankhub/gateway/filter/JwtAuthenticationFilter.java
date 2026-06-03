@@ -35,6 +35,8 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         if (isPublicPath(path)) {
             return chain.filter(exchange);
         }
+       
+
         // 3. Get Authorization header
         String authHeader = exchange.getRequest()
                 .getHeaders()

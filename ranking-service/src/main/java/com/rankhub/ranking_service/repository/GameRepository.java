@@ -27,4 +27,8 @@ public class GameRepository {
     public Game findById(UUID gameId) {
         return gameJpaRespository.findById(gameId).orElse(null);
     }
+
+    public void deleteById(UUID gameId) {
+        gameJpaRespository.deleteById(gameId);
+    }
 }

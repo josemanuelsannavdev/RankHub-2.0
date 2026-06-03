@@ -38,4 +38,6 @@ public interface RoleJpaRepository extends JpaRepository<Role, UUID>, JpaSpecifi
 
 
     List<Role> getRoleByRankingIdAndRoleType(UUID rankingId, RoleType roleType);
+
+    List<Role> getRolesByRankingId(UUID rankingId);
 }

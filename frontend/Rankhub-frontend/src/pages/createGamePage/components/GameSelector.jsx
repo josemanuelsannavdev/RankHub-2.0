@@ -1,128 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { getGameNames } from "../../../services/gameApi";
-import { useRanking } from "../../../context/RankingContext";
 import GameNameFormModal from "./GameNameFormModal";
+import { useGameSelector } from "../hooks/useGameSelector";
 
 function GameSelector({ options, value, onGameChange }) {
-  const [gameNames, setGameNames] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { currentRanking } = useRanking();
-  const [modalGameNameOpen, setModalGameNameOpen] = useState(false);
-  const [internalSelectedGameName, setInternalSelectedGameName] = useState("");
-
-  const getGameNameValue = (game) => {
-    if (typeof game === "string") {
-      return game;
-    }
-
-    if (game && typeof game === "object" && typeof game.name === "string") {
-      return game.name;
-    }
-
-    return "";
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchGameNames = async () => {
-      setIsLoading(true);
-
-      try {
-        const response = await getGameNames(currentRanking?.id);
-        const gameNames = Array.isArray(response?.data)
-          ? response.data.map(getGameNameValue).filter(Boolean)
-          : [];
-        setGameNames(
-          gameNames.toSorted((a, b) =>
-            a.localeCompare(b, "es", { sensitivity: "base" }),
-          ),
-        );
-      } catch (error) {
-        if (!isMounted) {
-          return;
-        }
-
-        console.error("Error al cargar juegos para el selector:", error);
-        setGameNames([]);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchGameNames();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [currentRanking?.id]);
-
-  const visibleGameNames = useMemo(() => {
-    if (gameNames.length > 0) {
-      return gameNames;
-    }
-
-    return (options || [])
-      .map(getGameNameValue)
-      .filter(Boolean)
-      .toSorted((a, b) =>
-        a.localeCompare(b, "es", { sensitivity: "base" }),
-      );
-  }, [gameNames, options]);
-
-  useEffect(() => {
-    if (value) {
-      setInternalSelectedGameName(value);
-      return;
-    }
-
-    if (!internalSelectedGameName && visibleGameNames.length > 0) {
-      const firstGameName = visibleGameNames[0];
-      setInternalSelectedGameName(firstGameName);
-
-      if (onGameChange) {
-        onGameChange(firstGameName);
-      }
-    }
-  }, [internalSelectedGameName, onGameChange, value, visibleGameNames]);
-
-  
-
-  const handleClickAddGame = () => {
-    setModalGameNameOpen(true);
-  };
-
-  const handleGameNameCreated = (newGame) => {
-    const newGameName = getGameNameValue(newGame);
-
-    if (!newGameName) {
-      return;
-    }
-
-    setGameNames((currentGameNames) => {
-      const withoutDuplicate = currentGameNames.filter(
-        (gameName) => gameName !== newGameName,
-      );
-
-      return [...withoutDuplicate, newGameName].toSorted((a, b) =>
-        a.localeCompare(b, "es", { sensitivity: "base" }),
-      );
-    });
-  };
-
-  const handleGameChange = (event) => {
-    const nextGameName = event.target.value;
-    setInternalSelectedGameName(nextGameName);
-
-    if (onGameChange) {
-      onGameChange(nextGameName);
-    }
-  };
-
-  const selectedGameName = value ?? internalSelectedGameName;
+  const {
+    visibleGameNames,
+    isLoading,
+    modalGameNameOpen,
+    selectedGameName,
+    handleClickAddGame,
+    handleCloseModal,
+    handleGameChange,
+    handleGameNameCreated,
+  } = useGameSelector(options, value, onGameChange);
 
   return (
     <div className="mt-8">
@@ -174,7 +64,7 @@ function GameSelector({ options, value, onGameChange }) {
 
         {modalGameNameOpen && (
           <GameNameFormModal
-            onClose={() => setModalGameNameOpen(false)}
+            onClose={handleCloseModal}
             onGameNameCreated={handleGameNameCreated}
           />
         )}

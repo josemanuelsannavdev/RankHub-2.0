@@ -1,4 +1,3 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../../components/Modal";
 import FormInput from "../../../../components/FormInput";
@@ -8,83 +7,33 @@ import ParticipantActions from "../../components/ParticipantActions";
 import PlayerSelectModal from "../../components/PlayerSelectModal";
 import GuestPlayerModal from "../../components/GuestPlayerModal";
 import TeamMemberCard from "./TeamMemberCard";
+import { useTeamCreate } from "../../hooks/useTeamCreate";
 
 function TeamCreateModal({ onClose, onCreateTeam, existingSelectedPlayerIds, initialTeam }) {
-  const [teamName, setTeamName] = useState(initialTeam?.name || "");
-  const [points, setPoints] = useState(initialTeam?.points || "");
-  const [members, setMembers] = useState(initialTeam?.members || []);
-  const [isPlayerModalOpen, setIsPlayerModalOpen] = useState(false);
-  const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
-
-  const isEditMode = Boolean(initialTeam);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!teamName.trim() || !points.trim()) {
-      return;
-    }
-
-    onCreateTeam({
-      name: teamName.trim(),
-      points: points.trim(),
-      members,
-    });
-  };
-
-  const handlePlayerAdded = (selectedPlayer) => {
-    const normalizedPlayer = {
-      id: selectedPlayer?.id,
-      name: selectedPlayer?.name || "Jugador",
-      role: "Jugador",
-      avatarUrl: selectedPlayer?.avatarUrl || selectedPlayer?.image,
-    };
-
-    setMembers((currentMembers) => {
-      const withoutDuplicate = currentMembers.filter(
-        (member) => String(member.id) !== String(normalizedPlayer.id),
-      );
-
-      return [...withoutDuplicate, normalizedPlayer];
-    });
-  };
-
-  const handleGuestAdded = (guestName) => {
-    const trimmedName = guestName.trim();
-
-    if (!trimmedName) {
-      return;
-    }
-
-    setMembers((currentMembers) => [
-      ...currentMembers,
-      {
-        id: `guest-${Date.now()}`,
-        name: trimmedName,
-        role: "Invitado",
-      },
-    ]);
-    setIsGuestModalOpen(false);
-  };
-
-  const handleMemberRemoved = (memberToRemove) => {
-    setMembers((currentMembers) =>
-      currentMembers.filter((member) => {
-        if (member?.id != null && memberToRemove?.id != null) {
-          return String(member.id) !== String(memberToRemove.id);
-        }
-
-        return member.name !== memberToRemove?.name;
-      }),
-    );
-  };
-
-  const selectedPlayerIdsForModal = [
-    ...new Set([
-      ...existingSelectedPlayerIds,
-      ...members.map((member) => String(member.id)),
-    ]),
-  ];
+  const {
+    teamName,
+    setTeamName,
+    points,
+    setPoints,
+    members,
+    isEditMode,
+    isPlayerModalOpen,
+    isGuestModalOpen,
+    selectedPlayerIdsForModal,
+    handleSubmit,
+    handlePlayerAdded,
+    handleGuestAdded,
+    handleMemberRemoved,
+    openPlayerModal,
+    closePlayerModal,
+    openGuestModal,
+    closeGuestModal,
+  } = useTeamCreate({
+    onClose,
+    onCreateTeam,
+    existingSelectedPlayerIds,
+    initialTeam,
+  });
 
   return (
     <Modal
@@ -118,12 +67,12 @@ function TeamCreateModal({ onClose, onCreateTeam, existingSelectedPlayerIds, ini
                 primaryAction={{
                   icon: "person_add",
                   label: "Add Player",
-                  onClick: () => setIsPlayerModalOpen(true),
+                  onClick: openPlayerModal,
                 }}
                 secondaryAction={{
                   icon: "group_add",
                   label: "Add Guest",
-                  onClick: () => setIsGuestModalOpen(true),
+                  onClick: openGuestModal,
                 }}
               />
             </div>
@@ -149,7 +98,7 @@ function TeamCreateModal({ onClose, onCreateTeam, existingSelectedPlayerIds, ini
       </div>
       {isPlayerModalOpen && (
         <PlayerSelectModal
-          onClose={() => setIsPlayerModalOpen(false)}
+          onClose={closePlayerModal}
           onPlayerAdded={handlePlayerAdded}
           selectedPlayerIds={selectedPlayerIdsForModal}
         />
@@ -157,7 +106,7 @@ function TeamCreateModal({ onClose, onCreateTeam, existingSelectedPlayerIds, ini
 
       {isGuestModalOpen && (
         <GuestPlayerModal
-          onClose={() => setIsGuestModalOpen(false)}
+          onClose={closeGuestModal}
           onGuestAdded={handleGuestAdded}
         />
       )}

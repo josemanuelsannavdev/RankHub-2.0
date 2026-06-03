@@ -2,6 +2,7 @@ import GameCard from "./GameCard";
 import GameTypeTag from "../shared/GameTypeTag";
 import GameDateTime from "../shared/GameDateTime";
 import TeamMembersList from "../shared/TeamMembersList";
+import PropTypes from "prop-types";
 
 const TeamGameCard = ({ gameTitle, date, time, teams, onMenuClick }) => {
   return (
@@ -17,7 +18,7 @@ const TeamGameCard = ({ gameTitle, date, time, teams, onMenuClick }) => {
       </div>
       <div className="space-y-6 border-t border-slate-100 dark:border-white/5 pt-3">
         {teams.map((team, teamIndex) => (
-          <div key={teamIndex}>
+          <div key={team.name} className="space-y-3">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span
@@ -52,6 +53,26 @@ const TeamGameCard = ({ gameTitle, date, time, teams, onMenuClick }) => {
       </div>
     </GameCard>
   );
+};
+
+TeamGameCard.propTypes = {
+  gameTitle: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+  teams: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      points: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      members: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string,
+          image: PropTypes.string,
+          guestName: PropTypes.string,
+        })
+      ).isRequired,
+    })
+  ).isRequired,
+  onMenuClick: PropTypes.func.isRequired,
 };
 
 export default TeamGameCard;

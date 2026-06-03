@@ -35,4 +35,5 @@ public class RankingRepository {
         return rankingJpaRepository.getRankingsByUserId(userId);
     }
 
+    
 }

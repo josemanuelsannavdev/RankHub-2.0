@@ -17,4 +17,8 @@ function GameNameFormModal({  onClose, onGameNameCreated }) {
   );
 }
 
+GameNameFormModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onGameNameCreated: PropTypes.func,
+};
 export default GameNameFormModal;

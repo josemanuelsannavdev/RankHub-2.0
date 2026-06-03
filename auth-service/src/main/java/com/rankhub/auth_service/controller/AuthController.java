@@ -15,18 +15,20 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/auth")
+
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
 
         AuthResponse response = authService.register(request);
@@ -34,7 +36,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
 
         AuthResponse response = authService.login(request);
@@ -42,16 +44,27 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/me")
+    @GetMapping("/auth/me")
     public ResponseEntity<Map<String, String>> me(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(Map.of("email", userDetails.getUsername()));
     }
 
-    @GetMapping("/google")
+    @GetMapping("/auth/google")
     public ResponseEntity<Map<String, String>> googleLoginUrl() {
         
         return ResponseEntity.ok(Map.of("authorizationUrl", "/oauth2/authorization/google"));
     }
 
+    //Quiero pasar una lista de ids de usuariso y que me devuelva una lista de emails
+    @PostMapping("/auth/emails")
+    public ResponseEntity<Map<UUID, String>> getEmailsByIds(@RequestBody Map<String, List<UUID>> request) {
+        Map<UUID, String> emails = authService.getEmailsByIds(request.get("ids"));
+        return ResponseEntity.ok(emails);
+    }
 
+    @GetMapping("/auth/user-id")
+    public UUID getUserIdWithEmail(@RequestParam String email) {
+        
+        return authService.getUserIdByEmail(email);
+    }
 }

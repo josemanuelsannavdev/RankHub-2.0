@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import BotonCrearEquipo from "./components/BotonCrearEquipo";
 import Team from "./components/Team";
 import TeamCreateModal from "./components/TeamCreateModal";
-import { useTeamGameForm } from "./hooks/useTeamGameForm";
+import { useTeamGameForm } from "../hooks/useTeamGameForm";
 
 
 function TeamGameForm({ onFormDataChange }) {

@@ -25,6 +25,10 @@ logging:
     '[org.hibernate.SQL]': warn
     '[org.springframework.web]': info
 
+services:
+  auth:
+    base-url: ${AUTH_SERVICE_URL:http://auth-service}
+
 
 eureka:
     client:

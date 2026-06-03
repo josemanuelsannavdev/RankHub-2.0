@@ -21,7 +21,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 
@@ -142,4 +146,15 @@ public class AuthService {
         return email.trim().toLowerCase(Locale.ROOT);
     }
 
+    public Map<UUID, String> getEmailsByIds(List<UUID> ids) {
+        List<User> users = userRepository.findAllById(ids);
+        return users.stream().collect(Collectors.toMap(User::getId, User::getEmail));
+    }
+
+    public UUID getUserIdByEmail(String email) {
+        String normalizedEmail = normalizeEmail(email);
+        return userRepository.findByEmail(normalizedEmail)
+                .map(User::getId)
+                .orElse(null);
+    }
 }
