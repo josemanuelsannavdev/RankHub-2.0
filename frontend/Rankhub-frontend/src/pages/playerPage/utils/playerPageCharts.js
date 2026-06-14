@@ -43,6 +43,7 @@ const createStandardBarChartOptions = () => ({
 
 const buildPositionCounts = (historicos, playerId) => {
   const validHistoricos = Array.isArray(historicos) ? historicos : [];
+
   const numJugadores =
     validHistoricos.length > 0
       ? Math.max(
@@ -59,12 +60,18 @@ const buildPositionCounts = (historicos, playerId) => {
       continue;
     }
 
-    const playerInGame = historico.players.find(
-      (participant) => participant.playerId === playerId,
+    const playersMap = new Map(
+      historico.players.map((p) => [p.playerId, p]),
     );
+
+    const playerInGame = playersMap.get(playerId);
     const position = playerInGame?.position;
 
-    if (typeof position === "number" && position >= 1 && position <= numJugadores) {
+    if (
+      typeof position === "number" &&
+      position >= 1 &&
+      position <= numJugadores
+    ) {
       posiciones[position - 1] += 1;
     }
   }

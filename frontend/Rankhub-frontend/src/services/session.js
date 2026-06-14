@@ -57,3 +57,10 @@ export const clearSessionToken = () => {
 };
 
 export const AUTH_EVENT_NAME = AUTH_CHANGED_EVENT;
+
+
+export const setSessionEmail = (email) => {
+  safeSet("email", email);
+};
+
+export const getSessionEmail = () => safeGet("email");

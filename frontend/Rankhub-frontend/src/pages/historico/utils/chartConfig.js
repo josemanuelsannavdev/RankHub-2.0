@@ -21,10 +21,7 @@ export const CHART_COLORS = [
   "#b1b448", // olive
 ];
 
-/**
- * Generate chart options for Chart.js Line chart
- * Maintains consistent styling across the application
- */
+
 export const getChartOptions = () => ({
   responsive: true,
   maintainAspectRatio: false,
@@ -50,10 +47,7 @@ export const getChartOptions = () => ({
   },
 });
 
-/**
- * Responsive chart dimensions configuration
- * Used to calculate min-width based on number of labels
- */
+
 export const CHART_DIMENSIONS = {
   BASE_WIDTH: 700, // Base min-width when more than 5 labels
   EXTRA_UNIT: 20, // Additional pixels per label beyond 5

@@ -1,35 +1,15 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../../components/Modal.jsx";
 import FormInput from "../../../../components/FormInput.jsx";
 import SubmitButton from "../../../../components/SubmitButton.jsx";
 import CancelButton from "../../../../components/CancelButton.jsx";
-import { useToast } from "../../../../context/ToastContext.jsx";
+import useInvitationForm from "../../hooks/useInvitationForm.js";
 
 const InvitationFormModal = ({ onClose, onSendInvitation }) => {
-  const [email, setEmail] = useState("");
-  const { success: showSuccess, warning: showWarning, error: showError } = useToast();
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const trimmedEmail = email.trim();
-
-    if (!trimmedEmail) {
-      showWarning("Introduce un email para enviar la invitación.");
-      return;
-    }
-
-    try {
-      await onSendInvitation(trimmedEmail);
-      showSuccess("Invitación enviada correctamente.");
-      setEmail("");
-      onClose();
-    } catch (sendError) {
-      console.error("Error al enviar la invitación:", sendError);
-      showError("No se pudo enviar la invitación. Intenta nuevamente.");
-    }
-  };
+  const { email, handleEmailChange, handleSubmit } = useInvitationForm({
+    onClose,
+    onSendInvitation,
+  });
 
   return (
     <Modal
@@ -43,7 +23,7 @@ const InvitationFormModal = ({ onClose, onSendInvitation }) => {
             type="email"
             placeholder="name@example.com"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={handleEmailChange}
           />
         </div>
 

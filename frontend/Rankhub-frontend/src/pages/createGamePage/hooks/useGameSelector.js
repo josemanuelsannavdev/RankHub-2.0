@@ -3,139 +3,148 @@ import { useRanking } from "../../../context/RankingContext";
 import { getGameNames } from "../../../services/gameApi";
 
 const getGameNameValue = (game) => {
-	if (typeof game === "string") {
-		return game;
-	}
+  if (typeof game === "string") {
+    return game;
+  }
 
-	if (game && typeof game === "object" && typeof game.name === "string") {
-		return game.name;
-	}
+  if (game && typeof game === "object" && typeof game.name === "string") {
+    return game.name;
+  }
 
-	return "";
+  return "";
 };
 
 export const useGameSelector = (options, value, onGameChange) => {
-	const [gameNames, setGameNames] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const { currentRanking } = useRanking();
-	const [modalGameNameOpen, setModalGameNameOpen] = useState(false);
-	const [internalSelectedGameName, setInternalSelectedGameName] = useState("");
+  const [gameNames, setGameNames] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { currentRanking } = useRanking();
+  const [modalGameNameOpen, setModalGameNameOpen] = useState(false);
+  const [internalSelectedGameName, setInternalSelectedGameName] = useState("");
 
-	useEffect(() => {
-		let isMounted = true;
+  useEffect(() => {
+    let isMounted = true;
 
-		const fetchGameNames = async () => {
-			setIsLoading(true);
+    const fetchGameNames = async () => {
+      setIsLoading(true);
 
-			try {
-				const response = await getGameNames(currentRanking?.id);
-				const nextGameNames = Array.isArray(response?.data)
-					? response.data.map(getGameNameValue).filter(Boolean)
-					: [];
+      try {
+        const response = await getGameNames(currentRanking?.id);
 
-				setGameNames(
-					nextGameNames.toSorted((a, b) =>
-						a.localeCompare(b, "es", { sensitivity: "base" }),
-					),
-				);
-			} catch (error) {
-				if (!isMounted) {
-					return;
-				}
+        const nextGameNames = Array.isArray(response?.data)
+          ? response.data.flatMap((item) => {
+              const value = getGameNameValue(item);
+              return value ? [value] : [];
+            })
+          : [];
 
-				console.error("Error al cargar juegos para el selector:", error);
-				setGameNames([]);
-			} finally {
-				if (isMounted) {
-					setIsLoading(false);
-				}
-			}
-		};
+        setGameNames(
+          nextGameNames.toSorted((a, b) =>
+            a.localeCompare(b, "es", { sensitivity: "base" }),
+          ),
+        );
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
 
-		fetchGameNames();
+        console.error("Error al cargar juegos para el selector:", error);
+        setGameNames([]);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
 
-		return () => {
-			isMounted = false;
-		};
-	}, [currentRanking?.id]);
+    fetchGameNames();
 
-	const visibleGameNames = useMemo(() => {
-		if (gameNames.length > 0) {
-			return gameNames;
-		}
+    return () => {
+      isMounted = false;
+    };
+  }, [currentRanking?.id]);
 
-		return (options || [])
-			.map(getGameNameValue)
-			.filter(Boolean)
-			.toSorted((a, b) =>
-				a.localeCompare(b, "es", { sensitivity: "base" }),
-			);
-	}, [gameNames, options]);
+  const visibleGameNames = useMemo(() => {
+    const source = gameNames.length > 0 ? gameNames : options || [];
 
-	useEffect(() => {
-		if (value) {
-			setInternalSelectedGameName(value);
-			return;
-		}
+    const result =
+      gameNames.length > 0
+        ? source
+        : source.flatMap((item) => {
+            const value = getGameNameValue(item);
+            return value ? [value] : [];
+          });
 
-		if (!internalSelectedGameName && visibleGameNames.length > 0) {
-			const firstGameName = visibleGameNames[0];
-			setInternalSelectedGameName(firstGameName);
+    return gameNames.length > 0
+      ? result
+      : result.toSorted((a, b) =>
+          a.localeCompare(b, "es", { sensitivity: "base" }),
+        );
+  }, [gameNames, options]);
 
-			if (onGameChange) {
-				onGameChange(firstGameName);
-			}
-		}
-	}, [internalSelectedGameName, onGameChange, value, visibleGameNames]);
+  useEffect(() => {
+    if (value) {
+      setInternalSelectedGameName(value);
+      return;
+    }
 
-	const handleClickAddGame = useCallback(() => {
-		setModalGameNameOpen(true);
-	}, []);
+    if (!internalSelectedGameName && visibleGameNames.length > 0) {
+      const firstGameName = visibleGameNames[0];
+      setInternalSelectedGameName(firstGameName);
 
-	const handleCloseModal = useCallback(() => {
-		setModalGameNameOpen(false);
-	}, []);
+      if (onGameChange) {
+        onGameChange(firstGameName);
+      }
+    }
+  }, [internalSelectedGameName, onGameChange, value, visibleGameNames]);
 
-	const handleGameNameCreated = useCallback((newGame) => {
-		const newGameName = getGameNameValue(newGame);
+  const handleClickAddGame = useCallback(() => {
+    setModalGameNameOpen(true);
+  }, []);
 
-		if (!newGameName) {
-			return;
-		}
+  const handleCloseModal = useCallback(() => {
+    setModalGameNameOpen(false);
+  }, []);
 
-		setGameNames((currentGameNames) => {
-			const withoutDuplicate = currentGameNames.filter(
-				(gameName) => gameName !== newGameName,
-			);
+  const handleGameNameCreated = useCallback((newGame) => {
+    const newGameName = getGameNameValue(newGame);
 
-			return [...withoutDuplicate, newGameName].toSorted((a, b) =>
-				a.localeCompare(b, "es", { sensitivity: "base" }),
-			);
-		});
-	}, []);
+    if (!newGameName) {
+      return;
+    }
 
-	const handleGameChange = useCallback(
-		(event) => {
-			const nextGameName = event.target.value;
-			setInternalSelectedGameName(nextGameName);
+    setGameNames((currentGameNames) => {
+      const withoutDuplicate = currentGameNames.filter(
+        (gameName) => gameName !== newGameName,
+      );
 
-			if (onGameChange) {
-				onGameChange(nextGameName);
-			}
-		},
-		[onGameChange],
-	);
+      return [...withoutDuplicate, newGameName].toSorted((a, b) =>
+        a.localeCompare(b, "es", { sensitivity: "base" }),
+      );
+    });
+  }, []);
 
-	const selectedGameName = value ?? internalSelectedGameName;
+  const handleGameChange = useCallback(
+    (event) => {
+      const nextGameName = event.target.value;
+      setInternalSelectedGameName(nextGameName);
 
-	return {
-		visibleGameNames,
-		isLoading,
-		modalGameNameOpen,
-		selectedGameName,
-		handleClickAddGame,
-		handleCloseModal,
-		handleGameChange,
-		handleGameNameCreated,
-	};
+      if (onGameChange) {
+        onGameChange(nextGameName);
+      }
+    },
+    [onGameChange],
+  );
+
+  const selectedGameName = value ?? internalSelectedGameName;
+
+  return {
+    visibleGameNames,
+    isLoading,
+    modalGameNameOpen,
+    selectedGameName,
+    handleClickAddGame,
+    handleCloseModal,
+    handleGameChange,
+    handleGameNameCreated,
+  };
 };

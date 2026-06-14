@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
-
-const GameTabSelector = ({ activeTab, onChange }) => {
-  const tabs = [
+const tabs = [
     {
       id: "games",
       label: "Juegos",
@@ -14,6 +12,8 @@ const GameTabSelector = ({ activeTab, onChange }) => {
     },
   ];
 
+const GameTabSelector = ({ activeTab, onChange }) => {
+  
   return (
     <section className="pt-6">
       <div className="bg-white/50 dark:bg-white/5 p-1 rounded-2xl flex border border-slate-200 dark:border-white/10">

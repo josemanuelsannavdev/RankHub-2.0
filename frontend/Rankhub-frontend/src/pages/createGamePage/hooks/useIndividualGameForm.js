@@ -1,18 +1,9 @@
-/**
- * Hook to manage individual game form state and logic
- * Handles players, game name, modals, and payload building
- */
 
 import { useState, useEffect, useCallback } from "react";
 import { useRanking } from "../../../context/RankingContext";
 import { buildParticipantsPayload } from "../utils/participantPayloadBuilder";
 
-/**
- * Custom hook for individual game form management
- * Encapsulates all state and handlers related to individual games
- *
- * @returns {Object} Form state and handlers
- */
+
 export const useIndividualGameForm = (onFormDataChange) => {
   const [players, setPlayers] = useState([]);
   const [gameName, setGameName] = useState("");

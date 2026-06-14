@@ -8,13 +8,22 @@ import { useNavigate } from "react-router-dom";
 import { useRankingPageActions } from "./hooks/useRankingPageActions";
 import { useRankingPlayers } from "./hooks/useRankingPlayers";
 import PlayerFormModal from "./components/PlayerFormModal";
+import ChatButton from "./components/ChatButton";
+import { useState } from "react";
+import ChatModal from "../chat/ChatModal";
 
 function RankingPage() {
   const navigate = useNavigate();
-  const { loading, rankingTitle, podiumPlayers, restPlayers, handlePlayerCreated } =
-    useRankingPlayers();
+  const {
+    loading,
+    rankingTitle,
+    podiumPlayers,
+    restPlayers,
+    handlePlayerCreated,
+  } = useRankingPlayers();
   const { modalOpen, editingPlayer, setModalOpen, handleCreatePlayerButton } =
     useRankingPageActions();
+  const [modalChatOpen, setModalChatOpen] = useState(false);
 
   const handleCreateGame = () => {
     navigate("/createGame");
@@ -27,6 +36,14 @@ function RankingPage() {
   const handleViewHistorico = () => {
     navigate("/historico");
   };
+
+  const handleChatButtonClick = () => {
+    setModalChatOpen(true);
+  };
+
+  const handleViewBets = () => {
+    navigate("/viewEventsPage");
+  }
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white">
       <Header title={rankingTitle} />
@@ -37,6 +54,7 @@ function RankingPage() {
       ) : (
         <>
           <Filters />
+          <ChatButton OnClick={handleChatButtonClick} />
           <Podium podiumPlayers={podiumPlayers} />
           <RankingList restPlayers={restPlayers} />
         </>
@@ -46,6 +64,7 @@ function RankingPage() {
         createGameClick={handleCreateGame}
         viewGamesClick={handleViewGames}
         viewHistoricoClick={handleViewHistorico}
+        viewBetsClick={handleViewBets}
       />
       {/* Placeholder for Add Player Modal */}
       {modalOpen && (
@@ -53,6 +72,13 @@ function RankingPage() {
           playerToEdit={editingPlayer}
           onClose={() => setModalOpen(false)}
           onPlayerCreated={handlePlayerCreated}
+        />
+      )}
+      {/* Placeholder for Chat Modal */}
+      {modalChatOpen && (
+        <ChatModal
+          isOpen={modalChatOpen}
+          onClose={() => setModalChatOpen(false)}
         />
       )}
     </div>

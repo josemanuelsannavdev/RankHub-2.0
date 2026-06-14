@@ -1,3 +1,13 @@
+import { useEffect } from "react";
+import Header from "../../components/Header";
+import useHistoricoChartData from "./hooks/useHistoricoChartData";
+import HistoricoChart from "./components/HistoricoChart";
+import HistoricoLoading from "./components/HistoricoLoading";
+import HistoricoError from "./components/HistoricoError";
+import HistoricoEmpty from "./components/HistoricoEmpty";
+
+
+// Lazy-safe init (solo una vez)
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,41 +18,27 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import Header from "../../components/Header";
-import useHistoricoChartData from "./hooks/useHistoricoChartData";
-import HistoricoChart from "./components/HistoricoChart";
-import HistoricoLoading from "./components/HistoricoLoading";
-import HistoricoError from "./components/HistoricoError";
-import HistoricoEmpty from "./components/HistoricoEmpty";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-);
+const initChart = () => {
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+  );
+};
 
-/**
- * HistoricoPage - Displays player position history across games
- * 
- * Responsibilities:
- * - Layout and composition
- * - State management via hook
- * - Conditional rendering based on states
- *
- * State variants:
- * - Loading: Fetching data
- * - Error: API call failed
- * - Empty: No data to display
- * - Success: Chart with data
- */
 const HistoricoPage = () => {
   const { chartData, loading, error, hasData } = useHistoricoChartData();
 
-  // Render state-based content
+  // Inicializa Chart.js SOLO cuando la página se monta
+  useEffect(() => {
+    initChart();
+  }, []);
+
   let content;
 
   if (loading) {

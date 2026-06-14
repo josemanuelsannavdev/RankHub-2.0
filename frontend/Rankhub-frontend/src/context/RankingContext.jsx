@@ -1,12 +1,17 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState, useMemo, use } from "react";
 import PropTypes from "prop-types";
 
 const RankingContext = createContext();
+
 const EMPTY_RANKING = { id: null, role: null, name: null };
+
+const STORAGE_KEYS = {
+  CURRENT_RANKING: "currentRanking:v1",
+};
 
 const readStoredRanking = () => {
   try {
-    const saved = localStorage.getItem("currentRanking");
+    const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_RANKING);
     return saved ? JSON.parse(saved) : EMPTY_RANKING;
   } catch {
     return EMPTY_RANKING;
@@ -15,17 +20,20 @@ const readStoredRanking = () => {
 
 const writeStoredRanking = (ranking) => {
   try {
-    localStorage.setItem("currentRanking", JSON.stringify(ranking));
+    localStorage.setItem(
+      STORAGE_KEYS.CURRENT_RANKING,
+      JSON.stringify(ranking),
+    );
   } catch {
-    // Ignore storage errors to avoid breaking UI state.
+    // ignore
   }
 };
 
 const clearStoredRanking = () => {
   try {
-    localStorage.removeItem("currentRanking");
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_RANKING);
   } catch {
-    // Ignore storage errors to avoid breaking UI state.
+    // ignore
   }
 };
 
@@ -50,15 +58,29 @@ export const RankingProvider = ({ children }) => {
     clearStoredRanking();
   };
 
+  const value = useMemo(() => {
+    return {
+      currentRanking,
+      selectRanking,
+      clearRanking,
+    };
+  }, [currentRanking]);
+
   return (
-    <RankingContext.Provider value={{ currentRanking, selectRanking, clearRanking }}>
+    <RankingContext.Provider value={value}>
       {children}
     </RankingContext.Provider>
   );
 };
 
 export const useRanking = () => {
-  return useContext(RankingContext);
+  const context = use(RankingContext);
+
+  if (!context) {
+    throw new Error("useRanking must be used within a RankingProvider");
+  }
+
+  return context;
 };
 
 RankingProvider.propTypes = {

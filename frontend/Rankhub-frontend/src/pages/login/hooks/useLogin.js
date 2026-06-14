@@ -4,7 +4,7 @@ import { useToast } from "../../../context/ToastContext";
 
 import { getUserMessageFromApiError } from "../../../services/apiError";
 import { login,getGoogleAuthorizationUrl } from "../../../services/authApi";
-import { setSessionToken } from "../../../services/session";
+import { setSessionToken ,setSessionEmail} from "../../../services/session";
 
 export const useLogin = () => {
   const [email, setEmail] = useState("");
@@ -28,9 +28,10 @@ export const useLogin = () => {
           password: normalizedPassword,
         });
         const token = response.data.token;
-
+        
         setSessionToken(token);
-
+        setSessionEmail(normalizedEmail);
+        
         showSuccess("Sesión iniciada correctamente");
         navigate("/mainPage");
       } catch (err) {

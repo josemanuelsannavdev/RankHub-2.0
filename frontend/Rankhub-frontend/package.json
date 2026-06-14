@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
+    "@stomp/stompjs": "^7.3.0",
     "axios": "^1.14.0",
     "chart.js": "^4.5.1",
     "prop-types": "^15.8.1",

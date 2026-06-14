@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
-import { useMemo } from "react";
 import InvitationCard from "./InvitationCard.jsx";
-import { cancelInvitation } from "../../../../services/invitationApi.js";
+import useInvitationSection from "../../hooks/useInvitationSection.js";
 
 
 const resolveInvitationLabel = (invitation) => {
@@ -28,30 +27,9 @@ const resolveInvitationStatus = (invitation) => {
 };
 
 const InvitationsSection = ({ currentRanking, invitations, loading, error }) => {
-  const hasInvitations = Array.isArray(invitations) && invitations.length > 0;
-  const invitationSummary = useMemo(() => {
-    if (!hasInvitations) {
-      return "No invitations yet";
-    }
+  const { invitationList, invitationSummary, handleCancelInvitation } =
+    useInvitationSection({ invitations });
 
-    return `${invitations.length} invitation${invitations.length === 1 ? "" : "s"}`;
-  }, [hasInvitations, invitations.length]);
-
- const handleCancelInvitation = (invitation) => {
-    if (!invitation) {
-      console.warn("No invitation provided for cancellation.");
-      return;
-    }
-    cancelInvitation(invitation?.id )
-      .then(() => {
-        console.log("Invitation cancelled successfully");
-      })
-      .catch((error) => {
-        console.error("Error cancelling invitation:", error);
-      });
-
-
-  }
   return (
     <section className="mb-12">
         <div className="mb-6 flex items-center justify-between gap-4">
@@ -67,7 +45,7 @@ const InvitationsSection = ({ currentRanking, invitations, loading, error }) => 
         </div>
 
        <ul className="space-y-3">
-        {invitations.map((invitation, index) => (
+        {invitationList.map((invitation) => (
           <li
             key={invitation?.id }
             
@@ -92,7 +70,6 @@ InvitationsSection.propTypes = {
   invitations: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])),
   loading: PropTypes.bool.isRequired,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  onInviteClick: PropTypes.func,
 };
 
 export default InvitationsSection;

@@ -2,18 +2,10 @@ import PropTypes from "prop-types";
 import Modal from "../../../components/Modal";
 import OptionButton from "../../../components/OptionButton";
 import CancelButton from "../../../components/CancelButton";
-import { deletePlayer } from "../../../services/playerApi";
-import { useRanking } from "../../../context/RankingContext";
-import { useNavigate } from "react-router-dom";
-function PlayerOptionsModal({ player, onEdit, onClose }) {
-  const { currentRanking } = useRanking();
-  const navigate = useNavigate();
+import usePlayerOption from "../hooks/usePlayerOption";
 
-  const handleDelete = () => {
-    deletePlayer(player.id, player, currentRanking?.id);
-    onClose();
-    navigate(`/ranking/${currentRanking?.id}`);
-  };
+function PlayerOptionsModal({ player, onEdit, onClose }) {
+  const { handleEdit, handleDelete } = usePlayerOption({ player, onEdit, onClose });
 
   return (
     <Modal title="Options" description="These are the options for the player">
@@ -21,7 +13,7 @@ function PlayerOptionsModal({ player, onEdit, onClose }) {
         text="edit"
         important={false}
         icon="edit"
-        onClick={() => onEdit(player)}
+        onClick={handleEdit}
       />
       <OptionButton
         text="Delete"

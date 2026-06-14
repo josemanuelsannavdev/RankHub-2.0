@@ -6,7 +6,6 @@ import useGamePageData from "./hooks/useGamePageData";
 import useGamePageCharts from "./hooks/useGamePageCharts";
 import PointsDistributionSection from "./components/PointsDistributionSection";
 
-import { useState } from "react";
 
 function GamePage() {
   const { gameId: routeGameId } = useParams();
@@ -14,7 +13,7 @@ function GamePage() {
 
   const gameId = routeGameId || null;
 
-const { game, setGame, historicos, loading, error } = useGamePageData({
+const { game, historicos, loading, error } = useGamePageData({
     gameId,
     currentRankingId: currentRanking?.id,
   });

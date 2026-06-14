@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import gatewayApi from "../../../services/gatewayApi";
 import { getPlayer } from "../../../services/playerApi";
 import { getHistoricos } from "../../../services/historicoApi";
 
@@ -8,15 +7,11 @@ const EMPTY_HISTORY = [];
 const usePlayerPageData = ({ playerId, currentRankingId }) => {
   const [player, setPlayer] = useState(null);
   const [historicos, setHistoricos] = useState(EMPTY_HISTORY);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!playerId) {
-      setPlayer(null);
-      setHistoricos(EMPTY_HISTORY);
-      setLoading(false);
-      setError("No se encontró el jugador.");
       return;
     }
 
@@ -30,32 +25,32 @@ const usePlayerPageData = ({ playerId, currentRankingId }) => {
         const requests = [getPlayer(playerId)];
 
         if (currentRankingId) {
-          requests.push(
-            getHistoricos(currentRankingId)
-          );
-          
+          requests.push(getHistoricos(currentRankingId));
         }
 
-        const [playerResponse, historicosResponse] = await Promise.all(requests);
+        const [playerResponse, historicosResponse] =
+          await Promise.all(requests);
 
-        if (!isActive) {
-          return;
-        }
+        if (!isActive) return;
 
         setPlayer(playerResponse.data);
+
         setHistoricos(
-          Array.isArray(historicosResponse?.data) ? historicosResponse.data : [],
+          Array.isArray(historicosResponse?.data)
+            ? historicosResponse.data
+            : EMPTY_HISTORY
         );
       } catch (requestError) {
-        if (!isActive) {
-          return;
-        }
+        if (!isActive) return;
 
         console.error("Error fetching player data:", requestError);
+
         setPlayer(null);
         setHistoricos(EMPTY_HISTORY);
+
         setError(
-          requestError?.message || "No se pudieron cargar los datos del jugador.",
+          requestError?.message ||
+            "No se pudieron cargar los datos del jugador."
         );
       } finally {
         if (isActive) {
@@ -72,11 +67,11 @@ const usePlayerPageData = ({ playerId, currentRankingId }) => {
   }, [playerId, currentRankingId]);
 
   return {
-    player,
+    player: playerId ? player : null,
     setPlayer,
-    historicos,
-    loading,
-    error,
+    historicos: playerId ? historicos : EMPTY_HISTORY,
+    loading: playerId ? loading : false,
+    error: playerId ? error : "No se encontró el jugador.",
   };
 };
 

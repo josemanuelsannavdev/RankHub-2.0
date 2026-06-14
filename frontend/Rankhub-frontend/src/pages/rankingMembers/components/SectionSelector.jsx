@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
-
-const SectionSelector = ({ activeTab, onChange }) => {
-  const tabs = [
+ const tabs = [
     {
       id: "members",
       label: "Miembros",
@@ -14,6 +12,8 @@ const SectionSelector = ({ activeTab, onChange }) => {
     },
   ];
 
+const SectionSelector = ({ activeTab, onChange }) => {
+ 
   return (
     <section className="mb-8" aria-label="Member sections">
       <div className="inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-surface-container-low/50 p-1 backdrop-blur-sm">

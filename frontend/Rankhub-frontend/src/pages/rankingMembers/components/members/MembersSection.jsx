@@ -1,22 +1,10 @@
 import PropTypes from "prop-types";
 import MemberCard from "./MemberCard.jsx";
-import { useState } from "react";
 import MembersOptionsModal from "./MembersOptionsModal.jsx";
-import {deleteMember, changeMemberRole} from "../../../../services/rankingApi.js";
+import useMemberSection from "../../hooks/useMemberSection.js";
+
 const getMemberLabel = (member) => {
   return member?.email || member?.name || member?.username || "Member";
-};
-
-const getMemberVariant = (member) => {
-  const role = String(member?.role || "subadmin").toLowerCase();
-
-  if (role.includes("guest")) {
-    return "guest";
-  }
-  if (role.includes("sub_admin")) {
-    return "subadmin";
-  }
-  return "admin";
 };
 
 const ROLE_TAB_CONFIG = {
@@ -45,49 +33,19 @@ const MembersSection = ({
   error,
   onRetry,
 }) => {
-  const [activeTab, setActiveTab] = useState("subadmin");
-  const [openOptionsForMember, setOpenOptionsForMember] = useState(false);
-  const [optionsMember, setOptionsMember] = useState(null);
-  const handleOptionsClick = (member) => {
-    // Implement options click logic here, e.g., show a dropdown menu with actions
-    console.log("Options clicked for member:", member);
-    setOptionsMember(member);
-    setOpenOptionsForMember(true);
-  };
+  const {
+    activeTab,
+    setActiveTab,
+    filteredMembers,
+    getMemberVariant,
+    openOptionsForMember,
+    optionsMember,
+    handleOptionsClick,
+    handleChangeRole,
+    handleDelete,
+    handleCloseOptions,
+  } = useMemberSection({ currentRanking, members });
 
-  const handleChangeRole = (member) => {
-    // Implement role change logic here, e.g., call an API to update the member's role
-    console.log(`Changing role for member ${member.email} ${currentRanking.id} `);
-    // After successful role change, you might want to update the UI or close the options modal
-    changeMemberRole(currentRanking.id, member.email)
-      .then(() => {
-        console.log(`Role changed successfully for member ${member.email}`);
-      })
-      .catch((error) => {
-        console.error(`Error changing role for member ${member.email}:`, error);
-      })
-      .finally(() => {
-        setOpenOptionsForMember(false);
-      });
-  };
-  const handleDelete = (member) => {
-    // Implement delete logic here, e.g., call an API to remove the member from the ranking
-    console.log(`Deleting member ${member.email}`);
-    // After successful deletion, you might want to update the UI or close the options modal
-    deleteMember(currentRanking.id, member.email)
-      .then(() => {
-        console.log(`Member deleted successfully: ${member.email}`);
-      })
-      .catch((error) => {
-        console.error(`Error deleting member ${member.email}:`, error);
-      })
-      .finally(() => {
-        setOpenOptionsForMember(false);
-      });
-  };
-  const handleCloseOptions = () => {
-    setOpenOptionsForMember(false);
-  };
   return (
     <section className="mb-12">
       <div className="mb-6 flex items-center justify-between gap-4">
@@ -120,17 +78,15 @@ const MembersSection = ({
       </div>
 
       <ul className="space-y-3">
-        {members
-          .filter((member) => getMemberVariant(member) === activeTab)
-          .map((member) => (
-            <li key={member.id ?? getMemberLabel(member)}>
-              <MemberCard
-                member={member}
-                variant={getMemberVariant(member)}
-                onClickOption={handleOptionsClick}
-              />
-            </li>
-          ))}
+        {filteredMembers.map((member) => (
+          <li key={member.id ?? getMemberLabel(member)}>
+            <MemberCard
+              member={member}
+              variant={getMemberVariant(member)}
+              onClickOption={handleOptionsClick}
+            />
+          </li>
+        ))}
       </ul>
 
       {openOptionsForMember && (

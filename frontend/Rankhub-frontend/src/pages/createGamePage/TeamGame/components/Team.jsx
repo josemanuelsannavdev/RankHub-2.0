@@ -1,23 +1,30 @@
-import PropTypes from 'prop-types';
-import TeamMemberCard from './TeamMemberCard';
+import PropTypes from "prop-types";
+import TeamMemberCard from "./TeamMemberCard";
+const getPositionBadgeClassName = (position) => {
+  if (position === 1) {
+    return "bg-[#f9f506]/20 text-[#f9f506] border border-[#f9f506]/35";
+  }
 
-function Team({ team, onEdit, onMoveUp, onMoveDown, onDelete, disableMoveUp, disableMoveDown }) {
-  const getPositionBadgeClassName = (position) => {
-    if (position === 1) {
-      return 'bg-[#f9f506]/20 text-[#f9f506] border border-[#f9f506]/35';
-    }
+  if (position === 2) {
+    return "bg-slate-300/20 text-slate-300 border border-slate-300/35";
+  }
 
-    if (position === 2) {
-      return 'bg-slate-300/20 text-slate-300 border border-slate-300/35';
-    }
+  if (position === 3) {
+    return "bg-[#cd7f32]/20 text-[#cd7f32] border border-[#cd7f32]/35";
+  }
 
-    if (position === 3) {
-      return 'bg-[#cd7f32]/20 text-[#cd7f32] border border-[#cd7f32]/35';
-    }
+  return "bg-slate-500/20 text-slate-400 border border-slate-400/25";
+};
 
-    return 'bg-slate-500/20 text-slate-400 border border-slate-400/25';
-  };
-
+function Team({
+  team,
+  onEdit,
+  onMoveUp,
+  onMoveDown,
+  onDelete,
+  disableMoveUp,
+  disableMoveDown,
+}) {
   const badgeClassName = getPositionBadgeClassName(team.position);
 
   return (
@@ -26,7 +33,9 @@ function Team({ team, onEdit, onMoveUp, onMoveDown, onDelete, disableMoveUp, dis
         <div className="flex-1">
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
             {team.name}
-            <span className={`${badgeClassName} text-[10px] px-2 py-0.5 rounded-full uppercase`}>
+            <span
+              className={`${badgeClassName} text-[10px] px-2 py-0.5 rounded-full uppercase`}
+            >
               Pos: {team.position}
             </span>
           </h3>

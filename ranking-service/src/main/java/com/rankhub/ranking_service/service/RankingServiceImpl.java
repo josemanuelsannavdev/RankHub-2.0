@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rankhub.ranking_service.client.AuthServiceClient;
+import com.rankhub.ranking_service.client.ChatServiceClient;
 import com.rankhub.ranking_service.dto.RankingDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.UserDto;
@@ -34,7 +35,7 @@ public class RankingServiceImpl implements RankingService {
     private final RoleRepository roleRepository;
     private final RankingMapper rankingMapper;
     private final AuthServiceClient authServiceClient;
-
+    private final ChatServiceClient chatServiceClient;
     
 
     @Override
@@ -71,6 +72,8 @@ public class RankingServiceImpl implements RankingService {
                 .build();
         roleRepository.save(adminRole);
 
+        chatServiceClient.createChat(createdRanking.getId());
+        
         return RankingWithRoleDto.builder()
                 .id(createdRanking.getId())
                 .name(createdRanking.getName())

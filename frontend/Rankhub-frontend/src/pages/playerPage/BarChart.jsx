@@ -1,19 +1,24 @@
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import PropTypes from 'prop-types';
+import { lazy, Suspense } from "react";
+import PropTypes from "prop-types";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const Bar = lazy(() =>
+  import("react-chartjs-2").then((mod) => ({ default: mod.Bar }))
+);
 
 const BarChart = ({ data, options }) => {
-    return <Bar data={data} options={options} />;
+  return (
+    <Suspense fallback={<div>Cargando gráfico...</div>}>
+      <Bar data={data} options={options} />
+    </Suspense>
+  );
 };
 
 BarChart.propTypes = {
-    data: PropTypes.shape({
-        labels: PropTypes.arrayOf(PropTypes.string),
-        datasets: PropTypes.arrayOf(PropTypes.object),
-    }).isRequired,
-    options: PropTypes.object,
+  data: PropTypes.shape({
+    labels: PropTypes.arrayOf(PropTypes.string),
+    datasets: PropTypes.arrayOf(PropTypes.object),
+  }).isRequired,
+  options: PropTypes.object,
 };
 
 export default BarChart;

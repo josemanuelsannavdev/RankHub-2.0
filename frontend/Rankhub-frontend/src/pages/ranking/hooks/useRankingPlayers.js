@@ -33,7 +33,9 @@ export const useRankingPlayers = () => {
         }
       } catch (error) {
         console.error("Error fetching ranking players:", error);
-        showError(getUserMessageFromApiError(error, "No se pudo cargar el ranking."));
+        showError(
+          getUserMessageFromApiError(error, "No se pudo cargar el ranking."),
+        );
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -49,15 +51,19 @@ export const useRankingPlayers = () => {
   }, [navigate, rankingId, showError]);
 
   const sortedPlayers = useMemo(
-    () => [...players].sort((a, b) => (b.points || 0) - (a.points || 0)),
+    () => players.toSorted((a, b) => (b.points || 0) - (a.points || 0)),
     [players],
   );
 
-  const podiumPlayers = useMemo(() => sortedPlayers.slice(0, 3), [sortedPlayers]);
+  const podiumPlayers = useMemo(
+    () => sortedPlayers.slice(0, 3),
+    [sortedPlayers],
+  );
   const restPlayers = useMemo(() => sortedPlayers.slice(3), [sortedPlayers]);
 
   const rankingTitle = useMemo(() => {
-    const hasMatchingRankingContext = String(currentRanking?.id) === String(rankingId);
+    const hasMatchingRankingContext =
+      String(currentRanking?.id) === String(rankingId);
 
     if (hasMatchingRankingContext && currentRanking?.name) {
       return currentRanking.name;

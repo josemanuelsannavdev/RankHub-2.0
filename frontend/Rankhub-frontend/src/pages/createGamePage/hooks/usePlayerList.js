@@ -1,19 +1,7 @@
-/**
- * Hook to manage player list reordering logic
- * Extracted from PlayersInMatchSection for better isolation
- */
 
 import { useState, useEffect, useCallback } from "react";
 
-/**
- * Custom hook for managing player list with reordering
- * Handles move up/down and delete operations
- *
- * @param {Array} initialPlayers - Initial array of players
- * @param {Function} onPlayersChange - Callback when players list changes
- * @param {Function} onPlayerDelete - Callback when a player is deleted
- * @returns {Object} Ordered players and handler functions
- */
+
 export const usePlayerList = (initialPlayers, onPlayersChange, onPlayerDelete) => {
   const [orderedPlayers, setOrderedPlayers] = useState(initialPlayers || []);
 

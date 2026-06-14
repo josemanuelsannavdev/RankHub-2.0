@@ -14,7 +14,7 @@ export function useOAuthCallback() {
     handledRef.current = true;
 
     try {
-      const { token, error } = parseOAuthResponse(window.location.search);
+      const { token, error } = parseOAuthResponse(globalThis.location.search);
 
       if (token) {
         setSessionToken(token);

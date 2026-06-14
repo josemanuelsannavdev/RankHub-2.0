@@ -14,9 +14,9 @@ const icons = [
 const IconSelect = ({ selected, onSelect }) => {
     return (
         <div className="space-y-2">
-            <label className="text-xs text-slate-400 font-medium">
+            <p className="text-xs text-slate-400 font-medium">
                 Icono del ranking
-            </label>
+            </p>
             <div
                 className="
                 grid grid-cols-4 gap-3

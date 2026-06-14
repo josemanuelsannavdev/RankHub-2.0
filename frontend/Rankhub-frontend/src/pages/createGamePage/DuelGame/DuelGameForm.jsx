@@ -6,18 +6,7 @@ import DuelParticipantsSection from "./components/DuelParticipantsSection";
 import PlayerSelectModal from "../components/PlayerSelectModal";
 import { useDuelGameForm } from "../hooks/useDuelGameForm";
 
-/**
- * DuelGameForm - Form for creating head-to-head duel games
- *
- * Manages:
- * - Game name selection
- * - Winner and loser selection
- * - Bet amount input
- * - Modal state for player selection
- *
- * Props:
- * - onFormDataChange: Callback fired when form data changes
- */
+
 function DuelGameForm({ onFormDataChange }) {
   const {
     setGameName,

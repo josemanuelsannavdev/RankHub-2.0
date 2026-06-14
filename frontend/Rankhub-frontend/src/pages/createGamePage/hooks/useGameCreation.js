@@ -1,19 +1,15 @@
-/**
- * Hook to manage game creation with API calls
- * Handles all game type creation requests with unified error/success handling
- */
 
 import { useCallback } from "react";
+import { useRanking } from "../../../context/RankingContext";
 import { useToast } from "../../../context/ToastContext";
+import { sendChatMessage } from "../../../services/chatApi";
 import {
   createIndividualGame,
   createTeamGame,
   createDuelGame,
 } from "../../../services/gameApi";
 
-/**
- * API call configuration for each game mode
- */
+
 const GAME_MODE_CONFIG = {
   individual: {
     apiCall: createIndividualGame,
@@ -35,14 +31,28 @@ const GAME_MODE_CONFIG = {
   },
 };
 
-/**
- * Custom hook for handling game creation
- * Manages API calls, error handling, and toast notifications
- *
- * @returns {Object} Handler functions for game creation
- */
+
 export const useGameCreation = () => {
   const { success: showSuccess, error: showError } = useToast();
+  const { currentRanking } = useRanking();
+
+  const sendGameCreatedMessage = useCallback(
+    async (gameName) => {
+      if (!currentRanking?.id || !gameName?.trim()) {
+        return;
+      }
+
+      try {
+        await sendChatMessage(currentRanking.id, {
+          username: "EVENTO",
+          body: `New game : ${gameName}`,
+        });
+      } catch (error) {
+        console.error("Error al enviar el mensaje de evento al chat:", error);
+      }
+    },
+    [currentRanking?.id],
+  );
 
   const createGame = useCallback(
     async (gameMode, formData) => {
@@ -54,14 +64,15 @@ export const useGameCreation = () => {
 
 
       try {
-        await config.apiCall(formData);
+        const createdGame = await config.apiCall(formData);
         showSuccess(config.successMessage);
+        await sendGameCreatedMessage(createdGame?.data?.name ?? formData?.name);
       } catch (error) {
         console.error(`Error al crear ${config.label}:`, error);
         showError(config.errorMessage);
       }
     },
-    [showSuccess, showError],
+    [showSuccess, showError, sendGameCreatedMessage],
   );
 
   return { createGame };

@@ -1,38 +1,18 @@
-/**
- * Hook to manage team game form state and logic
- * Handles teams, team creation/editing, and payload building
- */
-
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRanking } from "../../../context/RankingContext";
 import { buildTeamsPayload } from "../utils/teamPayloadBuilder";
 
-/**
- * Generate unique ID for team
- * @returns {string} Unique team ID
- */
 const createTeamId = () =>
   typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
     ? crypto.randomUUID()
     : `team-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-/**
- * Normalize team positions to be sequential
- * @param {Array} teams - Array of teams
- * @returns {Array} Teams with normalized positions
- */
 const normalizeTeamPositions = (teams) =>
   teams.map((team, index) => ({
     ...team,
     position: index + 1,
   }));
 
-/**
- * Custom hook for team game form management
- * Encapsulates all state and handlers related to team games
- *
- * @returns {Object} Form state and handlers
- */
 export const useTeamGameForm = (onFormDataChange) => {
   const [gameName, setGameName] = useState("");
   const [teamsState, setTeamsState] = useState(() =>
@@ -48,14 +28,23 @@ export const useTeamGameForm = (onFormDataChange) => {
   );
 
   const selectedPlayerIdsInTeams = useMemo(() => {
-    const ids = teamsState
-      .filter((team) => team.id !== editingTeamId)
-      .flatMap((team) => team?.members || [])
-      .map((member) => member?.id)
-      .filter((id) => id != null)
-      .map(String);
+    const idsSet = new Set();
 
-    return [...new Set(ids)];
+    for (const team of teamsState) {
+      if (team.id === editingTeamId) continue;
+
+      const members = team?.members;
+      if (!Array.isArray(members)) continue;
+
+      for (const member of members) {
+        const id = member?.id;
+        if (id != null) {
+          idsSet.add(String(id));
+        }
+      }
+    }
+
+    return [...idsSet];
   }, [teamsState, editingTeamId]);
 
   // Update parent when teams or game name changes
@@ -110,23 +99,26 @@ export const useTeamGameForm = (onFormDataChange) => {
     setEditingTeamId(null);
   }, []);
 
-  const updateTeam = useCallback((updatedTeam) => {
-    setTeamsState((currentTeams) =>
-      normalizeTeamPositions(
-        currentTeams.map((team) => {
-          if (team.id !== editingTeamId) {
-            return team;
-          }
-          return {
-            ...team,
-            ...updatedTeam,
-          };
-        }),
-      ),
-    );
-    setIsCreateTeamModalOpen(false);
-    setEditingTeamId(null);
-  }, [editingTeamId]);
+  const updateTeam = useCallback(
+    (updatedTeam) => {
+      setTeamsState((currentTeams) =>
+        normalizeTeamPositions(
+          currentTeams.map((team) => {
+            if (team.id !== editingTeamId) {
+              return team;
+            }
+            return {
+              ...team,
+              ...updatedTeam,
+            };
+          }),
+        ),
+      );
+      setIsCreateTeamModalOpen(false);
+      setEditingTeamId(null);
+    },
+    [editingTeamId],
+  );
 
   const handleOpenCreateModal = useCallback(() => {
     setEditingTeamId(null);

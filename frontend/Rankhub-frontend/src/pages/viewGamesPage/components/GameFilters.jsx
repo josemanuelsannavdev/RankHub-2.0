@@ -1,6 +1,10 @@
 import PropTypes from "prop-types";
 
-
+ const filterOptions = [
+    { id: "all", label: "Todos" },
+    { id: "INDIVIDUAL_GAME", label: "Individuales" },
+    { id: "TEAM_GAME", label: "Equipos" },
+  ];
 const GameFilters = ({
   activeFilter,
   onFilterChange,
@@ -8,11 +12,7 @@ const GameFilters = ({
   onSearchChange,
   onClearFilters,
 }) => {
-  const filterOptions = [
-    { id: "all", label: "Todos" },
-    { id: "INDIVIDUAL_GAME", label: "Individuales" },
-    { id: "TEAM_GAME", label: "Equipos" },
-  ];
+ 
 
   return (
     <section className="py-6 space-y-4">

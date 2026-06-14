@@ -36,7 +36,7 @@ function GuestPlayerModal({ onClose, onGuestAdded }) {
             onChange={(event) => setGuestName(event.target.value)}
             className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 px-4 text-sm font-semibold text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40"
             placeholder="Ej: Paco"
-            autoFocus
+            
           />
         </div>
 

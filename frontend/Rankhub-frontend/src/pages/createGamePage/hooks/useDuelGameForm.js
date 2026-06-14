@@ -1,7 +1,3 @@
-/**
- * Hook to manage duel game form state and logic
- * Handles winner, loser, bet, and payload building
- */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRanking } from "../../../context/RankingContext";
@@ -14,12 +10,7 @@ const EMPTY_PARTICIPANT = {
   avatarUrl: "",
 };
 
-/**
- * Transform player to duel participant format
- * @param {Object} player - Player object
- * @param {string} fallbackSubtitle - Default subtitle
- * @returns {Object} Participant object
- */
+
 const toDuelParticipant = (player, fallbackSubtitle) => ({
   name: player?.name || "Jugador",
   subtitle: fallbackSubtitle,
@@ -27,12 +18,7 @@ const toDuelParticipant = (player, fallbackSubtitle) => ({
   id: player?.id,
 });
 
-/**
- * Custom hook for duel game form management
- * Encapsulates all state and handlers related to duel games
- *
- * @returns {Object} Form state and handlers
- */
+
 export const useDuelGameForm = (onFormDataChange) => {
   const [gameName, setGameName] = useState("");
   const [bet, setBet] = useState("");

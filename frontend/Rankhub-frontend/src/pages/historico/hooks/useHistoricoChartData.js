@@ -14,10 +14,7 @@ const useHistoricoChartData = () => {
 
   const rankingId = currentRanking?.id;
 
-  /**
-   * Fetch both historicos and players in parallel
-   * Memoized to prevent unnecessary recreation
-   */
+  
   const fetchData = useCallback(async () => {
     if (!rankingId) {
       setHistoricos([]);
@@ -51,10 +48,7 @@ const useHistoricoChartData = () => {
     }
   }, [rankingId]);
 
-  /**
-   * Setup effect with cleanup to prevent memory leaks
-   * Triggers fetch when rankingId changes
-   */
+
   useEffect(() => {
     let isActive = true;
 

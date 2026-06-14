@@ -17,9 +17,10 @@ import HistoricoPage from "./pages/historico/HistoricoPage.jsx";
 import PlayerPage from "./pages/playerPage/PlayerPage.jsx";
 import GamePage from "./pages/gamePage/GamePage.jsx";
 import RankingMembersPage from "./pages/rankingMembers/RankingMembersPage.jsx";
-
-
-
+import ChatModal from "./pages/chat/ChatModal.jsx";
+import CreateEventPage from "./pages/createEventBetPage/CreateEventPage.jsx";
+import EventPage from "./pages/betsPage/EventPage.jsx";
+import ViewEventsPage from "./pages/viewEventsPage/ViewEventsPage.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -30,7 +31,10 @@ createRoot(document.getElementById("root")).render(
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
-
+            <Route path="/chat" element={<ChatModal />} />
+            <Route path="/createEvent" element={<CreateEventPage />} />
+            <Route path="/event" element={<EventPage />} />
+            <Route path="/viewEventsPage" element={<ViewEventsPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/mainPage" element={<MainPage />} />
               <Route path="/ranking/:id" element={<Ranking />} />

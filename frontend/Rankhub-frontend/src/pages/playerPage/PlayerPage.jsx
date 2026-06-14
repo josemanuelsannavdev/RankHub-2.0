@@ -1,54 +1,31 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { useRanking } from "../../context/RankingContext";
 import Header from "../../components/Header";
-import usePlayerPageData from "./hooks/usePlayerPageData";
-import usePlayerPageCharts from "./hooks/usePlayerPageCharts";
+import usePlayerPage from "./hooks/usePlayerPage";
 import PlayerStatsGrid from "./components/PlayerStatsGrid";
 import PositionDistributionSection from "./components/PositionDistributionSection";
 import DuelSection from "./components/DuelSection";
-import { useState } from "react";
 import PlayerOptionsModal from "./components/PlayerOptionsModal";
 import PlayerFormModal from "../ranking/components/PlayerFormModal";
 
 function PlayerPage() {
-  const { playerId: routePlayerId } = useParams();
-  const { currentRanking } = useRanking();
+  const {
+    headerTitle,
+    player,
+    positionChartModel,
+    duelChartModel,
+    loading,
+    error,
+    modalOpenOptions,
+    openOptions,
+    closeOptions,
+    playerFormModalOpen,
+    playerToEdit,
+    handleEditPlayer,
+    handlePlayerUpdated,
+    closePlayerForm,
+  } = usePlayerPage();
 
-  const playerId = routePlayerId || null;
-  const { player, setPlayer, historicos, loading, error } = usePlayerPageData({
-    playerId,
-    currentRankingId: currentRanking?.id,
-  });
-  const { positionChartModel, duelChartModel } = usePlayerPageCharts({
-    historicos,
-    playerId,
-  });
-
-  const playerNameForHeader = player?.name || "Jugador";
-
-  const [modalOpenOptions, setModalOpenOptions] = useState(false);
-  const [playerToEdit, setPlayerToEdit] = useState(null);
-  const [playerFormModalOpen, setPlayerFormModalOpen] = useState(false);
-
-  const handleOptionPlayer = () => {
-    setModalOpenOptions(true);
-  };
-
-  const handleEditPlayer = (player) => {
-    setPlayerToEdit(player);
-    setModalOpenOptions(false);
-    setPlayerFormModalOpen(true);
-  };
-
-  const handlePlayerUpdated = (updatedPlayer) => {
-    if (updatedPlayer) {
-      setPlayer(updatedPlayer);
-    }
-
-    setPlayerToEdit(null);
-    setPlayerFormModalOpen(false);
-  };
+  const playerNameForHeader = headerTitle;
   return (
     <div className="bg-surface min-h-screen pb-24" aria-live="polite">
       {/* Ambient Lighting Background */}
@@ -88,7 +65,7 @@ function PlayerPage() {
                 {player.name || "Jugador"}
                 <button
                   className={`transition-colors p-2 rounded-lg text-zinc-500 justify-self-end hover:text-zinc-700 active:bg-zinc-700/10 ml-4`}
-                onClick={()=> handleOptionPlayer()}
+                onClick={openOptions}
                 >
                   <span className="material-symbols-outlined">more_vert</span>
                 </button>
@@ -101,17 +78,14 @@ function PlayerPage() {
               <PlayerOptionsModal
                 player={player}
                 onEdit={handleEditPlayer}
-                onClose={() => setModalOpenOptions(false)}
+                onClose={closeOptions}
               />
             )}
 
             {playerFormModalOpen && (
               <PlayerFormModal
                 playerToEdit={playerToEdit}
-                onClose={() => {
-                  setPlayerToEdit(null);
-                  setPlayerFormModalOpen(false);
-                }}
+                onClose={() => closePlayerForm()}
                 onPlayerCreated={handlePlayerUpdated}
               />
             )}
