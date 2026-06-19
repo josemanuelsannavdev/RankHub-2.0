@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -38,6 +39,9 @@ public class SecurityConfig {
         private final OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
         private final OAuth2AuthenticationFailureHandler oAuth2FailureHandler;
         private final PasswordEncoder passwordEncoder;
+
+        @Value("${FRONTEND_URL:http://localhost:5173}")
+        private String frontendUrl;
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -85,7 +89,10 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOriginPatterns(List.of("*"));
+                // Restrict allowed origins to the configured frontend URL(s)
+                // FRONTEND_URL may contain multiple origins separated by commas
+                String[] allowed = frontendUrl.split(",");
+                configuration.setAllowedOriginPatterns(List.of(allowed));
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setAllowCredentials(false);

@@ -21,4 +21,6 @@ public class PlayerRequest {
 
     private String image;
 
+    private UUID id;
+
 }

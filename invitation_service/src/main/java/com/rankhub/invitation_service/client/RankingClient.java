@@ -17,11 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
 
-//@FeignClient(name = "ranking-service", url = "${services.ranking.url}")
 @Component
 @RequiredArgsConstructor
 public class RankingClient {
-    //@Value("${services.ranking.base-url:http://localhost:8762/ranking-service}")
     @Value("${services.ranking.base-url:http://localhost:8082}")
     private String rankingServiceBaseUrl;
 

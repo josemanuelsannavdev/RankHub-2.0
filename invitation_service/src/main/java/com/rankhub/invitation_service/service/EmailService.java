@@ -2,34 +2,45 @@ package com.rankhub.invitation_service.service;
 
 import com.rankhub.invitation_service.entity.Invitation;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.MailException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+    private final String fromEmail;
+
+    public EmailService(JavaMailSender mailSender,
+                        @Value("${resend.from-email:onboarding@tuapp.com}") String fromEmail) {
+        this.mailSender = mailSender;
+        this.fromEmail = fromEmail;
+    }
 
     public void sendEmail(Invitation invitation) {
-        String link = "http://localhost:8085/invitation/accept?token="
-                + invitation.getToken();
-        SimpleMailMessage message = new SimpleMailMessage();
+        String link = "http://localhost:8085/invitation/accept?token=" + invitation.getToken();
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setFrom(fromEmail);
+            helper.setTo(invitation.getEmail());
+            helper.setSubject("Prueba Spring");
+            helper.setText(buildHtml(link), true);
 
-        message.setFrom("teuscarapoyen@gmail.com");
-        message.setTo(invitation.getEmail());
-        message.setSubject("Prueba Spring");
-        message.setText(buildHtml(link));
-
-        mailSender.send(message);
+            mailSender.send(mimeMessage);
+        } catch (MailException | MessagingException ex) {
+            log.error("Failed to send invitation email to {}: {}", invitation.getEmail(), ex.getMessage());
+            throw new RuntimeException("Failed to send invitation email", ex);
+        }
     }
 
     private String buildHtml(String link) {

@@ -1,12 +1,14 @@
 package com.rankhub.ranking_service.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.rankhub.ranking_service.dto.RankingDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.UserDto;
 import com.rankhub.ranking_service.entity.Ranking;
+import com.rankhub.ranking_service.request.OddsRequest;
 import com.rankhub.ranking_service.request.RankingRequest;
 
 public interface RankingService {
@@ -34,4 +36,6 @@ public interface RankingService {
     void removeMemberFromRanking(UUID rankingId, String email);
 
     void changeRole(UUID rankingId, String email);
+
+    Map<String, Double> getOdds(OddsRequest request);
 }

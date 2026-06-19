@@ -31,4 +31,8 @@ public class GameRepository {
     public void deleteById(UUID gameId) {
         gameJpaRespository.deleteById(gameId);
     }
+
+    public List<Game> findAllGamesByGameName(String gameName) {
+        return gameJpaRespository.findAllGamesByName(gameName);
+    }
 }

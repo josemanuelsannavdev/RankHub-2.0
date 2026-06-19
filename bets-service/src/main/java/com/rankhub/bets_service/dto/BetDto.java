@@ -23,12 +23,19 @@ public class BetDto {
 
     private UUID eventId;
 
-    private String sideId;
+    private UUID sideId;
 
-    private String playerId;
+    private UUID playerId;
 
     private Integer points;
 
     private String status;
 
+    private String playerName;
+
+    private String playerImage;
+
+    private String creatorName;
+
+    private String action;
 }

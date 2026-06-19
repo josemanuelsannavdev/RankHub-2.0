@@ -13,4 +13,10 @@ public interface EventService {
     public EventDto getEventById(UUID eventId);
 
     public List<EventDto> getEventsByRankingId(UUID rankingId);
+
+    public void closeEvent(UUID eventId);
+
+    public void finishEvent(UUID eventId, UUID sideId);
+
+    
 }

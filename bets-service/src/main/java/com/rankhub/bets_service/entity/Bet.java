@@ -38,10 +38,10 @@ public class Bet {
     private UUID eventId;
 
     @Column(name = "side_id")
-    private String sideId;
+    private UUID sideId;
 
     @Column(name = "player_id")
-    private String playerId;
+    private UUID playerId;
 
     @Column(name = "points")
     private Integer points;
@@ -49,5 +49,12 @@ public class Bet {
     @Column(name = "status")
     private String status;
 
-   
+   @Column(name = "player_name")
+    private String playerName;
+
+    @Column(name = "player_image")
+    private String playerImage;
+
+    @Column(name = "creator_name")
+    private String creatorName;
 }

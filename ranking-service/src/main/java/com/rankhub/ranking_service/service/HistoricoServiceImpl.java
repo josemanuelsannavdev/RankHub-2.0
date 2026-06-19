@@ -83,6 +83,8 @@ public class HistoricoServiceImpl implements HistoricoService {
         return historicosDto;
     }
 
+    //dando el id del juego, se obtiene el nombre del juego y con ese nombre se buscan todos los juegos 
+    // de la misma categoria y se devuelven todos los historicos de esos juegos
     @Override
     public List<HistoricoDto> getHistoricosByGame(UUID gameId) {
         Game game = gameRepository.findById(gameId);
@@ -92,8 +94,38 @@ public class HistoricoServiceImpl implements HistoricoService {
         List<UUID> gameIds = gameService.getGameIdsByRankingIdAndGameName(game.getRankingId(), game.getName());
         List<Historico> historicos = historicoRepository.findByGamesIds(gameIds);
         // Mapear historicos a HistoricoDto
+        List<List<Historico>> historicosGroupedByGameId = historicos.stream()
+                .collect(Collectors.groupingBy(Historico::getGameId))
+                .values()
+                .stream()
+                .toList();
+                
         List<HistoricoDto> historicosDto = new ArrayList<>();
-        for (Historico historico : historicos) {
+        for (List<Historico> historicosGroup : historicosGroupedByGameId) {
+            if (!historicosGroup.isEmpty()) {
+                Game currentGame = gameRepository.findById(historicosGroup.get(0).getGameId());
+                List<HistoricoPlayerDto> historicoPlayers = historicosGroup.stream().map(historico -> {
+                    HistoricoPlayerDto playerDto = new HistoricoPlayerDto();
+                    playerDto.setPlayerId(historico.getPlayerId());
+                    playerDto.setTotalPoints(historico.getTotalPoints());
+                    playerDto.setObtainedPoints(historico.getObtainedPoints());
+                    playerDto.setPlayerName(playerRepository.getPlayerById(historico.getPlayerId()).getName());
+                    playerDto.setPosition(historico.getPosition());
+
+                    return playerDto;
+                }).toList();
+
+                HistoricoDto historicoDto = new HistoricoDto();
+                historicoDto.setGameId(currentGame.getId());
+                historicoDto.setGameName(currentGame.getName());
+                historicoDto.setDate(currentGame.getDate());
+                historicoDto.setPlayers(historicoPlayers);
+                historicoDto.setType(currentGame.getType().name());
+
+                historicosDto.add(historicoDto);
+            }
+        }
+       /*  for (Historico historico : historicos) {
             HistoricoPlayerDto playerDto = new HistoricoPlayerDto();
             playerDto.setPlayerId(historico.getPlayerId());
             playerDto.setTotalPoints(historico.getTotalPoints());
@@ -109,7 +141,7 @@ public class HistoricoServiceImpl implements HistoricoService {
             historicoDto.setType(game.getType().name());
 
             historicosDto.add(historicoDto);
-        }
+        }*/
         
         return historicosDto;
     }

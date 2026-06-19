@@ -36,7 +36,7 @@ public class Event {
     @Column(name = "ranking_id")
     private UUID rankingId;
 
-    @Column(name = "game_Name")
+    @Column(name = "game_name")
     private String gameName;
 
     @Column(name = "status")
@@ -44,4 +44,7 @@ public class Event {
 
     @Column(name = "date")
     private Timestamp  date;
+
+    @Column(name = "creator_name")
+    private String creatorName;
 }

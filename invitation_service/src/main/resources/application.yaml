@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/invitationdb
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:tfm1234}
+    password: ${DB_PASSWORD}
   
   application:
     name: invitation-service
@@ -22,8 +22,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: teuscarapoyen@gmail.com
-    password: eeyt legp xsti mgwd
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -49,8 +49,8 @@ services:
     url: http://localhost:8082
 
 resend:
-  api-key: re_TsH7A7ri_QKGjmZ54GMKQrHrTbRNz7EJA
-  from-email: "onboarding@tuapp.com"
+  api-key: ${RESEND_API_KEY}
+  from-email: ${RESEND_FROM_EMAIL:onboarding@tuapp.com}
 
 logging:
   level:

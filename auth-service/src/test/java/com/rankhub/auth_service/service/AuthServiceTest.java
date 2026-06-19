@@ -43,9 +43,11 @@ class AuthServiceTest {
     @Mock
     private OAuth2User oAuth2User;
 
+    @Mock
+    private JwtService jwtService;
+
     private AuthService authService;
 
-    private JwtService jwtService;
 
     private RegisterRequest registerRequest;
 
@@ -55,17 +57,9 @@ class AuthServiceTest {
         registerRequest.setEmail("test@example.com");
         registerRequest.setPassword("Password123");
 
-        jwtService = new JwtService() {
-            @Override
-            public String generateToken(User user) {
-                return "jwt-token";
-            }
-
-            @Override
-            public long getExpirationSeconds() {
-                return 3600L;
-            }
-        };
+        // jwtService is a Mockito mock (see @Mock above)
+        when(jwtService.generateToken(any(User.class))).thenReturn("jwt-token");
+        when(jwtService.getExpirationSeconds()).thenReturn(3600L);
 
         ObjectProvider<AuthenticationManager> authManagerProvider = new ObjectProvider<>() {
             @Override

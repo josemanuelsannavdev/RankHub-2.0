@@ -2,6 +2,7 @@ package com.rankhub.ranking_service.controller;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -115,5 +116,17 @@ public class PlayerController {
 
         playerService.deletePlayer(playerId);
         return ResponseEntity.ok(new ApiMessageDto("Jugador eliminado correctamente"));
+    }
+
+    @PutMapping("/players")
+    public ResponseEntity<ApiMessageDto> updatePoints(@RequestBody Map<UUID, Double> playerAndPointsMap) {
+        if (playerAndPointsMap.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "La lista de jugadores está vacía");
+        }
+        
+
+        playerService.addPoints(playerAndPointsMap);
+        return ResponseEntity.ok(new ApiMessageDto("Jugadores actualizados correctamente"));
     }
 }

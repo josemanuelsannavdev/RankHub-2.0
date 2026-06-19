@@ -20,21 +20,20 @@ import lombok.ToString;
 @Builder
 @ToString
 public class EventDto {
-   
+
     private UUID id;
 
-   
     private UUID rankingId;
 
-   
     private String gameName;
 
-    
     private String status;
+    private String creatorName;
 
-    
-    private Timestamp  date;
+    private Timestamp date;
 
-    private List<PlayerDto> blueSidePlayers;
-    private List<PlayerDto> redSidePlayers;
+    private SideDto blueSide;
+    private SideDto redSide;
+
+    private List<BetDto> bets;
 }

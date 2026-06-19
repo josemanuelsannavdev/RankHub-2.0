@@ -21,12 +21,14 @@ public class GlobalExceptionHandler {
             EmailAlreadyExistsException ex,
             HttpServletRequest request
     ) {
-        return buildError(HttpStatus.CONFLICT, ex.getMessage(), request, null);
+        // Return a generic message to avoid confirming account existence
+        return buildError(HttpStatus.CONFLICT, "Request could not be processed", request, null);
     }
 
     @ExceptionHandler({InvalidCredentialsException.class, OAuth2AuthenticationProcessingException.class})
     public ResponseEntity<ErrorResponse> handleUnauthorized(RuntimeException ex, HttpServletRequest request) {
-        return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage(), request, null);
+        // Return a generic authentication failure message
+        return buildError(HttpStatus.UNAUTHORIZED, "Authentication failed", request, null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

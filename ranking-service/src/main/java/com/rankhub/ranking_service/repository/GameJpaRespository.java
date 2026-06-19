@@ -17,5 +17,5 @@ public interface GameJpaRespository  extends JpaRepository<Game, UUID>, JpaSpeci
     @Query("SELECT p FROM Game p WHERE p.rankingId = :rankingId")
     List<Game> findAllGamesByRankingId(UUID rankingId);
 
-    
+    List<Game> findAllGamesByName(String gameName);
 } 

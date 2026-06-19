@@ -1,6 +1,7 @@
 package com.rankhub.ranking_service.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.rankhub.ranking_service.dto.PlayerDto;
@@ -20,5 +21,6 @@ public interface PlayerService {
 
     void deletePlayer(UUID playerId);
 
+    void addPoints(Map<UUID, Double> playerAndPointsMap);
     
 } 

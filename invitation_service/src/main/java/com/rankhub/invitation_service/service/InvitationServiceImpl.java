@@ -17,9 +17,11 @@ import com.rankhub.invitation_service.dto.response.UserResponse;
 import com.rankhub.invitation_service.entity.Invitation;
 import com.rankhub.invitation_service.enums.InvitationStatus;
 import com.rankhub.invitation_service.repository.RankingInvitationRepository;
-import com.resend.core.exception.ResendException;
 
 import lombok.RequiredArgsConstructor;
+import  com.rankhub.invitation_service.exception.ConflictException;
+import com.rankhub.invitation_service.exception.NotFoundException;
+import com.rankhub.invitation_service.exception.BadRequestException;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +41,12 @@ public class InvitationServiceImpl implements InvitationService {
                 InvitationStatus.PENDING);
 
         if (alreadyExistsPending) {
-            throw new RuntimeException("Invitation already exists");
+            throw new ConflictException("Invitation already exists");
         }
 
         List<UserResponse> currentMembers = rankingClient.getRankingMembers(request.getRankingId());
         if (currentMembers.stream().anyMatch(user -> user.getEmail().equals(request.getEmail()))) {
-            throw new RuntimeException("User is already a member of the ranking");
+            throw new ConflictException("User is already a member of the ranking");
         }
         Invitation invitation = Invitation.builder()
                 .id(UUID.randomUUID())
@@ -101,16 +103,16 @@ public class InvitationServiceImpl implements InvitationService {
     public InvitationResponse acceptInvitation(AcceptInvitationRequest request) {
 
         Invitation invitation = rankingInvitationRepository.findByToken(request.getToken())
-                .orElseThrow(() -> new RuntimeException("Invitation not found"));
+            .orElseThrow(() -> new NotFoundException("Invitation not found"));
 
         if (!invitation.getStatus().equals(InvitationStatus.PENDING)) {
-            throw new RuntimeException("Invitation is not pending");
+            throw new BadRequestException("Invitation is not pending");
         }
 
         if (invitation.getExpiresAt().isBefore(LocalDateTime.now())) {
             invitation.setStatus(InvitationStatus.EXPIRED);
             rankingInvitationRepository.save(invitation);
-            throw new RuntimeException("Invitation expired");
+            throw new BadRequestException("Invitation expired");
         }
 
         // Acceptance does not require headers; membership addition must be performed
@@ -139,10 +141,10 @@ public class InvitationServiceImpl implements InvitationService {
     public InvitationResponse cancelInvitation(UUID invitationId) {
 
         Invitation invitation = rankingInvitationRepository.findById(invitationId)
-                .orElseThrow(() -> new RuntimeException("Invitation not found"));
+            .orElseThrow(() -> new NotFoundException("Invitation not found"));
 
         if (!invitation.getStatus().equals(InvitationStatus.PENDING)) {
-            throw new RuntimeException("Only pending invitations can be cancelled");
+            throw new BadRequestException("Only pending invitations can be cancelled");
         }
 
         invitation.setStatus(InvitationStatus.CANCELLED);

@@ -26,7 +26,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @ToString
-@Table(name = "sidePlayers")
+@Table(name = "sideplayers")
 public class SidePlayer {
     
     @Id

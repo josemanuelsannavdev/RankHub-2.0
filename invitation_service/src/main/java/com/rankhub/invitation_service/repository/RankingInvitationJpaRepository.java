@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 
 import com.rankhub.invitation_service.entity.Invitation;
 import com.rankhub.invitation_service.enums.InvitationStatus;

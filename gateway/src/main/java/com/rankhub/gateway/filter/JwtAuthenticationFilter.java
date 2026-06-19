@@ -68,10 +68,13 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             return unauthorized(exchange, "JWT subject is not a valid UUID");
         }
 
-        // 8. Add userId into request headers
+        // 8. Replace any inbound X-User-Id header with the authenticated value
         ServerHttpRequest mutatedRequest = exchange.getRequest()
                 .mutate()
-                .header("X-User-Id", userId)
+            .headers(headers -> {
+                headers.remove("X-User-Id");
+                headers.set("X-User-Id", userId);
+            })
                 .build();
 
         // 9. Forward modified request

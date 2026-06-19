@@ -9,13 +9,13 @@ import lombok.ToString;
 import java.sql.Timestamp;
 
 import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-
 public class HistoricoPlayerDto {
     
     private UUID playerId;

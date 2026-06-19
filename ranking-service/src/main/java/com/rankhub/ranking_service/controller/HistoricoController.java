@@ -29,6 +29,7 @@ public class HistoricoController {
       return historicoService.getAllHistoricos(rankingId);
    }
 
+   //se usa para las estadisticas de un solo juego
    @GetMapping("/historicos/game/{gameId}")
    public List<HistoricoDto> getHistoricosByGame(@PathVariable UUID gameId) {
       return historicoService.getHistoricosByGame(gameId);

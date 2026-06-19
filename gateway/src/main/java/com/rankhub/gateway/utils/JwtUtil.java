@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class JwtUtil {
 
-    @Value("${jwt.secret:${JWT_SECRET:r7AzZORXtBbbyTduBIxAqK2x76JK75C0cimql1v8JPQ}}")
+    @Value("${JWT_SECRET:}")
     private String jwtSecret;
 
     private SecretKey signingKey;
@@ -31,7 +31,7 @@ public class JwtUtil {
     @PostConstruct
     void init() {
         if (jwtSecret == null || jwtSecret.trim().length() < 32) {
-            throw new IllegalStateException("JWT secret must be at least 32 characters long");
+            throw new IllegalStateException("JWT secret must be configured and at least 32 characters long");
         }
         signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }

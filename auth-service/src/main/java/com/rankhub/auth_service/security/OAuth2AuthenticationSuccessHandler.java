@@ -31,8 +31,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
-            Authentication authentication
-    ) throws IOException, ServletException {
+            Authentication authentication) throws IOException, ServletException {
 
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
         User user = authService.handleGoogleLogin(oauthUser);
@@ -45,13 +44,14 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 .email(user.getEmail())
                 .build();
 
-        String redirectUrl = UriComponentsBuilder.fromUriString(frontendCallbackUrl)
-            .queryParam("token", authResponse.getToken())
-            .queryParam("email", authResponse.getEmail())
-            .queryParam("provider", "google")
-            .build(true)
-            .toUriString();
-
+        String redirectUrl = UriComponentsBuilder
+                .fromUriString(frontendCallbackUrl)
+                .queryParam("token", authResponse.getToken())
+                .queryParam("email", authResponse.getEmail())
+                .queryParam("provider", "google")
+                .build()
+                .toUriString();
+                
         response.sendRedirect(redirectUrl);
     }
 }

@@ -12,6 +12,7 @@ import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.service.RankingService;
 import com.rankhub.ranking_service.service.RoleService;
 import com.rankhub.ranking_service.request.JoinRankingRequest;
+import com.rankhub.ranking_service.request.OddsRequest;
 import com.rankhub.ranking_service.request.RankingRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import jakarta.persistence.JoinColumn;
@@ -227,6 +229,17 @@ public class RankingController {
                     .body(new ApiMessageDto(e.getMessage()));
         }
         
+    }
+
+    @PostMapping("/ranking/odds")
+    public ResponseEntity<Map<String, Double>> getOdds(@RequestBody OddsRequest request) {
+        try {
+            Map<String, Double> odds = rankingService.getOdds(request);
+            return ResponseEntity.ok(odds);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.emptyMap());
+        }
     }
     
 

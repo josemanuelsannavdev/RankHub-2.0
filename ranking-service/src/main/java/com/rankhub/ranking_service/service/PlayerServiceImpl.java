@@ -1,6 +1,7 @@
 package com.rankhub.ranking_service.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -124,4 +125,20 @@ public class PlayerServiceImpl implements PlayerService {
 
     }
 
+    @Override
+    @Transactional
+    public void addPoints(Map<UUID, Double> playerAndPointsMap) {
+        for (Map.Entry<UUID, Double> entry : playerAndPointsMap.entrySet()) {
+            UUID playerId = entry.getKey();
+            Double pointsToAdd = entry.getValue();
+
+            Player existingPlayer = playerRepository.getPlayerById(playerId);
+            if (existingPlayer == null) {
+                throw new IllegalArgumentException("Jugador no encontrado: " + playerId);
+            }
+
+            existingPlayer.setPoints(existingPlayer.getPoints() + pointsToAdd);
+            playerRepository.save(existingPlayer);
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.rankhub.ranking_service.service;
 
 import com.rankhub.ranking_service.controller.ApiExceptionHandler;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,15 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rankhub.ranking_service.client.AuthServiceClient;
 import com.rankhub.ranking_service.client.ChatServiceClient;
+import com.rankhub.ranking_service.dto.HistoricoDto;
+import com.rankhub.ranking_service.dto.HistoricoPlayerDto;
 import com.rankhub.ranking_service.dto.RankingDto;
 import com.rankhub.ranking_service.dto.RankingWithRoleDto;
 import com.rankhub.ranking_service.dto.UserDto;
+import com.rankhub.ranking_service.entity.Game;
 import com.rankhub.ranking_service.entity.Ranking;
 import com.rankhub.ranking_service.entity.Role;
 import com.rankhub.ranking_service.entity.utils.RoleType;
 import com.rankhub.ranking_service.mapper.RankingMapper;
+import com.rankhub.ranking_service.repository.GameRepository;
 import com.rankhub.ranking_service.repository.RankingRepository;
 import com.rankhub.ranking_service.repository.RoleRepository;
+import com.rankhub.ranking_service.request.OddsRequest;
 import com.rankhub.ranking_service.request.RankingRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +43,8 @@ public class RankingServiceImpl implements RankingService {
     private final RankingMapper rankingMapper;
     private final AuthServiceClient authServiceClient;
     private final ChatServiceClient chatServiceClient;
-    
+    private final GameRepository gameRepository;
+    private final HistoricoService historicoService;
 
     @Override
     public RankingDto getRankingById(UUID id) {
@@ -73,7 +81,7 @@ public class RankingServiceImpl implements RankingService {
         roleRepository.save(adminRole);
 
         chatServiceClient.createChat(createdRanking.getId());
-        
+
         return RankingWithRoleDto.builder()
                 .id(createdRanking.getId())
                 .name(createdRanking.getName())
@@ -292,5 +300,80 @@ public class RankingServiceImpl implements RankingService {
             throw new IllegalArgumentException("Solo se pueden cambiar los roles de GUEST y SUB_ADMIN");
         }
         roleRepository.save(existingRole);
+    }
+
+    @Override
+    public Map<String, Double> getOdds(OddsRequest request) {
+        if (request == null || request.getBlueSidePlayerIds() == null || request.getRedSidePlayerIds() == null) {
+            throw new IllegalArgumentException(
+                    "La solicitud de probabilidades no puede ser nula y debe contener listas de jugadores para ambos lados.");
+        }
+        String gameName = request.getGameName();
+        UUID rankingId = request.getRankingId();
+        List<UUID> blueSidePlayerIds = request.getBlueSidePlayerIds();
+        List<UUID> redSidePlayerIds = request.getRedSidePlayerIds();
+
+        Integer totalBlueWins = 0;
+        Integer totalBlueGames = 0;
+        Integer totalRedWins = 0;
+        Integer totalRedGames = 0;
+
+        // obtener todos los juegos con ese nombre
+        List<Game> games = gameRepository.findAllGamesByRankingId(rankingId);
+        Game game = games.stream()
+                .filter(g -> g.getName().equalsIgnoreCase(gameName))
+                .findFirst()
+                .orElse(null);
+
+        // obtener todos los historicos de esa categoria de juego
+        List<HistoricoDto> historicos = historicoService.getHistoricosByGame(game.getId());
+        // Por cada historico del juego
+        for (HistoricoDto historico : historicos) {
+            // obtenemos los jugadores de ese historico
+            List<HistoricoPlayerDto> historicoPlayers = new ArrayList<>(historico.getPlayers()); //esto se hace pq el removeIf no funciona con la lista original
+            historicoPlayers.removeIf(p -> p.getObtainedPoints() == null); // Eliminar jugadores sin puntos obtenidos
+            for (UUID bluePlayerId : blueSidePlayerIds) {
+                for (UUID redPlayerId : redSidePlayerIds) {
+                    HistoricoPlayerDto bluePlayerHistorico = historicoPlayers.stream()
+                            .filter(p -> p.getPlayerId().equals(bluePlayerId))
+                            .findFirst()
+                            .orElse(null);
+                    HistoricoPlayerDto redPlayerHistorico = historicoPlayers.stream()
+                            .filter(p -> p.getPlayerId().equals(redPlayerId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (bluePlayerHistorico != null && redPlayerHistorico != null &&
+                            !bluePlayerHistorico.getObtainedPoints().equals(redPlayerHistorico.getObtainedPoints())) {
+
+                        totalBlueGames++;
+                        totalRedGames++;
+                        if (bluePlayerHistorico.getObtainedPoints() > redPlayerHistorico.getObtainedPoints()) {
+                            totalBlueWins++;
+                        } else if (redPlayerHistorico.getObtainedPoints() > bluePlayerHistorico
+                                .getObtainedPoints()) {
+                            totalRedWins++;
+                        }
+
+                    }
+                }
+            }
+        }
+        if (totalBlueGames == 0 && totalRedGames == 0) {
+            return Map.of("blueOdds", 2.0, "redOdds", 2.0);
+        }
+
+        Double blueWinRate = (double) totalBlueWins / totalBlueGames;
+        Double redWinRate = (double) totalRedWins / totalRedGames;
+
+        Double cuotaMIN = 1.5;
+        Double cuotaMAX = 3.0;
+        Double m = (cuotaMIN - cuotaMAX) / (1 - 0);
+        Double blueOdds = m * blueWinRate + 3;
+        Double redOdds = m * redWinRate + 3;
+        blueOdds = Math.round(blueOdds * 100.0) / 100.0; // Redondear a dos decimales
+        redOdds = Math.round(redOdds * 100.0) / 100.0; // Redondear a dos decimales
+
+        return Map.of("blueOdds", blueOdds, "redOdds", redOdds); // Retorna un mapa con las probabilidades
     }
 }

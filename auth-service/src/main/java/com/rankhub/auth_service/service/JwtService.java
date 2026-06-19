@@ -3,14 +3,11 @@ package com.rankhub.auth_service.service;
 import com.rankhub.auth_service.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,16 +20,17 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final SecretKey signingKey;
+    private final long expirationMs;
 
-    @Value("${jwt.expiration-ms:3600000}")
-    private long expirationMs;
-
-    @PostConstruct
-    void validateSecret() {
-        if (secretKey == null || secretKey.length() < 32) {
-            throw new IllegalStateException("JWT secret must be at least 32 characters long");
+    public JwtService(SecretKey signingKey, @Value("${jwt.expiration-ms:3600000}") long expirationMs) {
+        if (signingKey == null) {
+            throw new IllegalStateException("JWT signing key must not be null");
+        }
+        this.signingKey = signingKey;
+        this.expirationMs = expirationMs;
+        if (this.expirationMs <= 0) {
+            throw new IllegalStateException("JWT expiration must be greater than zero");
         }
     }
 
@@ -51,7 +49,7 @@ public class JwtService {
                 .setSubject(subject)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plusMillis(expirationMs)))
-                .signWith(getSigningKey())
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -61,7 +59,7 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     public boolean isTokenValid(String token) {
@@ -74,10 +72,6 @@ public class JwtService {
 
     public long getExpirationSeconds() {
         return expirationMs / 1000;
-    }
-
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     private boolean isTokenExpired(String token) {
@@ -95,7 +89,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

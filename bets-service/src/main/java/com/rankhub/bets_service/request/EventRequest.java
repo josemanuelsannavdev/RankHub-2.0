@@ -26,7 +26,7 @@ public class EventRequest {
 
    
     private String gameName;
-
+    private String creatorName;
     
 
     private List<PlayerRequest> blueSidePlayers;
