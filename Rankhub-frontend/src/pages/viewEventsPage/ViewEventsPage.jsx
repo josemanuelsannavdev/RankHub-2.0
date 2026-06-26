@@ -16,14 +16,14 @@ function ViewEventsPage() {
 
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white">
-      <Header title="Eventos Apuestas" />
+      <Header title="Bets Events" />
       <main className="px-4 pb-32">
         <EventStatusTabs activeMode={selectedTab} onModeChange={setSelectedTab} />
          {selectedTab === "En Curso" && (
           <div className="mt-4">
             {currentEvents.length === 0 ? (
               <p className="text-center text-gray-500 dark:text-gray-400">
-                No hay eventos en curso.
+                There are no events in progress.
               </p>
             ) : (
               currentEvents.map((event) => (
@@ -36,7 +36,7 @@ function ViewEventsPage() {
           <div className="mt-4">
             {finishedEvents.length === 0 ? (
               <p className="text-center text-gray-500 dark:text-gray-400">
-                No hay eventos finalizados.
+                There are no finished events.
               </p>
             ) : (
               finishedEvents.map((event) => (
@@ -49,7 +49,7 @@ function ViewEventsPage() {
           <div className="mt-4">
             {closedEvents.length === 0 ? (
               <p className="text-center text-gray-500 dark:text-gray-400">
-                No hay eventos cerrados.
+                There are no closed events.
               </p>
             ) : (
               closedEvents.map((event) => (
@@ -60,7 +60,7 @@ function ViewEventsPage() {
         )}
       </main>
       <BottomNavOneButton
-        buttonTitle="Crear Evento"
+        buttonTitle="Create Event"
         onClick={handleCreateClick}
       />
     </div>

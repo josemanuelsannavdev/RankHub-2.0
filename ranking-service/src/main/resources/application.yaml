@@ -27,7 +27,7 @@ logging:
 
 services:
   auth:
-    base-url: ${AUTH_SERVICE_URL:http://auth-service}
+    base-url: ${AUTH_SERVICE_URL:http://auth-service:8081}
 
 
 eureka:
@@ -37,4 +37,4 @@ eureka:
             defaultZone: http://localhost:8761/eureka
     instance:
         preferIpAddress: true
-        hostname: ms-rankings
+        hostname: ranking-service

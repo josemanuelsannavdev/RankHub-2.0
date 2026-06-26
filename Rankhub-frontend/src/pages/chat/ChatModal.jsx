@@ -26,7 +26,7 @@ function ChatModal( {onClose} ) {
   }
 
   return (
-    <Modal title="Chat" description="Mensajes en tiempo real">
+    <Modal title="Chat" description="Chat with other players in real-time" >
       <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
         <ChatHeader onClose={onClose} />
         <Chat messages={messages} currentUserName={userName} />

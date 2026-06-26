@@ -46,7 +46,7 @@ export default function usePlayerPage() {
     setPlayerFormModalOpen(false);
   }, []);
 
-  const headerTitle = player?.name || "Jugador";
+  const headerTitle = player?.name || "Player";
 
   return {
     headerTitle,

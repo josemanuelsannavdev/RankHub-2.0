@@ -65,36 +65,37 @@ function EventCard({ event }) {
               <PlayerCard
                 key={String(player.name)}
                 name={player.name}
-                avatarUrl={player.avatarUrl}
+                avatarUrl={player.image}
                 side="blue"
               />
             ))}
           </div>
           <p className="text-center font-medium text-blue-400">
-            Cuota azul: x{event.blueSide.odds}
+           Blue Odds: x{event.blueSide.odds}
           </p>
         </section>
 
         {/*<!-- Red Side Column -->*/}
         <section className="space-y-4">
-          <div className="flex items-center justify-end gap-3 px-1">
+          <div className="flex items-center  gap-3 px-1">
+             <div className="w-4 h-8 bg-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-full"></div>
             <h2 className="text-xl font-black uppercase tracking-widest text-red-500 neon-glow-red">
               RED SIDE
             </h2>
-            <div className="w-4 h-8 bg-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-full"></div>
+           
           </div>
           <div className="space-y-3">
             {redPlayers.map((player, index) => (
               <PlayerCard
                 key={player.name}
                 name={player.name}
-                avatarUrl={player.avatarUrl}
+                avatarUrl={player.image}
                 side="red"
               />
             ))}
           </div>
           <p className="text-center font-medium text-red-400">
-            Cuota rojo: x{event.redSide.odds}
+            Red Odds: x{event.redSide.odds}
           </p>
         </section>
       </div>

@@ -53,7 +53,7 @@ public class PlayerServiceImpl implements PlayerService {
     public PlayerDto createPlayer(PlayerRequest playerRequest) {
         String normalizedName = playerRequest.getName() != null ? playerRequest.getName().trim() : null;
 
-        if (normalizedName != null && playerRepository.existsByNameIgnoreCase(normalizedName)) {
+        if (normalizedName != null && playerRepository.existsByNameIgnoreCaseAndRankingId(normalizedName, playerRequest.getRankingId())) {
             throw new IllegalArgumentException("Player ya existente, cambiar nombre");
         }
 

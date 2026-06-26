@@ -19,15 +19,18 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final String fromEmail;
+    private final String publicUrl;
 
     public EmailService(JavaMailSender mailSender,
-                        @Value("${resend.from-email:onboarding@tuapp.com}") String fromEmail) {
+                        @Value("${resend.from-email:onboarding@tuapp.com}") String fromEmail,
+                        @Value("${app.public-url:http://localhost:8085}") String publicUrl) {
         this.mailSender = mailSender;
         this.fromEmail = fromEmail;
+        this.publicUrl = publicUrl;
     }
 
     public void sendEmail(Invitation invitation) {
-        String link = "http://localhost:8085/invitation/accept?token=" + invitation.getToken();
+        String link = publicUrl + "/invitation/accept?token=" + invitation.getToken();
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");

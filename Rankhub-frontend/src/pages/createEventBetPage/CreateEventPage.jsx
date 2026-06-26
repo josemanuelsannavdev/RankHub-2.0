@@ -6,10 +6,9 @@ import PlayerSelectModal from "../createGamePage/components/PlayerSelectModal";
 import PlayerCard from "./components/PlayerCard";
 import { useEventForm } from "./hooks/useEventForm";
 
-
 function CreateEventPage() {
-  const buttonTitle = "Crear Evento";
-  
+  const buttonTitle = "Create Event";
+
   const {
     setGameName,
     bluePlayers,
@@ -20,12 +19,12 @@ function CreateEventPage() {
     handlePlayerAdded,
     handleDeletePlayer,
     handleCreateClick,
-    selectedPlayerIds,  
+    selectedPlayerIds,
   } = useEventForm();
 
   return (
     <div className="bg-surface min-h-screen pb-24">
-      <Header title="Crear Evento" />
+      <Header title="Create Event" />
 
       <main className="px-4 pb-32">
         <GameSelector onGameChange={setGameName} />
@@ -73,11 +72,12 @@ function CreateEventPage() {
 
           {/*<!-- Red Side Column -->*/}
           <section className="space-y-4">
-            <div className="flex items-center justify-end gap-3 px-1">
+            <div className="flex items-center  gap-3 px-1">
+              <div className="w-4 h-8 bg-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-full"></div>
+
               <h2 className="text-xl font-black uppercase tracking-widest text-red-500 neon-glow-red">
                 RED SIDE
               </h2>
-              <div className="w-4 h-8 bg-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-full"></div>
             </div>
             <div className="space-y-3">
               {redPlayers.map((player, index) => (

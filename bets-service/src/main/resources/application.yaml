@@ -11,14 +11,14 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:tfm1234}
 
-jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: false
-    open-in-view: false
-    properties:
+  jpa:
       hibernate:
-        '[format_sql]': true
+        ddl-auto: validate
+      show-sql: false
+      open-in-view: false
+      properties:
+        hibernate:
+          '[format_sql]': true
 
 eureka:
     client:
@@ -27,4 +27,4 @@ eureka:
             defaultZone: http://localhost:8761/eureka
     instance:
         preferIpAddress: true
-        hostname: ms-bets
+        hostname: bets-service

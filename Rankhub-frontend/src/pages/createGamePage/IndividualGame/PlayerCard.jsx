@@ -31,7 +31,7 @@ function PlayerCard({
         <p
           className={`text-[10px] font-medium `}
         >
-          {points} puntos
+          {points} points
         </p>
       </div>
 

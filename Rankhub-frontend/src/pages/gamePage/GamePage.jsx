@@ -30,7 +30,7 @@ const { positionChartModel } = useGamePageCharts({
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Header */}
-      <Header title={game?.name || "Juego"} />
+      <Header title={game?.name || "Game"} />
 
       {/* Main Content */}
       <main className="pt-24 px-6 max-w-4xl mx-auto">
@@ -40,7 +40,7 @@ const { positionChartModel } = useGamePageCharts({
               <div className="w-12 h-12 bg-primary/30 rounded-full"></div>
             </div>
             <p className="text-slate-400 text-sm font-medium">
-              Cargando datos del jugador...
+              Loading game data...
             </p>
           </div>
         )}
@@ -59,8 +59,7 @@ const { positionChartModel } = useGamePageCharts({
             {/* Page Title */}
             <header className="mb-10">
               <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter neon-glow-text">
-                {game.name || "Juego"}
-                
+                {game.name || "Game"}
               </h1>
 
               <div className="h-1 w-20 bg-primary mt-4 rounded-full"></div>

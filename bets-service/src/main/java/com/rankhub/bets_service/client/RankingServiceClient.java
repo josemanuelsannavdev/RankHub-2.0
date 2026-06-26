@@ -19,7 +19,7 @@ public class RankingServiceClient {
 
     public Map<String, Double> getOddsForEvent(List<UUID> blueSidePlayerIds, List<UUID> redSidePlayerIds,
             String gameName, UUID rankingId) {
-        String url = "http://localhost:8082/ranking/odds";
+        String url = "http://ranking-service/ranking/odds";
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     url,
@@ -35,7 +35,7 @@ public class RankingServiceClient {
     }
 
     public void addBetPoints(Map<UUID, Double> betPoints) {
-        String url = "http://localhost:8082/players";
+        String url = "http://ranking-service/players";
 
         try {
             restTemplate.put(url, betPoints);

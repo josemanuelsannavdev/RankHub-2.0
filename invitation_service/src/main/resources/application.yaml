@@ -38,7 +38,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
   instance:
     preferIpAddress: true
-    hostname: ms-invitation
+    hostname: invitation-service
 
 management:
   endpoints:
@@ -46,7 +46,11 @@ management:
 
 services:
   ranking:
-    url: http://localhost:8082
+    base-url: ${SERVICES_RANKING_URL:http://ranking-service:8082}
+
+app:
+  public-url: ${INVITATION_PUBLIC_URL:http://localhost:8085}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
 
 resend:
   api-key: ${RESEND_API_KEY}

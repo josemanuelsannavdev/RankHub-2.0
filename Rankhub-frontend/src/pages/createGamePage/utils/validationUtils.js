@@ -18,6 +18,6 @@ export const isRegisteredPlayer = (participant) => {
 export const sanitizeGuestName = (name) => {
   return (name || "")
     .trim()
-    .replace(/^Invitado:\s*/i, "")
+    .replace(/^Guest:\s*/i, "")
     .trim();
 };

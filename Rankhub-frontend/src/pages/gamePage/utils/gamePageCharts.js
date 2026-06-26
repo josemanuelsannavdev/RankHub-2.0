@@ -90,7 +90,7 @@ export const buildPositionChartModel = ({ historicos, playerId }) => {
   );
   const labels = Array.from(
     { length: numJugadores },
-    (_, index) => `${playersNames[index] || "Jugador " + (index + 1)}`,
+    (_, index) => `${playersNames[index] || "Player " + (index + 1)}`,
   );
   const extraBarsCount = Math.max(
     posiciones.length - POSITION_BAR_COLORS.length,
@@ -102,7 +102,7 @@ export const buildPositionChartModel = ({ historicos, playerId }) => {
       labels,
       datasets: [
         {
-          label: "Veces en esa posición",
+          label: "Total points",
           data: posiciones,
           borderColor: [
             ...POSITION_BORDER_COLORS,

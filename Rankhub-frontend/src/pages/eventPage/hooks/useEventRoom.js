@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import { useNavigate } from "react-router-dom";
-const EVENT_WS_URL = "ws://localhost:8086/websocket";
+const EVENT_WS_URL = import.meta.env.VITE_BET_WS_URL ?? "ws://localhost:8086/websocket";
 const DEFAULT_SUBSCRIPTION = "/topic/chat/";
 const DEFAULT_DESTINATION = "/app/envio";
 import { closeEvent as publishCloseEvent, getEvent, getBetsForEvent } from "../../../services/betApi";

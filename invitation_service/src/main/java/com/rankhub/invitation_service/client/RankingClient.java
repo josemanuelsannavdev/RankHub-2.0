@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class RankingClient {
-    @Value("${services.ranking.base-url:http://localhost:8082}")
+    @Value("${services.ranking.base-url:http://ranking-service:8082}")
     private String rankingServiceBaseUrl;
 
     private final RestTemplate restTemplate;

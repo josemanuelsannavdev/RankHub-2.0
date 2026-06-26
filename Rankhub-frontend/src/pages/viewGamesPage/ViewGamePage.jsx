@@ -28,7 +28,7 @@ const ViewGamePage = () => {
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white">
-      <Header title="Listado de Juegos" />
+      <Header title="Games List" />
 
       <main className="pb-32 px-4">
         <GameTabSelector activeTab={activeTab} onChange={setActiveTab} />

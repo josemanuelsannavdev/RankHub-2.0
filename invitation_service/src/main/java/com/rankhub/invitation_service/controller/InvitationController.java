@@ -3,6 +3,8 @@ package com.rankhub.invitation_service.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +28,13 @@ import lombok.RequiredArgsConstructor;
 public class InvitationController {
 
     private final InvitationService invitationService;
+    @Value("${app.frontend-url:http://localhost:5173}")
+    private String frontendUrl;
 
     @PostMapping("/invitation")
     public InvitationResponse createInvitation(@Valid @RequestBody CreateInvitationRequest request,
-        @RequestHeader("X-User-Id") UUID userId ) {
-        
+            @RequestHeader("X-User-Id") UUID userId) {
+
         return invitationService.createInvitation(request, userId);
     }
 
@@ -42,11 +46,18 @@ public class InvitationController {
     }
 
     @GetMapping("/invitation/accept")
-    public InvitationResponse acceptInvitation(
+    public ResponseEntity<Void> acceptInvitation(
             @Valid @RequestParam String token) {
 
-        return invitationService.acceptInvitation(new AcceptInvitationRequest(token));
+        invitationService.acceptInvitation(new AcceptInvitationRequest(token));
+
+        return ResponseEntity
+                .status(302)
+            .header("Location", frontendUrl)
+                .build();
     }
+
+    
 
     @PatchMapping("/invitation/{invitationId}/cancel")
     public InvitationResponse cancelInvitation(

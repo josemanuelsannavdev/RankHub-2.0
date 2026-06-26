@@ -9,17 +9,17 @@ function PlayerSelectModal({ onClose, onPlayerAdded, selectedPlayerIds }) {
 
   return (
     <Modal
-      title="Añadir jugador"
-      description="Selecciona un jugador del ranking para sumarlo a la partida."
+      title=" Add Player"
+      description="Select a player from the ranking to add them to the game."
     >
       <div className="flex-1 overflow-y-auto px-6 py-2 space-y-3">
         {isLoading && (
-          <p className="text-sm text-slate-400">Cargando jugadores...</p>
+          <p className="text-sm text-slate-400">Loading players...</p>
         )}
 
         {!isLoading && sortedPlayers.length === 0 && (
           <p className="text-sm text-slate-400">
-            No hay jugadores disponibles.
+            No players available.
           </p>
         )}
 
@@ -49,7 +49,7 @@ function PlayerSelectModal({ onClose, onPlayerAdded, selectedPlayerIds }) {
                 )}
 
                 <p className="flex-1 text-sm font-semibold text-white truncate">
-                  {player?.name || "Jugador"}
+                  {player?.name || "Player"}
                 </p>
                 <button
                   type="button"
@@ -57,7 +57,7 @@ function PlayerSelectModal({ onClose, onPlayerAdded, selectedPlayerIds }) {
                   onClick={() => onPlayerAdded(player)}
                   disabled={alreadyAdded}
                 >
-                  {alreadyAdded ? "Añadido" : "Añadir"}
+                  {alreadyAdded ? "Added" : "Add"}
                 </button>
               </div>
             );
@@ -70,7 +70,7 @@ function PlayerSelectModal({ onClose, onPlayerAdded, selectedPlayerIds }) {
           className="w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-bold uppercase tracking-wider text-white hover:bg-white/10"
           onClick={onClose}
         >
-          Cerrar
+          Close
         </button>
       </div>
     </Modal>

@@ -21,7 +21,7 @@ function CreateGamePage() {
 
   return (
     <div className="bg-surface min-h-screen pb-24">
-      <Header title="Crear Juego" />
+      <Header title="Create Game" />
 
       <main className="px-4 pb-32">
         <GameModeTabs activeMode={activeMode} onModeChange={setActiveMode} />

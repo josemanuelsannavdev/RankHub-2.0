@@ -17,7 +17,7 @@ const DuelGameCard = ({
       
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
         <span className="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-          DUELO
+          Duel
         </span>
         <div className="flex items-center gap-2">
           <span className="text-slate-400 text-[10px] font-medium flex items-center gap-1">
@@ -49,7 +49,7 @@ const DuelGameCard = ({
             >
               emoji_events
             </span>{" "}
-            Ganador
+            Winner
           </span>
           <div className="flex flex-col items-center gap-2 bg-winner-green/5 p-3 rounded-xl border border-winner-green">
             
@@ -70,14 +70,14 @@ const DuelGameCard = ({
               </div>
             )}
             <span className="text-xs font-bold text-center text-winner-green">
-              {winner?.name || winnerGuestName || "Jugador 1"}
+              {winner?.name || winnerGuestName || "Player 1"}
             </span>
           </div>
         </div>
         <div className="space-y-2">
           <span className="text-[10px] font-bold uppercase text-loser-red flex items-center gap-1">
             <span className="material-symbols-outlined text-xs">close</span>{" "}
-            Perdedor
+            Loser
           </span>
           <div className="flex flex-col items-center gap-2 bg-loser-red/5 p-3 rounded-xl border border-loser-red opacity-80">
             {loser?.image ? (
@@ -98,7 +98,7 @@ const DuelGameCard = ({
             )}
 
             <span className="text-xs font-bold text-center text-loser-red">
-              {loser?.name || loserGuestName || "Jugador 2"}
+              {loser?.name || loserGuestName || "Player 2"}
             </span>
           </div>
         </div>
@@ -106,7 +106,7 @@ const DuelGameCard = ({
       <div className="flex items-center justify-end pt-3 border-t border-slate-100 dark:border-white/5">
         <div className="flex items-center gap-1">
           <span className="text-xs font-bold uppercase tracking-tight text-slate-500">
-            Apuesta:
+            Bet:
           </span>
           <span className="text-lg font-black text-primary">
             {" "}

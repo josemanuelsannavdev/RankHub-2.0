@@ -12,7 +12,7 @@ function DuelParticipantActions({ onAddWinner, onAddLoser }) {
           emoji_events
         </span>
         <span className="text-[10px] font-bold uppercase tracking-widest text-winner-green">
-          Añadir Ganador
+          Add Winner
         </span>
       </button>
 
@@ -25,7 +25,7 @@ function DuelParticipantActions({ onAddWinner, onAddLoser }) {
           thumb_down
         </span>
         <span className="text-[10px] font-bold uppercase tracking-widest text-loser-red">
-          Añadir Perdedor
+          Add Loser
         </span>
       </button>
     </div>

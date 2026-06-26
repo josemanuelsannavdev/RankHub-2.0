@@ -6,7 +6,7 @@ const DuelFilters = ({ searchValue, onSearchChange, onClearFilters }) => {
     <section className="py-6 space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
-          Filtrar duelos
+          Filter Duels
         </h2>
         <button
           onClick={onClearFilters}
@@ -15,7 +15,7 @@ const DuelFilters = ({ searchValue, onSearchChange, onClearFilters }) => {
           <span className="material-symbols-outlined text-sm">
             filter_list_off
           </span>
-          {"LIMPIAR"}
+          {"Clear Filters"}
         </button>
       </div>
 
@@ -28,7 +28,7 @@ const DuelFilters = ({ searchValue, onSearchChange, onClearFilters }) => {
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm focus:ring-primary focus:border-primary"
-          placeholder="Buscar duelos por nombre..."
+          placeholder="Search duels by name..."
         />
       </div>
     </section>

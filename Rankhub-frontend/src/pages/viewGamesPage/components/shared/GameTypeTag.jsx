@@ -2,17 +2,17 @@ import PropTypes from "prop-types";
 
 const gameTypeConfig = {
   individual: {
-    label: "Individual",
+    label: "Individual games",
     bgClass: "bg-blue-500/10",
     textClass: "text-blue-500",
   },
   team: {
-    label: "Por Equipos",
+    label: "Team Games",
     bgClass: "bg-primary/20",
     textClass: "text-primary",
   },
   duel: {
-    label: "Duelo",
+    label: "Duel Games",
     bgClass: "bg-amber-500/10",
     textClass: "text-amber-600",
   },

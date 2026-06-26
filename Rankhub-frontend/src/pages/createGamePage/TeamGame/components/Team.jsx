@@ -40,7 +40,7 @@ function Team({
             </span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5 font-medium italic">
-            {team.points} Puntos Acumulados
+            {team.points} points
           </p>
         </div>
         <div className="flex items-center gap-1">

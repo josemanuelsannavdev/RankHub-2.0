@@ -5,14 +5,14 @@ import { buildDuelParticipantsPayload } from "../utils/duelPayloadBuilder";
 
 const EMPTY_PARTICIPANT = {
   id: null,
-  name: "Sin seleccionar",
-  subtitle: "Selecciona un jugador",
+  name: "Select a player",
+  subtitle: "Select a player",
   avatarUrl: "",
 };
 
 
 const toDuelParticipant = (player, fallbackSubtitle) => ({
-  name: player?.name || "Jugador",
+  name: player?.name || "Player",
   subtitle: fallbackSubtitle,
   avatarUrl: player?.avatarUrl || player?.image || "",
   id: player?.id,
@@ -59,9 +59,9 @@ export const useDuelGameForm = (onFormDataChange) => {
   const handlePlayerAdded = useCallback(
     (player) => {
       if (selectorRole === "winner") {
-        setWinner(toDuelParticipant(player, "Ganador seleccionado"));
+        setWinner(toDuelParticipant(player, "Winner selected"));
       } else if (selectorRole === "loser") {
-        setLoser(toDuelParticipant(player, "Perdedor seleccionado"));
+        setLoser(toDuelParticipant(player, "Loser selected"));
       }
       handleCloseSelector();
     },

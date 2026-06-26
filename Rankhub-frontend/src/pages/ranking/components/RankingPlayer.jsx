@@ -24,9 +24,9 @@ function RankingPlayer({ player, position }) {
       />
       {/* info */}
       <div className="flex-1 min-w-0">
-        <p className="font-bold truncate">{player?.name || "Jugador"}</p>
+        <p className="font-bold truncate">{player?.name || "Player"}</p>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          {gamesWon} Victorias • {gamesLost} Derrotas
+          {gamesWon} Victories • {gamesLost} Defeats
         </p>
       </div>
 

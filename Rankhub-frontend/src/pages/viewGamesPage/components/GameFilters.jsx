@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 
  const filterOptions = [
-    { id: "all", label: "Todos" },
-    { id: "INDIVIDUAL_GAME", label: "Individuales" },
-    { id: "TEAM_GAME", label: "Equipos" },
+    { id: "all", label: "All" },
+    { id: "INDIVIDUAL_GAME", label: "Individual" },
+    { id: "TEAM_GAME", label: "Team" },
   ];
 const GameFilters = ({
   activeFilter,
@@ -18,7 +18,7 @@ const GameFilters = ({
     <section className="py-6 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
-          Filtrar por
+          Filter Games
         </h2>
         <button
           onClick={onClearFilters}
@@ -27,7 +27,7 @@ const GameFilters = ({
           <span className="material-symbols-outlined text-sm">
             filter_list_off
           </span>
-          {"LIMPIAR"}
+          {"Clear Filters"}
         </button>
       </div>
 
@@ -56,7 +56,7 @@ const GameFilters = ({
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm focus:ring-primary focus:border-primary"
-          placeholder="Buscar por nombre de juego..."
+          placeholder="Search games by name..."
         />
       </div>
     </section>

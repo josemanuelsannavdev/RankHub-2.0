@@ -36,7 +36,7 @@ function BetForm(props) {
       <div className="flex-1 overflow-y-auto px-6 py-2 space-y-6">
         <fieldset className="space-y-3">
           <legend className="text-xs font-bold uppercase tracking-widest text-slate-400">
-            Selecciona un lado
+            Select a side to bet on
           </legend>
           <label className="flex items-center gap-2">
             <input
@@ -64,7 +64,7 @@ function BetForm(props) {
 
         <div className="flex flex-col space-y-2">
           <label htmlFor="bet-player-select" className="text-xs font-bold uppercase tracking-widest text-slate-400">
-            Jugador
+            Player to bet on
           </label>
           <select
             id="bet-player-select"
@@ -72,7 +72,7 @@ function BetForm(props) {
             onChange={(event) => setSelectedPlayer(playersBet.find((p) => p.id === event.target.value))}
             className="form-select text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           >
-            <option value="">Selecciona un jugador</option>
+            <option value="">Select a player</option>
             {playersBet.map((player) => (
               <option key={player.id} value={player.id}>
                 {player.name}

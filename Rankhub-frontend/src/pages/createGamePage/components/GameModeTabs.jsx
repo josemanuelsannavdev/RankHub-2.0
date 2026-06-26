@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 
 const modes = [
-  { id: 'individual', label: 'Juego Individual' },
-  { id: 'teams', label: 'Por Equipos' },
-  { id: 'duel', label: 'Duelo' },
+  { id: 'individual', label: 'Individual Game' },
+  { id: 'teams', label: 'Team Game' },
+  { id: 'duel', label: 'Duel Game' },
 ];
 
 function GameModeTabs({ activeMode, onModeChange }) {

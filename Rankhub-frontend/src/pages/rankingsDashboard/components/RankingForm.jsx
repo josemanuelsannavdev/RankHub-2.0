@@ -29,7 +29,7 @@ const RankingForm = ({ onClose, onRankingCreated, rankingToEdit }) => {
           onChange={onNameChange}
         />
         <FormInput
-          label="Descripción"
+          label="Description"
           type="text"
           placeholder="Ex: Best league of football in the world"
           value={description}

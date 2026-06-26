@@ -16,7 +16,7 @@ const buildParticipantPayload = (participant, position, maxPlayers) => {
 
   const guestName = sanitizeGuestName(participant?.name || "");
   return {
-    guestName: guestName || "Invitado",
+    guestName: guestName || "Guest",
     position,
     points,
   };

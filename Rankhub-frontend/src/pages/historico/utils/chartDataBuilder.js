@@ -22,7 +22,7 @@ const buildPlayerDataset = (player, historicos, colorIndex) => {
   const color = CHART_COLORS[colorIndex % CHART_COLORS.length];
 
   return {
-    label: player?.name ?? "Jugador",
+    label: player?.name ?? "Player",
     data: positions,
     borderColor: color,
     backgroundColor: `${color}20`,
@@ -37,7 +37,7 @@ const buildPlayerDataset = (player, historicos, colorIndex) => {
 
 export const buildChartData = (historicos, players) => {
   const labels = historicos.map(
-    (historico) => `${historico.gameName} - ${historico.date}`,
+    (historico) => `${historico.gameName} - ${historico.date.split("T")[0]}`,
   );
 
   const datasets = players.map((player, index) =>
@@ -49,3 +49,4 @@ export const buildChartData = (historicos, players) => {
     datasets,
   };
 };
+

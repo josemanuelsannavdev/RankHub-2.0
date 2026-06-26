@@ -18,7 +18,7 @@ public interface PlayerJpaRespository  extends JpaRepository<Player, UUID>, JpaS
 
     List<Player> findAllById(Iterable<UUID> ids);
 
-    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseAndRankingId(String name, UUID rankingId);
 
     boolean existsByIdAndRankingId(UUID id, UUID rankingId);
 

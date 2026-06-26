@@ -9,7 +9,7 @@ function BotonCrearEquipo({ onClick }) {
     >
       <span className="material-symbols-outlined font-bold">group_add</span>
       {' '}
-      Crear Equipo
+      Create Team
     </button>
   );
 }

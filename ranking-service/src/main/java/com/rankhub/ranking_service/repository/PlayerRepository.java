@@ -37,8 +37,8 @@ public class PlayerRepository {
         return playerJpaRespository.saveAll(players);
     }
 
-    public boolean existsByNameIgnoreCase(String name) {
-        return playerJpaRespository.existsByNameIgnoreCase(name);
+    public boolean existsByNameIgnoreCaseAndRankingId(String name, UUID rankingId) {
+        return playerJpaRespository.existsByNameIgnoreCaseAndRankingId(name, rankingId);
     }
 
     public boolean existsByIdAndRankingId(UUID id, UUID rankingId) {

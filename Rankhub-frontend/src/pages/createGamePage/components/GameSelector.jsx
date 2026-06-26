@@ -20,7 +20,7 @@ function GameSelector({ options, value, onGameChange }) {
         htmlFor="create-game-selector"
         className="text-sm font-semibold text-slate-400 mb-2 block px-1"
       >
-        Seleccionar Juego
+        Select a Game
       </label>
       <div className="flex gap-3">
         <div className="flex-1 relative group">
@@ -32,16 +32,16 @@ function GameSelector({ options, value, onGameChange }) {
             style={{ colorScheme: "dark" }}
           >
             <option value="" className="bg-background-dark text-white">
-              Selecciona un juego
+              Select a game
             </option>
             {isLoading && (
               <option className="bg-background-dark text-white">
-                Cargando opciones...
+                Loading options...
               </option>
             )}
             {!isLoading && visibleGameNames.length === 0 && (
               <option className="bg-background-dark text-white">
-                No hay juegos disponibles
+                No games available
               </option>
             )}
             {!isLoading &&

@@ -5,7 +5,7 @@ const buildMemberPayload = (member) => {
   const memberIdValue =
     typeof member?.id === "string" ? member.id.trim() : "";
   const isGuest =
-    member?.role === "Invitado" || memberIdValue.startsWith("guest-");
+    member?.role === "Guest" || memberIdValue.startsWith("guest-");
 
   if (isValidUUID(memberIdValue) && !isGuest) {
     return {
@@ -16,7 +16,7 @@ const buildMemberPayload = (member) => {
 
   return {
     playerId: null,
-    guestName: member?.name || "Invitado",
+    guestName: member?.name || "Guest",
   };
 };
 

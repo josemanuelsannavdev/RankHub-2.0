@@ -3,7 +3,7 @@ import { Client } from "@stomp/stompjs";
 import { getChat } from "../../../services/chatApi";
 import { getSessionEmail } from "../../../services/session";
 import {useRanking} from "../../../context/RankingContext";
-const CHAT_WS_URL = "ws://localhost:8084/websocket";
+const CHAT_WS_URL = import.meta.env.VITE_CHAT_WS_URL ?? "ws://localhost:8084/websocket";
 const DEFAULT_SUBSCRIPTION = "/topic/chat/";
 const DEFAULT_DESTINATION = "/app/envio";
 

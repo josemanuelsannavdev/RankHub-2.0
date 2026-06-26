@@ -1,0 +1,233 @@
+services:
+  eureka:
+    build:
+      context: ./eureka
+    container_name: rankhub-eureka
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+
+  auth-db:
+    image: postgres:16-alpine
+    container_name: rankhub-auth-db
+    environment:
+      POSTGRES_DB: usersdb
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d usersdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  ranking-db:
+    image: postgres:16-alpine
+    container_name: rankhub-ranking-db
+    environment:
+      POSTGRES_DB: rankingsdb
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - ranking_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d rankingsdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  bets-db:
+    image: postgres:16-alpine
+    container_name: rankhub-bets-db
+    environment:
+      POSTGRES_DB: betsdb
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - bets_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d betsdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  chat-db:
+    image: postgres:16-alpine
+    container_name: rankhub-chat-db
+    environment:
+      POSTGRES_DB: chatsdb
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - chat_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d chatsdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  invitation-db:
+    image: postgres:16-alpine
+    container_name: rankhub-invitation-db
+    environment:
+      POSTGRES_DB: invitationdb
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - invitation_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d invitationdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: rankhub-auth-service
+    depends_on:
+      eureka:
+        condition: service_healthy
+      auth-db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/usersdb
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:8081/login/oauth2/code/google}
+      FRONTEND_OAUTH_CALLBACK_URL: ${FRONTEND_OAUTH_CALLBACK_URL:-http://localhost:3000/oauth/callback}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      JWT_SECRET: ${JWT_SECRET:-}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+  ranking-service:
+    build:
+      context: ./ranking-service
+    container_name: rankhub-ranking-service
+    depends_on:
+      eureka:
+        condition: service_healthy
+      ranking-db:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    environment:
+      DB_URL: jdbc:postgresql://ranking-db:5432/rankingsdb
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      AUTH_SERVICE_URL: http://auth-service:8081
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+  bets-service:
+    build:
+      context: ./bets-service
+    container_name: rankhub-bets-service
+    depends_on:
+      eureka:
+        condition: service_healthy
+      bets-db:
+        condition: service_healthy
+    ports:
+      - "8086:8086"
+    environment:
+      DB_URL: jdbc:postgresql://bets-db:5432/betsdb
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+  chat-service:
+    build:
+      context: ./chat-service
+    container_name: rankhub-chat-service
+    depends_on:
+      eureka:
+        condition: service_healthy
+      chat-db:
+        condition: service_healthy
+    ports:
+      - "8084:8084"
+    environment:
+      DB_URL: jdbc:postgresql://chat-db:5432/chatsdb
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+  invitation-service:
+    build:
+      context: ./invitation_service
+    container_name: rankhub-invitation-service
+    depends_on:
+      eureka:
+        condition: service_healthy
+      invitation-db:
+        condition: service_healthy
+      ranking-service:
+        condition: service_started
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://invitation-db:5432/invitationdb
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-onboarding@tuapp.com}
+      SERVICES_RANKING_URL: http://ranking-service:8082
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+  gateway:
+    build:
+      context: ./gateway
+    container_name: rankhub-gateway
+    depends_on:
+      eureka:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      ranking-service:
+        condition: service_started
+      bets-service:
+        condition: service_started
+      chat-service:
+        condition: service_started
+      invitation-service:
+        condition: service_started
+    ports:
+      - "8762:8762"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+  frontend:
+    build:
+      context: ./Rankhub-frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8762
+        VITE_CHAT_WS_URL: ws://localhost:8084/websocket
+        VITE_BET_WS_URL: ws://localhost:8086/websocket
+        VITE_CLOUDINARY_CLOUD_NAME: ${VITE_CLOUDINARY_CLOUD_NAME:-}
+        VITE_CLOUDINARY_UPLOAD_PRESET: ${VITE_CLOUDINARY_UPLOAD_PRESET:-}
+    container_name: rankhub-frontend
+    depends_on:
+      gateway:
+        condition: service_started
+    ports:
+      - "3000:80"
+
+volumes:
+  auth_db_data:
+  ranking_db_data:
+  bets_db_data:
+  chat_db_data:
+  invitation_db_data:

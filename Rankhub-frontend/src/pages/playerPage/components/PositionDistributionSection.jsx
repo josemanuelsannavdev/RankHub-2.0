@@ -5,7 +5,7 @@ const PositionDistributionSection = ({ chartModel }) => {
   return (
     <section className="mb-8">
       <h2 className="text-2xl font-extrabold uppercase tracking-tight mb-6">
-        Distribución de Posiciones
+        Position Distribution
       </h2>
 
       <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">

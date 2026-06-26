@@ -52,7 +52,7 @@ export const useIndividualGameForm = (onFormDataChange) => {
 
     const guestPlayer = {
       id: `guest-${Date.now()}`,
-      name: `Invitado: ${trimmedName}`,
+      name: `Guest: ${trimmedName}`,
       isGuest: true,
     };
 

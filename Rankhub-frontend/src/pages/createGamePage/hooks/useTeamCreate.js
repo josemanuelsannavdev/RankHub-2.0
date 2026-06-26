@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState } from "react";
 
 const normalizeSelectedPlayer = (selectedPlayer) => ({
 	id: selectedPlayer?.id,
-	name: selectedPlayer?.name || "Jugador",
-	role: "Jugador",
+	name: selectedPlayer?.name || "Player",
+	role: "Player",
 	avatarUrl: selectedPlayer?.avatarUrl || selectedPlayer?.image,
 });
 
@@ -62,7 +62,7 @@ export const useTeamCreate = ({
 			{
 				id: `guest-${Date.now()}`,
 				name: trimmedName,
-				role: "Invitado",
+				role: "Guest",
 			},
 		]);
 		setIsGuestModalOpen(false);

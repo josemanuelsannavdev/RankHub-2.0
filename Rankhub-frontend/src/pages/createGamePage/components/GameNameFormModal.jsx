@@ -5,8 +5,8 @@ import GameNameForm from "./GameNameForm";
 function GameNameFormModal({  onClose, onGameNameCreated }) {
   return (
     <Modal
-      title="Agregar nuevo juego"
-      description="Ingresa el nombre del nuevo juego que deseas agregar al ranking."
+      title="Add Game Name"
+      description="Enter the name of the new game you want to add to the ranking."
       
     >
       <GameNameForm

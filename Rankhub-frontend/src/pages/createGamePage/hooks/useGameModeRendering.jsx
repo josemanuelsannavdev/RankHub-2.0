@@ -6,9 +6,9 @@ import TeamGameForm from "../TeamGame/TeamGameForm";
 import DuelGameForm from "../DuelGame/DuelGameForm";
 
 const BUTTON_CONFIG = {
-  individual: "Crear juego individual",
-  teams: "Crear juego por equipos",
-  duel: "Crear duelo",
+  individual: "Create Individual Game",
+  teams: "Create Team Game",
+  duel: "Create Duel",
 };
 
 

@@ -9,8 +9,13 @@ spring:
       ddl-auto: none
 
 eureka:
-  client:
-    enabled: false
+    client:
+        enabled: true
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+    instance:
+        preferIpAddress: true
+        hostname: ranking-service
 
 management:
   endpoints:

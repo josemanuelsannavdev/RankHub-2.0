@@ -14,8 +14,8 @@ const icons = [
 const IconSelect = ({ selected, onSelect }) => {
     return (
         <div className="space-y-2">
-            <p className="text-xs text-slate-400 font-medium">
-                Icono del ranking
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
+                Ranking Icon
             </p>
             <div
                 className="

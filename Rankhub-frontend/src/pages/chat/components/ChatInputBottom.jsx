@@ -19,7 +19,7 @@ function ChatInputBottom({ onSendMessage, disabled = false, statusMessage = "" }
       <form className="relative flex items-center gap-2" onSubmit={handleSubmit}>
           <input
             className="flex-1 rounded-xl border border-white/10 bg-background-dark px-4 py-3 text-sm outline-none focus:border-primary focus:ring-primary"
-            placeholder="Escribe un mensaje..."
+            placeholder="Write a message..."
             type="text"
             value={message}
             onChange={handleChange}

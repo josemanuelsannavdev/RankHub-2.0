@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 const tabs = [
     {
       id: "games",
-      label: "Juegos",
+      label: "Games",
       icon: "sports_esports",
     },
     {
       id: "duels",
-      label: "Duelos",
+      label: "Duels",
       icon: "swords",
     },
   ];

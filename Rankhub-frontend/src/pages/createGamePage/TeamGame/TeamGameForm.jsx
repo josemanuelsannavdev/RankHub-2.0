@@ -33,7 +33,7 @@ function TeamGameForm({ onFormDataChange }) {
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4 px-1">
             <h2 className="text-sm font-bold uppercase tracking-widest text-primary">
-              Equipos en Partida
+              Teams in game
             </h2>
             <span className="text-xs font-medium text-slate-400">
               Total: {teamsState.length}

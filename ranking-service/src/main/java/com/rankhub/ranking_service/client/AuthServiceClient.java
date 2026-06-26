@@ -21,6 +21,7 @@ public class AuthServiceClient {
 
     private final RestTemplate restTemplate;
 
+    @Value("${services.auth.base-url:http://auth-service:8081}")
     private String authServiceBaseUrl;
 
     public Map<UUID, String> getEmailsByIds(List<UUID> userIds) {
@@ -35,30 +36,23 @@ public class AuthServiceClient {
 
         
           ResponseEntity<Map<UUID, String>> response = restTemplate.exchange(
-          "http://localhost:8081" + "/auth/emails",
+
+          authServiceBaseUrl + "/auth/emails",
          org.springframework.http.HttpMethod.POST,
          request,
          new ParameterizedTypeReference<Map<UUID, String>>() {
           });
          
 
-        /*ResponseEntity<String> response = restTemplate.exchange(
-                authServiceBaseUrl + "/auth/emails",
-                org.springframework.http.HttpMethod.POST,
-                request,
-                String.class);
-        System.out.println("STATUS***************: " + response.getStatusCode());
-        System.out.println("BODY****************: " + response.getBody());
-        */
+       
         return response.getBody() != null ? response.getBody() : Map.of();
-        //return Map.of();
     }
 
 
     public UUID getUserIdByEmail(String email) {
         try {
             ResponseEntity<UUID> response = restTemplate.getForEntity(
-                    "http://localhost:8081" + "/auth/user-id?email={email}",
+                    authServiceBaseUrl + "/auth/user-id?email={email}",
                     UUID.class,
                     email
             );

@@ -29,17 +29,17 @@ function IndividualGameForm({ onFormDataChange }) {
       <ParticipantActions
         primaryAction={{
           icon: "person_add",
-          label: "Anadir Jugador",
+          label: "Add Player",
           onClick: handleClickAddPlayer,
         }}
         secondaryAction={{
           icon: "group_add",
-          label: "Anadir Invitado",
+          label: "Add Guest",
           onClick: handleClickAddGuest,
         }}
       />
       <PlayersInMatchSection
-        title="Jugadores en Partida"
+        title="Players in Game"
         players={players}
         onPlayersChange={handlePlayersChange}
         onPlayerDelete={handlePlayerDeleted}

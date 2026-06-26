@@ -48,7 +48,7 @@ function PlayerPage() {
               <div className="w-12 h-12 bg-primary/30 rounded-full"></div>
             </div>
             <p className="text-slate-400 text-sm font-medium">
-              Cargando datos del jugador...
+              Loading player data...
             </p>
           </div>
         )}
@@ -67,7 +67,7 @@ function PlayerPage() {
             {/* Page Title */}
             <header className="mb-10">
               <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter neon-glow-text">
-                {player.name || "Jugador"}
+                {player.name || "Player"}
 
                 {roleAdminSubadmin && (
                   <button

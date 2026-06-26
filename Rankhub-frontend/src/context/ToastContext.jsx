@@ -123,26 +123,22 @@ export const ToastProvider = ({ children }) => {
     };
 
     if (type === "success") {
-      toast.success(message, sharedOptions);
-      return;
+      return toast.success(message, sharedOptions);
     }
 
     if (type === "error") {
-      toast.error(message, sharedOptions);
-      return;
+      return toast.error(message, sharedOptions);
     }
 
     if (type === "warning") {
-      toast.warning(message, sharedOptions);
-      return;
+      return toast.warning(message, sharedOptions);
     }
 
     if (type === "info") {
-      toast.info(message, sharedOptions);
-      return;
+      return toast.info(message, sharedOptions);
     }
 
-    toast(message, sharedOptions);
+    return toast(message, sharedOptions);
   }, []);
 
   const success = useCallback(
@@ -168,7 +164,7 @@ export const ToastProvider = ({ children }) => {
 
   const info = useCallback(
     (message, options) => {
-      notify("info", message, options);
+      return notify("info", message, options);
     },
     [notify],
   );

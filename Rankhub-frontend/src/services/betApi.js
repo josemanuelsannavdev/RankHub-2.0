@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import gatewayApi from "./gatewayApi";
 
-const EVENT_WS_URL = "ws://localhost:8086/websocket";
+const EVENT_WS_URL = import.meta.env.VITE_BET_WS_URL ?? "ws://localhost:8086/websocket";
 
 const emptyPayload = {
   queryParams: {},

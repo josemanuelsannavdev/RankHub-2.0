@@ -43,7 +43,7 @@ const sideColors = {
         <p
           className={`text-[10px] font-medium ${sideColors[side]?.text}`}
         >
-          {points} puntos
+          {points} points
         </p>
       </div>
 

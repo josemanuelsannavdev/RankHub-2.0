@@ -34,29 +34,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 @Slf4j
 public class EventController {
-    
+
     private final SimpMessagingTemplate messagingTemplate;
     private final EventService eventService;
     private final BetService betService;
 
-    
-
     // aqui llegan las APUESTAS
     @MessageMapping("/event/{eventId}")
     public void sendMessage(@DestinationVariable UUID eventId, BetRequest betRequest) {
-        
+
         BetDto betDto = null;
 
         if (betRequest.getAction().equals("DELETE")) {
             betService.deleteBet(betRequest.getId());
-           betDto = new BetDto().builder()
+            betDto = new BetDto().builder()
                     .id(betRequest.getId())
                     .action(betRequest.getAction())
                     .build();
-        } else if(betRequest.getAction().equals("CREATE")) {
+        } else if (betRequest.getAction().equals("CREATE")) {
             Bet bet = betService.createBet(betRequest, eventId);
 
-             betDto = new BetDto().builder()
+            betDto = new BetDto().builder()
                     .id(bet.getId())
                     .eventId(bet.getEventId())
                     .sideId(bet.getSideId())
@@ -67,14 +65,13 @@ public class EventController {
                     .playerImage(bet.getPlayerImage())
                     .creatorName(betRequest.getCreatorName())
                     .build();
-        }else if( betRequest.getAction().equals("CLOSE")){
+        } else if (betRequest.getAction().equals("CLOSE")) {
             eventService.closeEvent(eventId);
-             betDto = new BetDto().builder()
+            betDto = new BetDto().builder()
                     .action("CLOSE")
                     .build();
         }
 
-        
         messagingTemplate.convertAndSend(
                 "/topic/event/" + eventId,
                 betDto);
@@ -110,7 +107,7 @@ public class EventController {
 
     @PutMapping("/event/finish/{eventId}/{sideId}")
     public ResponseEntity<Void> finishEvent(@PathVariable UUID eventId, @PathVariable UUID sideId) {
-        eventService.finishEvent(eventId,sideId);
+        eventService.finishEvent(eventId, sideId);
         return ResponseEntity.ok().build();
     }
 }

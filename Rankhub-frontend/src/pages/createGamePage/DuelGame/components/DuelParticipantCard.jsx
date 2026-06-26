@@ -60,7 +60,7 @@ function DuelParticipantCard({ type, name, subtitle, avatarUrl, onRemove }) {
       </div>
       <div className="flex-1">
         <p className={variant.tagClass}>
-          {type === "winner" ? "Ganador" : "Perdedor"}
+          {type === "winner" ? "Winner" : "Loser"}
         </p>
         <h3 className={variant.nameClass}>{name}</h3>
         <p className={variant.subtitleClass}>{subtitle}</p>

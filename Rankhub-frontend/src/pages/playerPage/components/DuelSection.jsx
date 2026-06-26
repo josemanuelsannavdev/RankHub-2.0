@@ -9,7 +9,7 @@ const DuelSection = ({ duelModel }) => {
   return (
     <section className="mb-8">
       <h2 className="text-2xl font-extrabold uppercase tracking-tight mb-6">
-        Registro de Duelos
+        Duel Stats
       </h2>
 
       {/* Duelos Stats */}
@@ -17,7 +17,7 @@ const DuelSection = ({ duelModel }) => {
         {/* Total Duelos */}
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 backdrop-blur-sm">
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-            Total Duelos
+            Total Duels
           </p>
           <p className="text-3xl font-black text-primary">{duelModel.stats.totalDueles}</p>
         </div>
@@ -25,7 +25,7 @@ const DuelSection = ({ duelModel }) => {
         {/* Duelos Ganados */}
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 backdrop-blur-sm">
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-            Ganados
+            Won
           </p>
           <p className="text-3xl font-black text-emerald-400">
             {duelModel.stats.ganadosTotales}
@@ -35,7 +35,7 @@ const DuelSection = ({ duelModel }) => {
         {/* Duelos Perdidos */}
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 backdrop-blur-sm">
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-            Perdidos
+            Lost
           </p>
           <p className="text-3xl font-black text-red-400">{duelModel.stats.perdidosTotales}</p>
         </div>

@@ -83,7 +83,7 @@ export const buildPositionChartModel = ({ historicos, playerId }) => {
   const { numJugadores, posiciones } = buildPositionCounts(historicos, playerId);
   const labels = Array.from(
     { length: numJugadores },
-    (_, index) => `Posición ${index + 1}`,
+    (_, index) => `Position ${index + 1}`,
   );
   const extraBarsCount = Math.max(posiciones.length - POSITION_BAR_COLORS.length, 0);
 
@@ -92,7 +92,7 @@ export const buildPositionChartModel = ({ historicos, playerId }) => {
       labels,
       datasets: [
         {
-          label: "Veces en esa posición",
+          label: "Times in Position",
           data: posiciones,
           borderColor: [
             ...POSITION_BORDER_COLORS,
@@ -117,8 +117,9 @@ const extractDuelParticipants = (historico, currentPlayerId) => {
   }
 
   const playerInDuel = historico.players.find(
-    (participant) => participant.playerId === currentPlayerId,
+    (participant) => participant.playerId === currentPlayerId && participant.obtainedPoints !== null,
   );
+
 
   if (!playerInDuel) {
     return null;
@@ -126,6 +127,7 @@ const extractDuelParticipants = (historico, currentPlayerId) => {
 
   const winner = historico.players.find((participant) => participant.obtainedPoints > 0);
   const loser = historico.players.find((participant) => participant.obtainedPoints < 0);
+
 
   if (!winner || !loser) {
     return null;
@@ -207,7 +209,7 @@ export const buildDuelChartModel = ({ historicos, playerId }) => {
       labels,
       datasets: [
         {
-          label: "Duelos ganados",
+          label: "Wins",
           data: wins,
           backgroundColor: DUEL_WIN_COLOR,
           borderColor: DUEL_WIN_BORDER_COLOR,
@@ -215,7 +217,7 @@ export const buildDuelChartModel = ({ historicos, playerId }) => {
           borderSkipped: false,
         },
         {
-          label: "Duelos perdidos",
+          label: "Losses",
           data: losses,
           backgroundColor: DUEL_LOSS_COLOR,
           borderColor: DUEL_LOSS_BORDER_COLOR,

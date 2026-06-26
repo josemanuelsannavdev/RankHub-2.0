@@ -37,25 +37,25 @@ function TeamCreateModal({ onClose, onCreateTeam, existingSelectedPlayerIds, ini
 
   return (
     <Modal
-      title={isEditMode ? "Editar equipo" : "Crear equipo"}
+      title={isEditMode ? "Edit Team" : "Create Team"}
       description={
         isEditMode
-          ? "Actualiza el nombre, los puntos y los miembros del equipo."
-          : "Define el nombre, los puntos y los miembros del nuevo equipo."
+          ? "Update the team name, points, and members."
+          : "Define the team name, points, and members for the new team."
       }
     >
       <div className="flex-1 overflow-y-auto ">
         <form onSubmit={handleSubmit}>
           <div className="flex-1 overflow-y-auto px-6 py-2 space-y-4">
             <FormInput
-              label="Nombre del equipo"
+              label="Team Name"
               type="text"
               placeholder="Ej: Los Titanes"
               value={teamName}
               onChange={(event) => setTeamName(event.target.value)}
             />
             <FormInput
-              label="Puntos"
+              label="Points"
               type="number"
               placeholder="Ej: 1200"
               value={points}
@@ -91,8 +91,8 @@ function TeamCreateModal({ onClose, onCreateTeam, existingSelectedPlayerIds, ini
           </div>
 
           <div className="p-6 space-y-3 bg-gradient-to-t from-background-dark to-transparent">
-            <SubmitButton text={isEditMode ? "Guardar cambios" : "Crear equipo"} />
-            <CancelButton text="Cancelar" onClick={onClose} />
+            <SubmitButton text={isEditMode ? "Save Changes" : "Create Team"} />
+            <CancelButton text="Cancel" onClick={onClose} />
           </div>
         </form>
       </div>

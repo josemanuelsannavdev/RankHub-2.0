@@ -1,7 +1,7 @@
 const modes = [
-  { id: "En Curso", label: "En Curso" },
-  
-  { id: "Cerrados", label: "Cerrados" },{ id: "Finalizados", label: "Finalizados" },
+  { id: "En Curso", label: "In Progress" },
+  { id: "Cerrados", label: "Closed" },
+  { id: "Finalizados", label: "Finished" },
 ];
 function EventStatusTabs({ activeMode, onModeChange }) {
   const activeIndex = modes.findIndex((mode) => mode.id === activeMode);

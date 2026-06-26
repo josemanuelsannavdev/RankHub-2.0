@@ -18,8 +18,8 @@ function GuestPlayerModal({ onClose, onGuestAdded }) {
 
   return (
     <Modal
-      title="Añadir invitado"
-      description="Escribe el nombre para agregar un jugador invitado a la partida."
+      title="Add Guest Player"
+      description="Enter the name to add a guest player to the game."
     >
       <form onSubmit={handleSubmit}>
         <div className="flex-1 overflow-y-auto px-6 py-2 space-y-4">
@@ -27,7 +27,7 @@ function GuestPlayerModal({ onClose, onGuestAdded }) {
             htmlFor="guest-player-name"
             className="text-sm font-semibold text-slate-400 block"
           >
-            Invitado:
+            Guest Player:
           </label>
           <input
             id="guest-player-name"
@@ -46,14 +46,14 @@ function GuestPlayerModal({ onClose, onGuestAdded }) {
             className="w-full rounded-xl bg-primary py-3 text-sm font-bold uppercase tracking-wider text-background-dark hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={!guestName.trim()}
           >
-            Añadir
+            Add
           </button>
           <button
             type="button"
             className="w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-bold uppercase tracking-wider text-white hover:bg-white/10"
             onClick={onClose}
           >
-            Cancelar
+            Cancel
           </button>
         </div>
       </form>

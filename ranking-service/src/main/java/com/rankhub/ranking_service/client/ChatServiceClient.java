@@ -15,7 +15,7 @@ public class ChatServiceClient {
 
     public void createChat(UUID rankingId) {
         try {
-            String url = "http://localhost:8084/chat?rankingId=" + rankingId;
+            String url = "http://chat-service/chat?rankingId=" + rankingId;
 
             restTemplate.postForEntity(
                     url,

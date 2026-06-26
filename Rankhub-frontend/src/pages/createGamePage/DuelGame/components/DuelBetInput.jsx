@@ -7,13 +7,13 @@ function DuelBetInput({ value, onChange, inputId = "duel-bet" }) {
         htmlFor={inputId}
         className="text-[10px] font-bold text-primary mb-2 block px-1 uppercase tracking-widest italic"
       >
-        1. Apuesta del Duelo
+        Bet of the Duel
       </label>
       <div className="relative">
         <input
           id={inputId}
           className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-12 focus:outline-none focus:ring-2 focus:ring-primary/50 text-white font-medium placeholder:text-slate-600"
-          placeholder="Ej: 10 puntos"
+          placeholder="Ej: 10 points"
           type="text"
           value={value}
           onChange={onChange}

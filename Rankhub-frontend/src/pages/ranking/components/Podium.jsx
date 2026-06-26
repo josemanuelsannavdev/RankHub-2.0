@@ -43,7 +43,7 @@ function Podium({ podiumPlayers }) {
         </div>
 
         <p className="mt-2 text-xs font-semibold text-center truncate w-full">
-          {second.name || "No hay Jugador"}
+          {second.name || "There is no Player"}
         </p>
       </div>
 
@@ -85,7 +85,7 @@ function Podium({ podiumPlayers }) {
         </div>
 
         <p className="mt-2 text-sm font-bold text-center truncate w-full">
-          {first.name || "No hay Jugador"}
+          {first.name || "There is no Player"}
         </p>
       </div>
 
@@ -119,7 +119,7 @@ function Podium({ podiumPlayers }) {
         </div>
 
         <p className="mt-2 text-xs font-semibold text-center truncate w-full">
-          {third.name || "No hay Jugador"}
+          {third.name || "There is no Player"}
         </p>
       </div>
     </section>

@@ -26,7 +26,6 @@ function EventCard({ event, onFinish }) {
   const handleFinishEvent = (winnerSideId) => {
     onFinish?.(event, winnerSideId);
   };
-
   return (
     <div
       className={`bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl mb-4 p-4 shadow-sm relative ${
@@ -41,7 +40,9 @@ function EventCard({ event, onFinish }) {
                 <span
                   className={`bg-blue-500/10 text-blue-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase`}
                 >
-                  ACTIVO
+                  {(event.status === "PENDING" && "Pending") ||
+                    (event.status === "CLOSED" && "Closed") ||
+                    (event.status === "FINISHED" && "Finished")}
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-slate-400 text-[10px] font-medium flex items-center gap-1">
@@ -66,7 +67,15 @@ function EventCard({ event, onFinish }) {
         {/*<!-- Blue Side Column -->*/}
         <section className="space-y-4">
           <div className="flex items-center gap-3 px-1">
-            <div className="w-4 h-8 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.8)] rounded-full"></div>
+            {event.status === "FINISHED" && event.blueSide.win===true ? (
+              <span className="text-blue-400 text-sm font-medium flex items-center gap-1">
+                <span className="material-symbols-outlined text-lg leading-none">
+                  crown
+                </span>
+              </span>
+            ) : (
+              <div className="w-4 h-8 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.8)] rounded-full"></div>
+            )}
             <h2 className="text-xl font-black uppercase tracking-widest text-blue-400 neon-glow-blue">
               BLUE SIDE
             </h2>
@@ -76,64 +85,64 @@ function EventCard({ event, onFinish }) {
               <PlayerCard
                 key={String(player.name)}
                 name={player.name}
-                avatarUrl={player.avatarUrl}
+                avatarUrl={player.image}
                 side="blue"
               />
             ))}
           </div>
           <p className="text-center font-medium text-blue-400">
-            Cuota azul: x{event.blueSide.odds}
+            Blue Odds: x{event.blueSide.odds}
           </p>
         </section>
 
         {/*<!-- Red Side Column -->*/}
         <section className="space-y-4">
-          <div className="flex items-center justify-end gap-3 px-1">
+          <div className="flex items-center  gap-3 px-1">
+            {event.status === "FINISHED" && event.redSide.win===true ? (
+              <span className="text-red-500 text-sm font-medium flex items-center gap-1">
+                <span className="material-symbols-outlined text-lg leading-none">
+                  crown
+                </span>
+              </span>
+            ) : (
+              <div className="w-4 h-8 bg-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-full"></div>
+            )}
             <h2 className="text-xl font-black uppercase tracking-widest text-red-500 neon-glow-red">
               RED SIDE
             </h2>
-            <div className="w-4 h-8 bg-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)] rounded-full"></div>
           </div>
           <div className="space-y-3">
             {redPlayers.map((player, index) => (
               <PlayerCard
                 key={player.name}
                 name={player.name}
-                avatarUrl={player.avatarUrl}
+                avatarUrl={player.image}
                 side="red"
               />
             ))}
           </div>
           <p className="text-center font-medium text-red-400">
-            Cuota rojo: x{event.redSide.odds}
+            Red Odds: x{event.redSide.odds}
           </p>
         </section>
       </div>
       {/*Contenedor para las apuestas*/}
       {event.status !== "PENDING" && event.bets.length > 0 && (
-      <section className="mt-6 space-y-4">
-        <div className="flex items-center gap-3 px-1">
-          <div className="w-4 h-8 bg-primary  rounded-full"></div>
-          <h2 className="text-xl font-black uppercase tracking-widest text-primary neon-glow-blue">
-            BETS
-          </h2>
-        </div>
-        {event.bets.map((bet) =>
-          bet.sideId === event.blueSide.id ? (
-            <BetCard
-              key={bet.id}
-              bet={bet}
-              side="blueSide"
-            />
-          ) : bet.sideId === event.redSide.id ? (
-            <BetCard
-              key={bet.id}
-              bet={bet}
-              side="redSide"
-            />
-          ) : null,
-        )}
-      </section>
+        <section className="mt-6 space-y-4">
+          <div className="flex items-center gap-3 px-1">
+            <div className="w-4 h-8 bg-primary  rounded-full"></div>
+            <h2 className="text-xl font-black uppercase tracking-widest text-primary neon-glow-blue">
+              BETS
+            </h2>
+          </div>
+          {event.bets.map((bet) =>
+            bet.sideId === event.blueSide.id ? (
+              <BetCard key={bet.id} bet={bet} side="blueSide" />
+            ) : bet.sideId === event.redSide.id ? (
+              <BetCard key={bet.id} bet={bet} side="redSide" />
+            ) : null,
+          )}
+        </section>
       )}
       {/* Contenedor añadido para centrar el botón y darle separación superior */}
       {event.status === "PENDING" && (
@@ -142,7 +151,7 @@ function EventCard({ event, onFinish }) {
             onClick={() => navigate(`/eventPage/${event.id}`)}
             className="bg-primary hover:scale-105 text-black font-bold py-2 px-6 rounded-xl transition-colors"
           >
-            Inscribirse
+            Enter Event
           </button>
         </div>
       )}
@@ -157,7 +166,7 @@ function EventCard({ event, onFinish }) {
           </button>
 
           <span className="mx-4 text-gray-500 font-bold"></span>
-           <button
+          <button
             type="button"
             onClick={() => handleFinishEvent(event.redSide.id)}
             className="bg-red-500 hover:scale-105 text-white font-bold py-2 px-6 rounded-xl transition-colors"

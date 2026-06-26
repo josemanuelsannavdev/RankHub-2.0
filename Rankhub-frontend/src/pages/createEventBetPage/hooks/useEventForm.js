@@ -2,13 +2,16 @@ import { useState, useCallback, useMemo } from "react";
 import {createEvent,getEvents} from "../../../services/betApi";
 import { useRanking } from "../../../context/RankingContext";
 import { getSessionEmail } from "../../../services/session";
+import { useNavigate } from "react-router-dom";
+import {useToast} from "../../../context/ToastContext";
 export const useEventForm = (onFormDataChange) => {
   const [gameName, setGameName] = useState("");
   const [bluePlayers, setBluePlayers] = useState([]);
   const [redPlayers, setRedPlayers] = useState([]);
   const [activeTeam, setActiveTeam] = useState(null);
   const { currentRanking } = useRanking();
-
+  const navigate = useNavigate();
+  const { success: showSuccess, error: showError } = useToast();
   const handleCreateClick = () => {
 
    
@@ -21,9 +24,12 @@ export const useEventForm = (onFormDataChange) => {
       creatorName: getSessionEmail(),
     })
       .then((response) => {
+        showSuccess("Event created successfully.");
+        navigate(-1);
       })
       .catch((error) => {
         console.error("Error al crear el evento:", error);
+        showError("Error creating event. Please try again.");
       });
   };
 

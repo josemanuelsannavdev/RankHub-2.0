@@ -11,7 +11,7 @@ const GameNameForm = ({ onClose, onGameNameCreated }) => {
     <form onSubmit={handleSubmit}>
       <div className="flex-1 overflow-y-auto px-6 py-2 space-y-6">
         <FormInput
-          label="Nombre del juego"
+          label="Game Name"
           type="text"
           placeholder="Ej: Fifa 2023"
           value={name}
@@ -19,8 +19,8 @@ const GameNameForm = ({ onClose, onGameNameCreated }) => {
         />
       </div>
       <div className="p-6 space-y-3 bg-gradient-to-t from-background-dark to-transparent">
-        <SubmitButton text={"Crear juego"} fullWidth />
-        <CancelButton text="Cancelar" fullWidth onClick={onClose} />
+        <SubmitButton text={"Create Game"} fullWidth />
+        <CancelButton text="Cancel" fullWidth onClick={onClose} />
       </div>
     </form>
   );

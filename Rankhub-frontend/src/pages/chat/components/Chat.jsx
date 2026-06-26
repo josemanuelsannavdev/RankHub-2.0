@@ -45,7 +45,7 @@ function Chat({ messages = [], currentUserName }) {
       ) : (
         <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/5 bg-slate-900/30 p-6 text-center">
           <p className="text-sm text-slate-400">
-            Todavía no hay mensajes. Escribe el primero desde abajo.
+            This is the beginning of the chat. Start by sending a message.
           </p>
         </div>
       )}

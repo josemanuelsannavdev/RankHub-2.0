@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import gatewayApi from "./gatewayApi";
 
-const CHAT_WS_URL = "ws://localhost:8084/websocket";
+const CHAT_WS_URL = import.meta.env.VITE_CHAT_WS_URL ?? "ws://localhost:8084/websocket";
 
 const emptyPayload = {
   queryParams: {},
