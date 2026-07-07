@@ -62,7 +62,6 @@ public class RequestBodyExtractor {
             request.setBody(objectMapper.readValue(rawRequest, Object.class));
         }
 
-        // Set headers -- Needed: https://github.com/spring-cloud/spring-cloud-gateway/issues/894
         HttpHeaders headers = new HttpHeaders();
         headers.putAll(exchange.getRequest().getHeaders());
         headers.remove(HttpHeaders.CONTENT_LENGTH);
