@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class InvitationController {
 
     private final InvitationService invitationService;
-    @Value("${app.frontend-url:http://localhost:5173}")
+    @Value("${app.frontend-url}")
     private String frontendUrl;
 
     @PostMapping("/invitation")

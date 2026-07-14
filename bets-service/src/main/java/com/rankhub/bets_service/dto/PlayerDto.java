@@ -1,6 +1,5 @@
 package com.rankhub.bets_service.dto;
 
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

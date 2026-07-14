@@ -9,7 +9,6 @@ import com.rankhub.chat_service.dto.ChatDto;
 import com.rankhub.chat_service.entity.Chat;
 import com.rankhub.chat_service.entity.Message;
 import com.rankhub.chat_service.repository.ChatRepository;
-import com.rankhub.chat_service.service.MessageService;
 import com.rankhub.chat_service.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 @Service
@@ -29,7 +28,7 @@ public class ChatServiceImpl implements ChatService {
     public ChatDto findByRankingId(UUID rankingId) {
         Chat chat = chatRepository.findByRankingId(rankingId);
         if (chat == null) {
-            return null; // O puedes lanzar una excepción personalizada
+            return null; 
         }
         List<Message> messageDtos = messageService.findByChatId(chat.getId());
         List<MessageDto> messageDtosList = messageDtos.stream()

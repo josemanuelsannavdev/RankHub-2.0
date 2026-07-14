@@ -1,6 +1,5 @@
 package com.rankhub.bets_service.entity;
 
-
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -29,7 +28,7 @@ import lombok.ToString;
 @ToString
 @Table(name = "bets")
 public class Bet {
-    
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -49,7 +48,7 @@ public class Bet {
     @Column(name = "status")
     private String status;
 
-   @Column(name = "player_name")
+    @Column(name = "player_name")
     private String playerName;
 
     @Column(name = "player_image")

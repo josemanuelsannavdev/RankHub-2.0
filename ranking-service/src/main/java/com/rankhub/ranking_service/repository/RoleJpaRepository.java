@@ -16,17 +16,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleJpaRepository extends JpaRepository<Role, UUID>, JpaSpecificationExecutor<Role> {
 
-   /*  @Modifying
-    @Transactional
-    @Query(value = """
-                INSERT INTO roles (id, ranking_id, user_id, role)
-                VALUES (gen_random_uuid(), :rankingId, :userId, CAST(:role AS roles_types))
-            """, nativeQuery = true)
-    void insertRole(
-            @Param("rankingId") UUID rankingId,
-            @Param("userId") UUID userId,
-            @Param("role") String role);
-*/
+ 
     @Modifying
     @Transactional
     @Query("DELETE FROM Role r WHERE r.userId = :userId AND r.rankingId = :rankingId")

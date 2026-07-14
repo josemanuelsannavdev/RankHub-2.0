@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class JwtUtil {
 
-    @Value("${JWT_SECRET:}")
+    @Value("${JWT_SECRET}")
     private String jwtSecret;
 
     private SecretKey signingKey;

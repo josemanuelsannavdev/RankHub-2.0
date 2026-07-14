@@ -23,7 +23,7 @@ public class JwtService {
     private final SecretKey signingKey;
     private final long expirationMs;
 
-    public JwtService(SecretKey signingKey, @Value("${jwt.expiration-ms:3600000}") long expirationMs) {
+    public JwtService(SecretKey signingKey, @Value("${jwt.expiration-ms}") long expirationMs) {
         if (signingKey == null) {
             throw new IllegalStateException("JWT signing key must not be null");
         }

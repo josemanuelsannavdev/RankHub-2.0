@@ -34,7 +34,6 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public InvitationResponse createInvitation(CreateInvitationRequest request, UUID userId) {
 
-        // No authenticated user required; invitations can be created without a caller
         boolean alreadyExistsPending = rankingInvitationRepository.existsByRankingIdAndEmailAndStatus(
                 request.getRankingId(),
                 request.getEmail(),
@@ -115,8 +114,6 @@ public class InvitationServiceImpl implements InvitationService {
             throw new BadRequestException("Invitation expired");
         }
 
-        // Acceptance does not require headers; membership addition must be performed
-        // by an authenticated flow elsewhere when user identity is available.
 
         rankingClient.addMember(new AddRankingMemberRequest(
                 invitation.getRankingId(),

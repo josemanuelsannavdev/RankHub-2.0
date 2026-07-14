@@ -21,7 +21,7 @@ public class AuthServiceClient {
 
     private final RestTemplate restTemplate;
 
-    @Value("${services.auth.base-url:http://auth-service:8081}")
+    @Value("${services.auth.base-url}")
     private String authServiceBaseUrl;
 
     public Map<UUID, String> getEmailsByIds(List<UUID> userIds) {

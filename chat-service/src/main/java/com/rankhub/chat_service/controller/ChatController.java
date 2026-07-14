@@ -55,8 +55,6 @@ public class ChatController {
 
     @PostMapping("/chat")
     public ResponseEntity<Chat> createChat(@RequestParam UUID rankingId) {
-        // Aquí puedes agregar la lógica para guardar el chat en la base de datos
-        // Por ejemplo, podrías usar un servicio para manejar la lógica de negocio
         Chat chat = Chat.builder().rankingId(rankingId).build();
         Chat savedChat = chatService.save(chat);
         return ResponseEntity.ok(savedChat);

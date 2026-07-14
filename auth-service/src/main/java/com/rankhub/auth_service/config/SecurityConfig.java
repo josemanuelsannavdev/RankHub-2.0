@@ -40,7 +40,7 @@ public class SecurityConfig {
         private final OAuth2AuthenticationFailureHandler oAuth2FailureHandler;
         private final PasswordEncoder passwordEncoder;
 
-        @Value("${FRONTEND_URL:http://localhost:5173}")
+        @Value("${FRONTEND_URL}")
         private String frontendUrl;
 
         @Bean

@@ -42,7 +42,6 @@ public class GameController {
    @PostMapping("/game/individual")
    public ResponseEntity<IndividualGameDto> createIndividualGame(@Valid @RequestBody IndividualGameRequest request,
          @RequestHeader("X-User-Id") UUID userId) {
-      // Verificar autorización
       Role role = roleService.getByRankingIdUserId(request.getRankingId(), userId);
       if (role == null) {
          throw new ResponseStatusException(
@@ -59,7 +58,7 @@ public class GameController {
 
    @PostMapping("/game/team")
    public ResponseEntity<TeamGameDto> createTeamGame(@Valid @RequestBody TeamGameRequest request,
-         @RequestHeader("X-User-Id") UUID userId) {// Verificar autorización
+         @RequestHeader("X-User-Id") UUID userId) {
       Role role = roleService.getByRankingIdUserId(request.getRankingId(), userId);
       if (role == null) {
          throw new ResponseStatusException(

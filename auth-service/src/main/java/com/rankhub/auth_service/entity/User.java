@@ -16,13 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Represents a user in the system.
- * 
- * NOTE:
- * - Password is stored hashed (never plain text)
- * - This entity is designed to be extended later (Google login, etc.)
- */
+
 @Entity
 @Getter
 @Setter

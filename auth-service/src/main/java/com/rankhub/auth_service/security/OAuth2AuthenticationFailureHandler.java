@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 public class OAuth2AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-    @Value("${app.oauth.frontend-callback-url:http://localhost:5173/oauth/callback}")
+    @Value("${app.oauth.frontend-callback-url}")
     private String frontendCallbackUrl;
 
     @Override

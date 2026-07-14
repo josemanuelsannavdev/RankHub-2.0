@@ -16,7 +16,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class MessageDto {
-    //private UUID id;
     private String username;
     private String body;
     

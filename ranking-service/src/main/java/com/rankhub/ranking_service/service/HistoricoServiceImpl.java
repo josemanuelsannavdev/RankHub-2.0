@@ -125,23 +125,7 @@ public class HistoricoServiceImpl implements HistoricoService {
                 historicosDto.add(historicoDto);
             }
         }
-       /*  for (Historico historico : historicos) {
-            HistoricoPlayerDto playerDto = new HistoricoPlayerDto();
-            playerDto.setPlayerId(historico.getPlayerId());
-            playerDto.setTotalPoints(historico.getTotalPoints());
-            playerDto.setObtainedPoints(historico.getObtainedPoints());
-            playerDto.setPlayerName(playerRepository.getPlayerById(historico.getPlayerId()).getName());
-            playerDto.setPosition(historico.getPosition());
-
-            HistoricoDto historicoDto = new HistoricoDto();
-            historicoDto.setGameId(game.getId());
-            historicoDto.setGameName(game.getName());
-            historicoDto.setDate(game.getDate());
-            historicoDto.setPlayers(List.of(playerDto));
-            historicoDto.setType(game.getType().name());
-
-            historicosDto.add(historicoDto);
-        }*/
+       
         
         return historicosDto;
     }

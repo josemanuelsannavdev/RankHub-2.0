@@ -22,8 +22,8 @@ public class EmailService {
     private final String publicUrl;
 
     public EmailService(JavaMailSender mailSender,
-                        @Value("${resend.from-email:onboarding@tuapp.com}") String fromEmail,
-                        @Value("${app.public-url:http://localhost:8085}") String publicUrl) {
+                        @Value("${resend.from-email}") String fromEmail,
+                        @Value("${app.public-url}") String publicUrl) {
         this.mailSender = mailSender;
         this.fromEmail = fromEmail;
         this.publicUrl = publicUrl;

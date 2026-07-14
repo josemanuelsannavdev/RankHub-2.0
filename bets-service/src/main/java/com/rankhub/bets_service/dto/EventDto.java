@@ -4,8 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
